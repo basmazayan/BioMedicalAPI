@@ -69,7 +69,7 @@
         "Description": "الوصف باللغة الانجليزيه",
         "DescriptionAr": "الوصف باللغة العربية",
         "IndustryDetails": "تفاصيل الصناعه",
-        "Manufacturer": "المصنع",
+        "Manufacturer": "العلامة التجارية",
         "Origin": "الاصل",
         "Color": "اللون باللغة الانجليزيه",
         "ColorAr": "اللون باللغة العربيه",
@@ -107,13 +107,14 @@
         "equimentName": "اسم الآله",
         "upaCode": "كود UPA",
         "governorate": "محافظه",
-        "district": "المنطقه",
+        "district": "المدينه",
         "Equipments": "الآلات ",
         "QrCode": "كود الإستجابة السريع",
         "organization": "المنظمه",
         "equipmentRecall":"استدعاء الاجهزة",
         "supplier":"Supplier",
-        "select":"اختر"
+        "select":"اختر",
+        "SubOrganization": "فئات المنظمات"
     },
     "SeviceRequest": {
         "serviceRequestTitle": "عنوان الطلب بالانجلزية",
@@ -425,7 +426,16 @@
         "Content":"المحتوى",
         "From":"من",
         "To":"إلى",
-        "Serchbydate":"بحث بالتاريخ"
+        "Serchbydate":"بحث بالتاريخ",
+        "NumberOfEquipment":"عدد الآلات",
+        "Status":"الحاله",
+        "Save":"حفظ",
+        "New":"جديد",
+        "SentToOrganization":"تم الارسال للمنظمه"
 
+    },
+    "map":
+    {
+        "File":"ملف"
     }
 }

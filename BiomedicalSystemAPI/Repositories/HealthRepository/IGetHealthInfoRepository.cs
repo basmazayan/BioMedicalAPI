@@ -16,7 +16,7 @@ namespace BiomedicalSystemAPI.Repositories
         IEnumerable<SubOrganizationViewModel> GetSubOrganizationDetails(getMultiIDViewModel model);
         IEnumerable<HealthCareUnit> GetHospitalsBySubOrginizationsDetails(getMultiIDViewModel model);
         IEnumerable<HealthCareUnit> GetHospitalsByOrginizationsDetails(getMultiIDViewModel model);
-        IEnumerable<ManFactureViewModel> GetBrandsetails(getMultiIDViewModel model);
+        IEnumerable<ManFactureViewModel> GetBrandsetails(int []model);
         IEnumerable<SupplierViewModel> GetSuppliersDetails(getMultiIDViewModel model);
         IEnumerable<InstallDateViewModel> GetInstallDateetails(int id);
         IEnumerable<PriceViewModel> GetPricetails(int id);

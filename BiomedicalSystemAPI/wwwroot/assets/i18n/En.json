@@ -107,13 +107,14 @@
         "equimentName": "Name",
         "upaCode": "UPA Code",
         "governorate": "Governorate",
-        "district": "District",
+        "district": "City",
         "Equipments":"Equipments",
         "QrCode":"Qr Code",
         "organization":"Organization",
         "equipmentRecall":"Equipment Recall",
         "supplier":"Supplier",
-        "select":"select"
+        "select":"select",
+        "SubOrganization": "Sub Organization"
     },
     "SeviceRequest": {
         "serviceRequestTitle": "Request Title",
@@ -415,7 +416,12 @@
         "Content":"Content",
         "From":"From",
         "To":"To",
-        "Serchbydate":"Serch by date"
+        "Serchbydate":"Serch by date",
+        "NumberOfEquipment":"Number Of Equipment",
+        "Status":"Status",
+        "Save":"Save",
+        "New":"New",
+        "SentToOrganization":"Sent To Organization"
     }
     ,"equipmentRecall":
     {
@@ -428,6 +434,10 @@
      "Recalled-eq":"Recalled Eq",
      "equipment":"Equipment",
      "supplier":"Supplier"
-     
+
+    },
+    "map":
+    {
+        "File":"File"
     }
 }

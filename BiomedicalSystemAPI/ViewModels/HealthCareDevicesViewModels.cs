@@ -10,7 +10,7 @@ namespace BiomedicalSystemAPI.ViewModels
         public string PurchaseDate { get; set; }
         public string DeviceArName { get; set; }
         public string DeviceEngName { get; set; }
-        public string DeviceId { get; set; }
+        public int DeviceId { get; set; }
         public string DeviceModel { get; set; }
         public string DevicePrice { get; set; }
     }

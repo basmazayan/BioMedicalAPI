@@ -72,7 +72,7 @@ namespace BiomedicalSystemAPI.Controllers
         }
         
         [HttpPost("GetBrands")]
-        public IEnumerable<ManFactureViewModel> GetBrands(getMultiIDViewModel model)
+        public IEnumerable<ManFactureViewModel> GetBrands(int[] model)
         {
             return _dbAccessLayer.GetBrandsetails(model);
         }
