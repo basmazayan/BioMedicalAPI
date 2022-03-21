@@ -15,7 +15,7 @@ namespace BiomedicalSystemAPI.Models
         public int? OrganizationId { get; set; }
         [ForeignKey("OrganizationId")]
         public virtual Organization Organization { get; set; }
-        public virtual ICollection<AssetAppContext.AssetDetail> equipment { get; set; }
+        public virtual ICollection<Assets> Assets { get; set; }
 
     }
 }

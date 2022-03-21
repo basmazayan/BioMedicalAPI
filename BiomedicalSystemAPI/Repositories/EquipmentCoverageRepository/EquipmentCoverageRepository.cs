@@ -18,7 +18,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentCoverageRepository
         public void Add(EquipmentCoverageDTO equipmentCoverage)
         {
             var eqCoverage = new EquipmentCoverage();
-            eqCoverage.equipmentCoverageId = equipmentCoverage.equipmentCoverageId;
+            eqCoverage.Id = equipmentCoverage.equipmentCoverageId;
             eqCoverage.NumberOfVisits = equipmentCoverage.NumberOfVisits;
             eqCoverage.ResponseTime = equipmentCoverage.ResponseTime;
             eqCoverage.SparePartId = equipmentCoverage.SparePartId;
@@ -30,7 +30,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentCoverageRepository
             {
                 eqCoverage.equipment_EquipmentCoverages.Add(new Equipment_EquipmentCoverage
                 {
-                    EquipmentId = equipId,
+                    AssetId = equipId,
                     EquipmentCoverageId=equipmentCoverage.equipmentCoverageId
                 });
                          
@@ -73,7 +73,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentCoverageRepository
                
                  .Select(e => new EquipmentCoverage
                  {
-            equipmentCoverageId = e.equipmentCoverageId,
+            Id = e.Id,
             NumberOfVisits = e.NumberOfVisits,
             ResponseTime = e.ResponseTime,
             Description = e.Description,
@@ -86,10 +86,10 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentCoverageRepository
 
         public EquipmentCoverage GetById(int id)
         {
-            var e = _context.EquipmentCoverages.FirstOrDefault(e => e.equipmentCoverageId == id);
+            var e = _context.EquipmentCoverages.FirstOrDefault(e => e.Id == id);
             var eq = new EquipmentCoverage
             {
-                equipmentCoverageId = e.equipmentCoverageId,
+                Id = e.Id,
             NumberOfVisits = e.NumberOfVisits,
             ResponseTime = e.ResponseTime,
            Description = e.Description,
@@ -121,7 +121,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentCoverageRepository
         public void Update(EquipmentCoverage equipmentCoverage)
         {
             var eqCoverageObj = new EquipmentCoverageDTO();
-            eqCoverageObj.equipmentCoverageId = equipmentCoverage.equipmentCoverageId;
+            eqCoverageObj.equipmentCoverageId = equipmentCoverage.Id;
             eqCoverageObj.NumberOfVisits = equipmentCoverage.NumberOfVisits;
             eqCoverageObj.ResponseTime = equipmentCoverage.ResponseTime;
             eqCoverageObj.Description = equipmentCoverage.Description;

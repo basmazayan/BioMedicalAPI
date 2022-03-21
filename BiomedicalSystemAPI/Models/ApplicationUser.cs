@@ -15,18 +15,18 @@ namespace BiomedicalSystemAPI.Models
         public string Mobile { get; set; }
         public string Phone { get; set; }
         public string Code { get; set; }
-        public int ? HealthCareUnitId { get; set; }
-        [ForeignKey("HealthCareUnitId")]
-        public virtual Hospital HealthCareUnit { get; set; }
+        public int ? HospitalId { get; set; }
+        [ForeignKey("HospitalId")]
+        public virtual Hospital Hospital { get; set; }
         public int? OrganizationId { get; set; }
         [ForeignKey("OrganizationId")]
         public virtual Organization Organization { get; set; }
-        public int? HealthdirId { get; set; }
-        [ForeignKey("HealthdirId")]
-        public virtual Governorate HealthDirectories { get; set; }
-        public int? HealthDistrictId { get; set; }
-        [ForeignKey("HealthDistrictId")]
-        public virtual City HealthDistricts { get; set; }
+        public int? GovernorateId { get; set; }
+        [ForeignKey("GovernorateId")]
+        public virtual Governorate Governorate { get; set; }
+        public int? CityId { get; set; }
+        [ForeignKey("CityId")]
+        public virtual City City { get; set; }
 
         public int? SubOrganizationId { get; set; }
         [ForeignKey("SubOrganizationId")]

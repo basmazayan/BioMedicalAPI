@@ -71,7 +71,7 @@ namespace BiomedicalSystemAPI.Models
         public int? EquipmentRecallId { get; set; }
         [ForeignKey("EquipmentRecallId")]
         public virtual EquipmentRecall EquipmentRecall { get; set; }
-        public virtual ICollection<Employees> equipmentEmployees { get; set; }
+        public virtual ICollection<EquipmentEmployees> equipmentEmployees { get; set; }
         public virtual ICollection<EquipmentAttachments> equipmentAttachments { get; set; }
         //public int? AttachmentId { get; set; }
         //[ForeignKey("AttachmentId")]

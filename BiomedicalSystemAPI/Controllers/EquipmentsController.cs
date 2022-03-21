@@ -74,7 +74,7 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("getcount")]
         public int count()
         {
-            return _pagingRepository.Count<Models.AssetAppContext.AssetDetail>();
+            return _pagingRepository.Count<Assets>();
         }
         [HttpGet]
         [Route("recalledEqs")]
@@ -330,7 +330,7 @@ namespace BiomedicalSystemAPI.Controllers
                     HealthDirectoryName = e.Hospital.Governorate.Name,
                     HealthDistrictId = e.Hospital.City.Id,
                     HealthDistrictName = e.Hospital.City.Name,
-                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                    EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                     ContractId = e.ContractId
                 };
                 StringBuilder table = new StringBuilder();
@@ -386,9 +386,9 @@ namespace BiomedicalSystemAPI.Controllers
                             Code = User.Code,
                             Phone = User.Phone,
                             Mobile = User.Mobile,
-                            HealthdirId = User.HealthdirId,
-                            HealthCareUnitId = User.HealthCareUnitId,
-                            HealthDistrictId = User.HealthDistrictId,
+                            HealthdirId = User.GovernorateId,
+                            HealthCareUnitId = User.HospitalId,
+                            HealthDistrictId = User.CityId,
                             OrganizationId = User.OrganizationId,
                             SubOrganizationId = User.SubOrganizationId
                             //EquipmentId=User.EuipmentId

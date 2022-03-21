@@ -8,7 +8,7 @@ namespace BiomedicalSystemAPI.Models
     public class Ecri
     {
         public int Id { get; set; }
-        public string ecri_code { get; set; }
+        public string Code { get; set; }
         public string Name { get; set; }
         public string NameAr { get; set; }
 

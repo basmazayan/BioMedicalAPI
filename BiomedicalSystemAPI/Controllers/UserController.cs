@@ -62,9 +62,9 @@ namespace BiomedicalSystemAPI.Controllers
                             Code = User.Code,
                             Phone = User.Phone,
                             Mobile = User.Mobile,
-                            HealthdirId = User.HealthdirId,
-                            HealthCareUnitId = User.HealthCareUnitId,
-                            HealthDistrictId = User.HealthDistrictId,
+                            HealthdirId = User.GovernorateId,
+                            HealthCareUnitId = User.HospitalId,
+                            HealthDistrictId = User.CityId,
                             OrganizationId = User.OrganizationId,
                             SubOrganizationId = User.SubOrganizationId
                             //EquipmentId=User.EuipmentId
@@ -94,7 +94,7 @@ namespace BiomedicalSystemAPI.Controllers
         public async Task<IEnumerable<AssignedUserDTO>> AllUsersByhealthDirectoryId(int DirectoryId)
         {
 
-            var assignedUserDTO = await _context.Users.Where(d => d.HealthdirId == DirectoryId).Select(
+            var assignedUserDTO = await _context.Users.Where(d => d.GovernorateId == DirectoryId).Select(
                   e => new AssignedUserDTO
                   {
                       Id = e.Id,
@@ -104,10 +104,10 @@ namespace BiomedicalSystemAPI.Controllers
                       Code = e.Code,
                       Mobile = e.Mobile,
                       Phone = e.Phone,
-                      HealthdirId = e.HealthdirId,
-                      HealthDistrictId = e.HealthDistrictId,
+                      HealthdirId = e.GovernorateId,
+                      HealthDistrictId = e.CityId,
                       OrganizationId = e.OrganizationId,
-                      HealthCareUnitId = e.HealthCareUnitId,
+                      HealthCareUnitId = e.HospitalId,
 
                   }).ToListAsync();
             return assignedUserDTO;
@@ -121,7 +121,7 @@ namespace BiomedicalSystemAPI.Controllers
         public async Task<IEnumerable<AssignedUserDTO>> AllUsersByhealthDistrictId(int DistrictId)
         {
 
-            var assignedUserDTO = await _context.Users.Where(d => d.HealthDistrictId == DistrictId).Select(
+            var assignedUserDTO = await _context.Users.Where(d => d.CityId == DistrictId).Select(
                   e => new AssignedUserDTO
                   {
                       Id = e.Id,
@@ -131,10 +131,10 @@ namespace BiomedicalSystemAPI.Controllers
                       Code = e.Code,
                       Mobile = e.Mobile,
                       Phone = e.Phone,
-                      HealthdirId = e.HealthdirId,
-                      HealthDistrictId = e.HealthDistrictId,
+                      HealthdirId = e.GovernorateId,
+                      HealthDistrictId = e.CityId,
                       OrganizationId = e.OrganizationId,
-                      HealthCareUnitId = e.HealthCareUnitId
+                      HealthCareUnitId = e.HospitalId
                   }).ToListAsync();
             return assignedUserDTO;
 
@@ -146,7 +146,7 @@ namespace BiomedicalSystemAPI.Controllers
         public async Task<IEnumerable<AssignedUserDTO>> AllUsersByhealthcareunitId(int HealthcareunitId)
         {
 
-            var assignedUserDTO = await _context.Users.Where(d => d.HealthCareUnitId == HealthcareunitId).Select(
+            var assignedUserDTO = await _context.Users.Where(d => d.HospitalId == HealthcareunitId).Select(
                   e => new AssignedUserDTO
                   {
                       Id = e.Id,
@@ -156,10 +156,10 @@ namespace BiomedicalSystemAPI.Controllers
                       Code = e.Code,
                       Mobile = e.Mobile,
                       Phone = e.Phone,
-                      HealthdirId = e.HealthdirId,
-                      HealthDistrictId = e.HealthDistrictId,
+                      HealthdirId = e.GovernorateId,
+                      HealthDistrictId = e.CityId,
                       OrganizationId = e.OrganizationId,
-                      HealthCareUnitId = e.HealthCareUnitId
+                      HealthCareUnitId = e.HospitalId
                   }).ToListAsync();
             return assignedUserDTO;
 
@@ -179,10 +179,10 @@ namespace BiomedicalSystemAPI.Controllers
                       Code = e.Code,
                       Mobile = e.Mobile,
                       Phone = e.Phone,
-                      HealthdirId = e.HealthdirId,
-                      HealthDistrictId = e.HealthDistrictId,
+                      HealthdirId = e.GovernorateId,
+                      HealthDistrictId = e.CityId,
                       OrganizationId = e.OrganizationId,
-                      HealthCareUnitId = e.HealthCareUnitId,
+                      HealthCareUnitId = e.HospitalId,
                       SubOrganizationId = e.SubOrganizationId
                   }).ToListAsync();
             return assignedUserDTO;
@@ -229,7 +229,7 @@ namespace BiomedicalSystemAPI.Controllers
         public ActionResult<List<ApplicationUser>> GetEquipmentemployees(int equipId)
         {
             List<ApplicationUser> emps = new List<ApplicationUser>();
-            var employeeIds = _context.Employees.Where(e => e.EquipmentId == equipId)
+            var employeeIds = _context.Employees.Where(e => e.AssetId == equipId)
                 .Select(e => new ApplicationUser
                 {
                     Id = e.UserId,

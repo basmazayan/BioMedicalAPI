@@ -18,7 +18,7 @@ namespace BiomedicalSystemAPI.Models
         public Status Status { get; set; }
         public int HospitalId { get; set; }
         [ForeignKey("HospitalId")]
-        public virtual Hospital HealthCareUnit { get; set; }
-        public virtual ICollection<AssetAppContext.AssetDetail> equipment { get; set; }
+        public virtual Hospital Hospital { get; set; }
+        public virtual ICollection<Assets> Asset { get; set; }
     }
 }

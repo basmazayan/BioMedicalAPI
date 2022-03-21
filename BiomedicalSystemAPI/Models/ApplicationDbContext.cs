@@ -43,7 +43,7 @@ namespace BiomedicalSystemAPI.Models
         public DbSet<Governorate> Governorates { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Language> Languages { get; set; }
-        public DbSet<Employees> Employees { get; set; }
+        public DbSet<EquipmentEmployees> Employees { get; set; }
         public DbSet<MasterAsset> masterAssets { get; set; }
         public DbSet<MaintenanceService> MaintenanceServices { get; set; }
         public DbSet<Vendor> Vendors { get; set; }

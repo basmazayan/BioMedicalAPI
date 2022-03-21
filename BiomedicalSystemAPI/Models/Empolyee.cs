@@ -9,24 +9,24 @@ namespace BiomedicalSystemAPI.Models
     public class Employee
     {
         public int Id { get; set; }
-        public string EmployeeName { get; set; }
-        public string EmployeeNameAr { get; set; }
+        public string Name { get; set; }
+        public string NameAr { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
         public string Phone { get; set; }
-        public string EmployeeCode { get; set; }
+        public string Code { get; set; }
 
         //public int LangId { get; set; }
         //[ForeignKey("LangId")]
         //public virtual Language Language { get; set; }
-        public int HealthCareUnitId { get; set; }
-        [ForeignKey("HealthCareUnitId")]
-        public virtual Hospital HealthCareUnit { get; set; }
-        public int HealthDirectoryId { get; set; }
-        [ForeignKey("HealthDirectoryId")]
-        public virtual Governorate HealthDirectories { get; set; }
-        public int HealthDistrictId { get; set; }
-        [ForeignKey("HealthDistrictId")]
-        public virtual City HealthDistricts { get; set; }
+        public int HospitalId { get; set; }
+        [ForeignKey("HospitalId")]
+        public virtual Hospital Hospital { get; set; }
+        public int GovernorateId { get; set; }
+        [ForeignKey("GovernorateId")]
+        public virtual Governorate Governorate { get; set; }
+        public int CityId { get; set; }
+        [ForeignKey("CityId")]
+        public virtual City City { get; set; }
     }
 }

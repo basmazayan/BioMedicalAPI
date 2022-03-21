@@ -8,7 +8,7 @@ namespace BiomedicalSystemAPI.Models
 {
     public class EquipmentCoverage
     {
-        public int equipmentCoverageId { get; set; }
+        public int Id { get; set; }
         public float ResponseTime { get; set; }
         public string Description { get; set; }
         public string DescriptionAr { get; set; }

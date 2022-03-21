@@ -780,7 +780,7 @@ void applyPBRFactors() {}
 float getBakedOcclusion() { return 1.0; }`)}function B(L,O,w=!1){w||(L.setUniform3fv("mrrFactors",O.mrrFactors),L.setUniform3fv("emissionFactor",O.emissiveFactor))}},20988:(se,H,_)=>{_.d(H,{e:()=>z});var S=_(14068);function z(T){T.vertex.code.add(S.H`const float PI = 3.141592653589793;`),T.fragment.code.add(S.H`const float PI = 3.141592653589793;
 const float LIGHT_NORMALIZATION = 1.0 / PI;
 const float INV_PI = 0.3183098861837907;
-const float HALF_PI = 1.570796326794897;`)}},35102:(se,H,_)=>{_.d(H,{hX:()=>T,vL:()=>I});var S=_(17173),z=_(14068);function T(L){L.fragment.include(S.n),L.fragment.uniforms.add("uShadowMapTex","sampler2D"),L.fragment.uniforms.add("uShadowMapNum","int"),L.fragment.uniforms.add("uShadowMapDistance","vec4"),L.fragment.uniforms.add("uShadowMapMatrix","mat4",4),L.fragment.uniforms.add("uDepthHalfPixelSz","float"),L.fragment.code.add(z.H`int chooseCascade(float _linearDepth, out mat4 mat) {
+const float HALF_PI = 1.570796326794897;`)}},35102:(se,H,_)=>{_.d(H,{hX:()=>T,vL:()=>I});var S=_(17173),z=_(14068);function T(L){L.fragment.include(S.n),L.fragment.uniforms.add("uShadowMapTex","sampler2D"),L.fragment.uniforms.add("uShadowMapNum","int"),L.fragment.uniforms.add("uShadowMapDistance","vec4"),L.fragment.uniforms.add("uShadowMapMatrix","mat4",4),L.fragment.uniforms.add("uDepthHalfPixelSz","float"),L.fragment.code.add(z.H`int chooseNoAction(float _linearDepth, out mat4 mat) {
 vec4 distance = uShadowMapDistance;
 float depth = _linearDepth;
 int i = depth < distance[1] ? 0 : depth < distance[2] ? 1 : depth < distance[3] ? 2 : 3;
@@ -792,7 +792,7 @@ vec4 lv = mat * vec4(_vpos, 1.0);
 lv.xy /= lv.w;
 return 0.5 * lv.xyz + vec3(0.5);
 }
-vec2 cascadeCoordinates(int i, vec3 lvpos) {
+vec2 NoActionCoordinates(int i, vec3 lvpos) {
 return vec2(float(i - 2 * (i / 2)) * 0.5, float(i / 2) * 0.5) + 0.5 * lvpos.xy;
 }
 float readShadowMapDepth(vec2 uv, sampler2D _depthTex) {
@@ -812,12 +812,12 @@ return mix(mix(s00, s10, st.x), mix(s01, s11, st.x), st.y);
 }
 float readShadowMap(const in vec3 _vpos, float _linearDepth) {
 mat4 mat;
-int i = chooseCascade(_linearDepth, mat);
+int i = chooseNoAction(_linearDepth, mat);
 if (i >= uShadowMapNum) { return 0.0; }
 vec3 lvpos = lightSpacePosition(_vpos, mat);
 if (lvpos.z >= 1.0) { return 0.0; }
 if (lvpos.x < 0.0 || lvpos.x > 1.0 || lvpos.y < 0.0 || lvpos.y > 1.0) { return 0.0; }
-vec2 uv = cascadeCoordinates(i, lvpos);
+vec2 uv = NoActionCoordinates(i, lvpos);
 return filterShadow(uv, lvpos, uDepthHalfPixelSz, uShadowMapTex);
 }`)}function I(L,O,w){O.shadowMappingEnabled&&O.shadowMap.bindView(L,w)}},49579:(se,H,_)=>{_.d(H,{kl:()=>z,uj:()=>I});var S=_(14068);function z(B,L){L.vvInstancingEnabled&&(L.vvSize||L.vvColor)&&B.attributes.add("instanceFeatureAttribute","vec4"),L.vvSize?(B.vertex.uniforms.add("vvSizeMinSize","vec3"),B.vertex.uniforms.add("vvSizeMaxSize","vec3"),B.vertex.uniforms.add("vvSizeOffset","vec3"),B.vertex.uniforms.add("vvSizeFactor","vec3"),B.vertex.uniforms.add("vvSymbolRotationMatrix","mat3"),B.vertex.uniforms.add("vvSymbolAnchor","vec3"),B.vertex.code.add(S.H`vec3 vvScale(vec4 _featureAttribute) {
 return clamp(vvSizeOffset + _featureAttribute.x * vvSizeFactor, vvSizeMinSize, vvSizeMaxSize);

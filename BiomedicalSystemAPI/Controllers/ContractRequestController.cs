@@ -76,9 +76,9 @@ namespace BiomedicalSystemAPI.Controllers
                                 Code = User.Code,
                                 Phone = User.Phone,
                                 Mobile = User.Mobile,
-                                HealthdirId = User.HealthdirId,
-                                HealthCareUnitId = User.HealthCareUnitId,
-                                HealthDistrictId = User.HealthDistrictId,
+                                HealthdirId = User.GovernorateId,
+                                HealthCareUnitId = User.HospitalId,
+                                HealthDistrictId = User.CityId,
                                 OrganizationId = User.OrganizationId,
                                 SubOrganizationId = User.SubOrganizationId
                                 //EquipmentId=User.EuipmentId
@@ -182,9 +182,9 @@ namespace BiomedicalSystemAPI.Controllers
                                 Code = User.Code,
                                 Phone = User.Phone,
                                 Mobile = User.Mobile,
-                                HealthdirId = User.HealthdirId,
-                                HealthCareUnitId = User.HealthCareUnitId,
-                                HealthDistrictId = User.HealthDistrictId,
+                                HealthdirId = User.GovernorateId,
+                                HealthCareUnitId = User.HospitalId,
+                                HealthDistrictId = User.CityId,
                                 OrganizationId = User.OrganizationId,
                                 SubOrganizationId = User.SubOrganizationId
                                 //EquipmentId=User.EuipmentId

@@ -36,12 +36,12 @@ namespace BiomedicalSystemAPI.Controllers
         {
             // MasterEquipmentDTO mequipment = _masterEquipmentRepository.GetById(equipment.MasterEquipmentId);
         
-            var inventories =  _context.Inventories.Include(e => e.equipments)
+            var inventories =  _context.Inventories.Include(e => e.Assets)
                 .Include(e=>e.users)
                 .Select(e => new InventoryDTO
                 {
                     Id = e.Id,
-                    EquipmentId=e.EquipmentId,                  
+                    EquipmentId=e.AssetId,                  
                     UserId=e.UserId,
                     UserName = e.users.UserName,
                     CreatedAt=e.CreatedAt,
@@ -140,7 +140,7 @@ namespace BiomedicalSystemAPI.Controllers
             Inventory invent = new Inventory();
             invent.Id = InventoryObj.Id;
             invent.UserId = InventoryObj.UserId;
-            invent.EquipmentId = InventoryObj.EquipmentId;
+            invent.AssetId = InventoryObj.AssetId;
             invent.Code = InventoryObj.Code;
             invent.CreatedAt =  DateTime.Now;
             _context.Inventories.Add(invent);

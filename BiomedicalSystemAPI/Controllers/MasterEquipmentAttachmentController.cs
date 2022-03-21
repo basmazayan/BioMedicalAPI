@@ -76,14 +76,14 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("getAttachmentsWithNoMasterEquipment")]
         public async Task<ActionResult<IEnumerable<MasterEquipmentAttachment>>> getAttachmentsWithNoMasterEquipment()
         {
-            var mA= await _context.MasterEquipmentAttachments.Where(e => e.MasterEquipmentId == null).ToListAsync();
+            var mA= await _context.MasterEquipmentAttachments.Where(e => e.MasterAssetId == null).ToListAsync();
             return mA;
         }
         [HttpGet]
         [Route("getAttachmentsForMasterEquipment/{MasterequipId}")]
         public async Task<ActionResult<IEnumerable<MasterEquipmentAttachment>>> getAttachmentsForMasterEquipment(int MasterequipId)
         {
-            return await _context.MasterEquipmentAttachments.Where(e => e.MasterEquipmentId == MasterequipId).ToListAsync();
+            return await _context.MasterEquipmentAttachments.Where(e => e.MasterAssetId == MasterequipId).ToListAsync();
         }
         [HttpPost,DisableRequestSizeLimit]
         [Route("Masterupload")]

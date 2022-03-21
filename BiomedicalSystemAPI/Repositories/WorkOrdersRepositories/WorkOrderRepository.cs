@@ -18,7 +18,7 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
         public void Add(WorkOrdersDTO workorder)
         {
             WorkOrders wo = new WorkOrders();
-            int eqId = _context.ServiceRequest.Find(workorder.ServiceRequestId).EquipmentId;
+            int eqId = _context.ServiceRequest.Find(workorder.ServiceRequestId).AssetId;
             if(workorder.UserId==null)
             {
                 workorder.UserId =null ;
@@ -228,8 +228,8 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
                    EquipmentName = w.Asset.MasterAsset.Name,
                    EquipmentNameAr = w.Asset.MasterAsset.NameAr,
                    SparePartId = w.SparePartId,
-                   SparePartName=w.SparePart.SparePartName,
-                   SparePartNameAr=w.SparePart.SparePartNameAr
+                   SparePartName=w.SparePart.Name,
+                   SparePartNameAr=w.SparePart.NameAr
                }).ToList();
             return Worder;
         }

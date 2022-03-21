@@ -95,13 +95,13 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("getEquipAttachmentsWithNoEquipment")]
         public async Task<ActionResult<IEnumerable<EquipmentAttachments>>> getEquipAttachmentsWithNoEquipment()
         {
-            return await _context.EquipmentAttachments.Where(e => e.EquipmentId == null).ToListAsync();
+            return await _context.EquipmentAttachments.Where(e => e.AssetsId == null).ToListAsync();
         }
         [HttpGet]
         [Route("getEquipAttachmentsForEquipment/{equipId}")]
         public async Task<ActionResult<IEnumerable<EquipmentAttachments>>> getEquipAttachmentsForEquipment(int equipId)
         {
-            return await _context.EquipmentAttachments.Where(e => e.EquipmentId == equipId).ToListAsync();
+            return await _context.EquipmentAttachments.Where(e => e.AssetsId == equipId).ToListAsync();
         }
         [HttpGet]
         [Route("getPathOfImage/{ImgName}")]
@@ -147,7 +147,7 @@ namespace BiomedicalSystemAPI.Controllers
                  //   return Ok(new { dbPath });
                     var attach = new EquipmentAttachments();
                     attach.FileName = dbPath;
-                    attach.EquipmentId = id;
+                    attach.AssetsId = id;
                     _attachmentrepository.Add(attach);
                     _attachmentrepository.Save();
                   //  IDs.Add(attach.Id);

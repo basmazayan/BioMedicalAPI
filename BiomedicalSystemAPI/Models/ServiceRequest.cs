@@ -10,25 +10,25 @@ namespace BiomedicalSystemAPI.Models
     public class ServiceRequest
     {
         public int Id { get; set; }
-        public string ServiceRequestCode { get; set; }
-        public string ServiceRequestTitle { get; set; }
-        public string ServiceRequestTitleAr { get; set; }
+        public string Code { get; set; }
+        public string Title { get; set; }
+        public string TitleAr { get; set; }
         public string ProblemDescription { get; set; }
         public string ProblemDescriptionAr { get; set; }
-        public DateTime ServiceRequestDate { get; set; }
-        public TimeSpan ServiceRequestTime { get; set; }
+        public DateTime Date { get; set; }
+        public TimeSpan Time { get; set; }
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
         public string UserEmail { get; set; }
         public string UserName { get; set; }
-        public string RequestType { get; set; }
-        public string RequestTypeAr { get; set; }
-        public int EquipmentId { get; set; }
-        [ForeignKey("EquipmentId")]
-        public virtual Assets Equipment { get; set; }
-        public string EquipmentCode { get; set; }
-        public string EquipmentName { get; set; }
+        public string Type { get; set; }
+        public string TypeAr { get; set; }
+        public int AssetId { get; set; }
+        [ForeignKey("AssetId")]
+        public virtual Assets Asset { get; set; }
+        public string AssetCode { get; set; }
+        public string AssetName { get; set; }
         public int ModeId { get; set; }
         [ForeignKey("ModeId")]
         public virtual Mode Mode { get; set; }
@@ -37,12 +37,12 @@ namespace BiomedicalSystemAPI.Models
         [ForeignKey("PriorityId")]
         public virtual Priority Priority { get; set; }
         public string PriorityLevel { get; set; }
-        public int? HealthDirectoryId { get; set; }
-        [ForeignKey("HealthDirectoryId")]
-        public virtual Governorate HealthDirectories { get; set; }
-          public int? HealthDistrictId { get; set; }
-        [ForeignKey("HealthDistrictId")]
-        public virtual City HealthDistrict { get; set; }
+        public int? GovernorateId { get; set; }
+        [ForeignKey("GovernorateId")]
+        public virtual Governorate Governorate { get; set; }
+          public int? CityId { get; set; }
+        [ForeignKey("CityId")]
+        public virtual City City { get; set; }
 
     }
 }

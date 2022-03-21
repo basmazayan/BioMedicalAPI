@@ -10,8 +10,8 @@ namespace BiomedicalSystemAPI.Models
     {
         public int Id { get; set; }
         public string FileName { get; set; }
-        public int? MasterEquipmentId { get; set; }
-        [ForeignKey("MasterEquipmentId")]
-        public virtual MasterAsset masterEquipment { get; set; }
+        public int? MasterAssetId { get; set; }
+        [ForeignKey("MasterAssetId")]
+        public virtual MasterAsset MasterAsset { get; set; }
     }
 }

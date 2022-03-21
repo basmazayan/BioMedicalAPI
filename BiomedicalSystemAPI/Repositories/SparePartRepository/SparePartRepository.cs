@@ -34,9 +34,9 @@ namespace BiomedicalSystemAPI.Repositories.SparePartRepository
         {
             SparePart sp = new SparePart();
             sp.Id = sparePart.Id;
-            sp.SparePartCode = sparePart.SparePartCode;
-            sp.SparePartName = sparePart.SparePartName;
-            sp.SparePartNameAr = sparePart.SparePartNameAr;
+            sp.Code = sparePart.Code;
+            sp.Name = sparePart.Name;
+            sp.NameAr = sparePart.NameAr;
             _context.Entry(sp).State = EntityState.Modified;
         }
         public IEnumerable<SparePart> GetAll()
@@ -46,9 +46,9 @@ namespace BiomedicalSystemAPI.Repositories.SparePartRepository
                  .Select(e => new SparePart
                  {
                      Id = e.Id,
-                     SparePartCode = e.SparePartCode,
-                     SparePartName = e.SparePartName,
-                     SparePartNameAr = e.SparePartNameAr,
+                     Code = e.Code,
+                     Name = e.Name,
+                     NameAr = e.NameAr,
                     
                  }).ToList();
             return sparePartsList;

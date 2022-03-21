@@ -11,9 +11,9 @@ namespace BiomedicalSystemAPI.Models
     {
         public int Id { get; set; }
         public string FileName { get; set; }
-        public int? EquipmentId { get; set; }
-        [ForeignKey("EquipmentId")]
-        public virtual AssetAppContext.AssetDetail equipment { get; set; }
+        public int? AssetsId { get; set; }
+        [ForeignKey("AssetsId")]
+        public virtual Assets Asset { get; set; }
 
     }
 }

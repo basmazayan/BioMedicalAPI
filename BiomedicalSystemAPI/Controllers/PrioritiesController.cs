@@ -54,13 +54,13 @@ namespace BiomedicalSystemAPI.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Periority code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstpriorityNames = _context.Priorities.Where(a => a.PriorityLevel == priorityObj.PriorityLevel && a.Id != id).ToList();
+            var lstpriorityNames = _context.Priorities.Where(a => a.Level == priorityObj.Level && a.Id != id).ToList();
             if (lstpriorityNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Periority name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
             }
 
-            var lstpriorityNamesAr = _context.Priorities.Where(a => a.PriorityLevelAr == priorityObj.PriorityLevelAr && a.Id != id).ToList();
+            var lstpriorityNamesAr = _context.Priorities.Where(a => a.LevelAr == priorityObj.LevelAr && a.Id != id).ToList();
             if (lstpriorityNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Periority arabic name already exist", MessageAr = "هذا الاسم العربي  مسجل سابقاً" });
@@ -104,14 +104,14 @@ namespace BiomedicalSystemAPI.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Periority code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstpriorityNames = _context.Priorities.Where(a => a.PriorityLevel == priorityObj.PriorityLevel).ToList();
+            var lstpriorityNames = _context.Priorities.Where(a => a.Level == priorityObj.Level).ToList();
             if (lstpriorityNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Periority name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
 
             }
 
-            var lstpriorityNamesAr = _context.Priorities.Where(a => a.PriorityLevelAr == priorityObj.PriorityLevelAr).ToList();
+            var lstpriorityNamesAr = _context.Priorities.Where(a => a.LevelAr == priorityObj.LevelAr).ToList();
             if (lstpriorityNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Periority arabic name already exist", MessageAr = "هذا الاسم العربي  مسجل سابقاً" });

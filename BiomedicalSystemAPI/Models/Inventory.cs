@@ -15,8 +15,8 @@ namespace BiomedicalSystemAPI.Models
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual ApplicationUser users { get; set; }
-        public int EquipmentId { get; set; }
-        [ForeignKey("EquipmentId")]
-        public virtual AssetAppContext.AssetDetail equipments { get; set; }
+        public int AssetId { get; set; }
+        [ForeignKey("AssetId")]
+        public virtual Assets Assets { get; set; }
     }
 }

@@ -51,7 +51,7 @@ namespace BiomedicalSystemAPI.Controllers
                 return BadRequest();
             }
 
-            var lstECRICodes = _context.Ecris.Where(a => a.ecri_code == ecriObj.ecri_code && a.Id != id).ToList();
+            var lstECRICodes = _context.Ecris.Where(a => a.Code == ecriObj.Code && a.Id != id).ToList();
             if (lstECRICodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "ECRI code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
@@ -101,7 +101,7 @@ namespace BiomedicalSystemAPI.Controllers
 
             //    return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User doesn't exist" });
 
-            var lstECRICodes = _context.Ecris.Where(a => a.ecri_code == ecriObj.ecri_code).ToList();
+            var lstECRICodes = _context.Ecris.Where(a => a.Code == ecriObj.Code).ToList();
             if (lstECRICodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "ECRI code already exist", MessageAr = "هذا الكود مسجل سابقاً" });

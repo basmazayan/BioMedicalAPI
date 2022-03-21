@@ -9,9 +9,9 @@ namespace BiomedicalSystemAPI.Models
     public class SparePart
     {
         public int Id { get; set; }
-        public string SparePartCode { get; set; }
-        public string SparePartName { get; set; }
-        public string SparePartNameAr { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string NameAr { get; set; }
         //public int ManufacturerId { get; set; }
         //[ForeignKey("ManufacturerId")]
         //public virtual Manufacturer Manufacturer { get; set; }

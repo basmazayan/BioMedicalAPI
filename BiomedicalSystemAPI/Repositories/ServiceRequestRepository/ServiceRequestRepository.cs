@@ -31,20 +31,20 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
             Random random = new Random();
             int num = random.Next(10000);
             var names = (serviceRequest.ServiceRequestTitle).Split(" ");
-            req.ServiceRequestCode = (names[0] + ' ' + num.ToString());
-            req.ServiceRequestTitle = serviceRequest.ServiceRequestTitle;
-            req.ServiceRequestTitleAr = serviceRequest.ServiceRequestTitleAr;
-            req.RequestType = serviceRequest.RequestType;
-            req.ServiceRequestDate = (serviceRequest.ServiceRequestDate).Date; //DateTime.Parse(date);
-            req.ServiceRequestTime =  TimeSpan.Parse(strTime);
+            req.Code = (names[0] + ' ' + num.ToString());
+            req.Title = serviceRequest.ServiceRequestTitle;
+            req.TitleAr = serviceRequest.ServiceRequestTitleAr;
+            req.Type = serviceRequest.RequestType;
+            req.Date = (serviceRequest.ServiceRequestDate).Date; //DateTime.Parse(date);
+            req.Time =  TimeSpan.Parse(strTime);
             req.ProblemDescription = serviceRequest.ProblemDescription;
             req.ProblemDescriptionAr = serviceRequest.ProblemDescriptionAr;
-            req.EquipmentId = serviceRequest.EquipmentId;
+            req.AssetId = serviceRequest.EquipmentId;
             req.UserId = serviceRequest.UserId;
             req.ModeId = serviceRequest.ModeId;
             req.PriorityId = serviceRequest.PriorityId;
-            req.HealthDirectoryId = serviceRequest.HealthDirectoryId;
-            req.HealthDistrictId = serviceRequest.HealthDistrictId;
+            req.GovernorateId = serviceRequest.HealthDirectoryId;
+            req.CityId = serviceRequest.HealthDistrictId;
             _context.ServiceRequest.Add(req);
         }
 
@@ -81,32 +81,32 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
         {
             var requests = _context.ServiceRequest
                 .Include(e => e.User)
-                .Include(e => e.Equipment)
+                .Include(e => e.Asset)
                 .Include(e => e.Mode)
                 .Include(e => e.Priority)
                 .Select(e => new ServiceRequest
                 {
                     Id = e.Id,
-                    ServiceRequestTitle = e.ServiceRequestTitle,
-                    ServiceRequestTitleAr = e.ServiceRequestTitleAr,
-                    ServiceRequestCode = e.ServiceRequestCode,
+                    Title = e.Title,
+                    TitleAr = e.TitleAr,
+                    Code = e.Code,
                     ProblemDescription = e.ProblemDescription,
                     ProblemDescriptionAr = e.ProblemDescriptionAr,
-                    ServiceRequestDate = e.ServiceRequestDate,
-                    ServiceRequestTime = e.ServiceRequestTime, //TimeSpan.Parse(e.ServiceRequestTime.ToString()),
-                    RequestType = e.RequestType,
+                    Date = e.Date,
+                    Time = e.Time, //TimeSpan.Parse(e.ServiceRequestTime.ToString()),
+                    Type = e.Type,
                     UserId = e.UserId,
                     UserName = e.User.UserName,
                     UserEmail = e.User.Email,
                     ModeId = e.ModeId,
-                    RequestMode = e.Mode.RequestMode,
-                    EquipmentId = e.EquipmentId,
+                    RequestMode = e.Mode.Name,
+                    AssetId = e.AssetId,
                     //EquipmentName = e.Equipment.EquipmentName,
-                    EquipmentCode = e.Equipment.Code,
+                    AssetCode=e.AssetCode,
                     PriorityId = e.PriorityId,
-                    PriorityLevel = e.Priority.PriorityLevel,
-                    HealthDistrictId = e.HealthDistrictId,
-                    HealthDirectoryId = e.HealthDirectoryId,
+                    PriorityLevel = e.Priority.Level,
+                    CityId = e.CityId,
+                    GovernorateId = e.GovernorateId,
                 }).ToList();
             return requests;
         }
@@ -115,27 +115,27 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
         {
             var requests = _context.ServiceRequest.Where(e=>e.UserId==userId)
                 .Include(e => e.User)
-                .Include(e => e.Equipment)
+                .Include(e => e.Asset)
                 .Include(e => e.Mode)
                 .Include(e => e.Priority)
                 .Select(e => new ServiceRequest
                 {
                     Id = e.Id,
-                    ServiceRequestTitle = e.ServiceRequestTitle,
-                    ServiceRequestCode = e.ServiceRequestCode,
+                    Title = e.Title,
+                    Code = e.Code,
                     ProblemDescription = e.ProblemDescription,
-                    ServiceRequestDate = e.ServiceRequestDate,
-                    ServiceRequestTime = e.ServiceRequestTime, //TimeSpan.Parse(e.ServiceRequestTime.ToString()),
-                    RequestType = e.RequestType,
+                    Date = e.Date,
+                    Time = e.Time, //TimeSpan.Parse(e.ServiceRequestTime.ToString()),
+                    Type = e.Type,
                     UserId = e.UserId,
                     UserEmail = e.UserEmail,
                     UserName = e.User.UserName,
                     ModeId = e.ModeId,
-                    RequestMode = e.Mode.RequestMode,
-                    EquipmentId = e.EquipmentId,
-                    EquipmentCode = e.Equipment.Code,
+                    RequestMode = e.Mode.Name,
+                    AssetId = e.AssetId,
+                    AssetCode = e.Asset.Code,
                     PriorityId = e.PriorityId,
-                    PriorityLevel = e.Priority.PriorityLevel
+                    PriorityLevel = e.Priority.Level
 
                 }).ToList();
             return requests;
@@ -144,28 +144,28 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
         {
             var requests = _context.ServiceRequest.Where(e => e.UserEmail == email)
                 .Include(e => e.User)
-                .Include(e => e.Equipment)
+                .Include(e => e.Asset)
                 .Include(e => e.Mode)
                 .Include(e => e.Priority)
                
                 .Select(e => new ServiceRequest
                 {
                     Id = e.Id,
-                    ServiceRequestTitle = e.ServiceRequestTitle,
-                    ServiceRequestCode = e.ServiceRequestCode,
+                    Title = e.Title,
+                    Code = e.Code,
                     ProblemDescription = e.ProblemDescription,
-                    ServiceRequestDate = e.ServiceRequestDate,
-                    ServiceRequestTime = e.ServiceRequestTime, //TimeSpan.Parse(e.ServiceRequestTime.ToString()),
-                    RequestType = e.RequestType,
+                    Date = e.Date,
+                    Time = e.Time, //TimeSpan.Parse(e.ServiceRequestTime.ToString()),
+                    Type = e.Type,
                     UserId = e.UserId,
                     UserName = e.User.UserName,
                     UserEmail = e.UserEmail,
                     ModeId = e.ModeId,
-                    RequestMode = e.Mode.RequestMode,
-                    EquipmentId = e.EquipmentId,
-                    EquipmentCode = e.Equipment.Code,
+                    RequestMode = e.Mode.Name,
+                    AssetId = e.AssetId,
+                    AssetCode = e.Asset.Code,
                     PriorityId = e.PriorityId,
-                    PriorityLevel = e.Priority.PriorityLevel,
+                    PriorityLevel = e.Priority.Level,
                     
 
                 }).ToList();
@@ -174,62 +174,62 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
 
         public IEnumerable<ServiceRequest> GetAllRequestsByDistrict(int districtId)
         {
-            var requests = _context.ServiceRequest.Where(e => e.Equipment.Hospital.City.Id == districtId)
-                .Include(e => e.Equipment)
+            var requests = _context.ServiceRequest.Where(e => e.Asset.Hospital.City.Id == districtId)
+                .Include(e => e.Asset)
                 .Include(e => e.Mode)
                 .Include(e => e.Priority)
-                .Include(e=>e.HealthDistrict)
+                .Include(e=>e.City)
                 .Select(e => new ServiceRequest
                 {
                     Id = e.Id,
-                    ServiceRequestTitle = e.ServiceRequestTitle,
-                    ServiceRequestCode = e.ServiceRequestCode,
+                    Title = e.Title,
+                    Code = e.Code,
                     ProblemDescription = e.ProblemDescription,
-                    ServiceRequestDate = e.ServiceRequestDate,
-                    ServiceRequestTime = e.ServiceRequestTime, //TimeSpan.Parse(e.ServiceRequestTime.ToString()),
-                    RequestType = e.RequestType,
+                    Date = e.Date,
+                    Time = e.Time, //TimeSpan.Parse(e.ServiceRequestTime.ToString()),
+                    Type = e.Type,
                     UserId = e.UserId,
                     UserName = e.User.UserName,
                     UserEmail = e.UserEmail,
                     ModeId = e.ModeId,
-                    RequestMode = e.Mode.RequestMode,
-                    EquipmentId = e.EquipmentId,
-                    EquipmentCode = e.Equipment.Code,
+                    RequestMode = e.Mode.Name,
+                    AssetId = e.AssetId,
+                    AssetCode = e.Asset.Code,
                     PriorityId = e.PriorityId,
-                    PriorityLevel = e.Priority.PriorityLevel,
-                    HealthDistrictId=e.HealthDistrict.Id
+                    PriorityLevel = e.Priority.Level,
+                    CityId=e.City.Id
 
                 }).ToList();
             return requests;
         }
         public IEnumerable<ServiceRequest> GetAllRequestsByDirectory(int directoryId)
         {
-            var requests = _context.ServiceRequest.Where(e => e.Equipment.Hospital.Governorate.Id == directoryId)
-                .Include(e => e.Equipment)
+            var requests = _context.ServiceRequest.Where(e => e.Asset.Hospital.Governorate.Id == directoryId)
+                .Include(e => e.Asset)
                 .Include(e => e.Mode)
                 .Include(e => e.Priority)
-                .Include(e => e.HealthDirectories)
+                .Include(e => e.Governorate)
                 .Include(e=>e.User)
                 .Select(e => new ServiceRequest
                 {
                     Id = e.Id,
-                    ServiceRequestTitle = e.ServiceRequestTitle,
-                    ServiceRequestCode = e.ServiceRequestCode,
+                    Title = e.Title,
+                    Code = e.Code,
                     ProblemDescription = e.ProblemDescription,
-                    ServiceRequestDate = e.ServiceRequestDate,
-                    ServiceRequestTime = e.ServiceRequestTime, //TimeSpan.Parse(e.ServiceRequestTime.ToString()),
-                    RequestType = e.RequestType,
+                    Date = e.Date,
+                    Time = e.Time, //TimeSpan.Parse(e.ServiceRequestTime.ToString()),
+                    Type = e.Type,
                     UserId = e.UserId,
                     UserName = e.User.UserName,
                     UserEmail = e.UserEmail,
                     ModeId = e.ModeId,
-                    RequestMode = e.Mode.RequestMode,
-                    EquipmentId = e.EquipmentId,
-                    EquipmentCode = e.Equipment.Code,
+                    RequestMode = e.Mode.Name,
+                    AssetId = e.AssetId,
+                    AssetCode = e.Asset.Code,
                     PriorityId = e.PriorityId,
-                    PriorityLevel = e.Priority.PriorityLevel,
-                    HealthDistrictId = e.User.HealthDistrictId,
-                    HealthDirectoryId=e.User.HealthdirId,
+                    PriorityLevel = e.Priority.Level,
+                    CityId = e.User.CityId,
+                    GovernorateId=e.User.GovernorateId,
 
                 }).ToList();
             return requests;
@@ -240,12 +240,12 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
                 var req = new ServiceRequestDTO
                 {
                     Id = e.Id,
-                    ServiceRequestCode = e.ServiceRequestCode,
+                    ServiceRequestCode = e.Code,
                     ProblemDescription = e.ProblemDescription,
-                    ServiceRequestTitle = e.ServiceRequestTitle,
-                    ServiceRequestDate = e.ServiceRequestDate,
-                    RequestType = e.RequestType,
-                    EquipmentId = e.EquipmentId,
+                    ServiceRequestTitle = e.Title,
+                    ServiceRequestDate = e.Date,
+                    RequestType = e.Type,
+                    EquipmentId = e.AssetId,
                     UserId = e.UserId,
                 };
                 if (req == null)
@@ -275,23 +275,23 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
         {
             var req = new ServiceRequest();
             req.Id = serviceRequest.Id;
-            req.ServiceRequestCode = serviceRequest.ServiceRequestCode;
+            req.Code = serviceRequest.ServiceRequestCode;
             req.ProblemDescription = serviceRequest.ProblemDescription;
             req.ProblemDescriptionAr = serviceRequest.ProblemDescriptionAr;
-            req.ServiceRequestTitle = serviceRequest.ServiceRequestTitle;
-            req.ServiceRequestTitleAr = serviceRequest.ServiceRequestTitleAr;
-            req.ServiceRequestDate = serviceRequest.ServiceRequestDate;
-            req.RequestType = serviceRequest.RequestType;
+            req.Title = serviceRequest.ServiceRequestTitle;
+            req.TitleAr = serviceRequest.ServiceRequestTitleAr;
+            req.Date = serviceRequest.ServiceRequestDate;
+            req.Type = serviceRequest.RequestType;
             req.UserId = serviceRequest.UserId;
-            req.EquipmentId = serviceRequest.EquipmentId;
-            req.HealthDirectoryId = serviceRequest.HealthDirectoryId;
-            req.HealthDistrictId = serviceRequest.HealthDistrictId;
+            req.AssetId = serviceRequest.EquipmentId;
+            req.GovernorateId = serviceRequest.HealthDirectoryId;
+            req.CityId = serviceRequest.HealthDistrictId;
             req.ModeId = serviceRequest.ModeId;
             req.PriorityId = serviceRequest.PriorityId;
             req.PriorityLevel = serviceRequest.PriorityLevel;
             string strTime = serviceRequest.ServiceRequestTime;//.ToString("h:mm:ss");
             //TimeSpan.Parse(serviceRequest.ServiceRequestTime.ToString("h:mm:ss")); 
-            req.ServiceRequestTime = TimeSpan.Parse(strTime);
+            req.Time = TimeSpan.Parse(strTime);
             _context.Entry(req).State = EntityState.Modified;
           //  _context.SaveChanges();
         }

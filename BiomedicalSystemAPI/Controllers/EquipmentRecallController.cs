@@ -35,11 +35,11 @@ namespace BiomedicalSystemAPI.Controllers
             eqRecall.Id = equipmentRecallObj.Id;
             eqRecall.MasterAssetId = equipmentRecallObj.MasterEquipmentId;
             eqRecall.Description = equipmentRecallObj.Description;
-            eqRecall.RecallDate = equipmentRecallObj.RecallDate;
+            eqRecall.Date = equipmentRecallObj.RecallDate;
             eqRecall.ModelNumber = equipmentRecallObj.ModelNumber;
             eqRecall.VersionNumber = equipmentRecallObj.VersionNumber;
             eqRecall.SupplierId = equipmentRecallObj.SupplierId;
-            eqRecall.RecallSubject = equipmentRecallObj.RecallSubject;
+            eqRecall.Subject = equipmentRecallObj.RecallSubject;
             _context.EquipmentRecalls.Add(eqRecall);
             _context.SaveChanges();
             //equipmentRecallObj.Id = eqRecall.Id;

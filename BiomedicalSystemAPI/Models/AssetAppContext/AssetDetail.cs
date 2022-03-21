@@ -102,7 +102,7 @@ namespace BiomedicalSystemAPI.Models.AssetAppContext
         //public int? OrganizationRequestId { get; set; }
         //[ForeignKey("OrganizationRequestId")]
         //public virtual OrganizationContractRequest OrganizationContract { get; set; }
-        public virtual ICollection<Employees> equipmentEmployees { get; set; }
+        public virtual ICollection<EquipmentEmployees> equipmentEmployees { get; set; }
         public virtual ICollection<EquipmentAttachments> equipmentAttachments { get; set; }
     }
 }

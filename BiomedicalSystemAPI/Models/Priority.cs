@@ -14,8 +14,8 @@ namespace BiomedicalSystemAPI.Models
         [StringLength(5)]
         public string Code { get; set; }
 
-        public string PriorityLevel { get; set; }
-        public string PriorityLevelAr { get; set; }
+        public string Level { get; set; }
+        public string LevelAr { get; set; }
         public string Description { get; set; }
         public string DescriptionAr { get; set; }
     }

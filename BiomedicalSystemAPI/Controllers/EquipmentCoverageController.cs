@@ -49,7 +49,7 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpPut("{id}")]
         public ActionResult PutContract(int id, EquipmentCoverage equipmentCoverage)
         {
-            if (id != equipmentCoverage.equipmentCoverageId)
+            if (id != equipmentCoverage.Id)
             {
                 return BadRequest();
             }

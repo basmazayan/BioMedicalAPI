@@ -50,7 +50,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             eq.MasterCode = masterCode;
             //eq.EquipmentName = mequipment.Name;
             //eq.EquipmentNameAr = equipment.EquipmentNameAr;
-            //eq.EquipmentType = equipment.EquipmentType;
+            eq.Type = equipment.EquipmentType;
             eq.InstallationDate = equipment.InstallationDate;
             eq.Remarks = equipment.Remarks;
             eq.SerialNumber = equipment.SerialNumber;
@@ -58,12 +58,12 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             eq.Barcode = equipment.Barcode;
             eq.PurchaseDate = equipment.PurchaseDate;
             eq.Price = equipment.Price;
-            //eq.WarrantyExpires = equipment.WarrantyExpires;
+            eq.WarrantyExpires = equipment.WarrantyExpires;
 
-            //eq.Length = equipment.Length;
-            //eq.Height = equipment.Height;
-            //eq.Weight = equipment.Weight;     //in Master
-            //eq.ColorAr = equipment.ColorAr;
+            eq.Length = equipment.Length;
+            eq.Height = equipment.Height;
+            eq.Weight = equipment.Weight;     //in Master
+            eq.ColorAr = equipment.ColorAr;
 
             eq.DepartmentId = equipment.DepartmentId;
             eq.StatusId = equipment.EquipmentStatuSId;
@@ -75,20 +75,21 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             //eq.HealthDistrictId = DistrictId;
             eq.MasterAssetId = equipment.MasterEquipmentId;
             eq.QrImgPath = equipment.QrImgPath;
-            eq.equipmentEmployees = new List<Employees>();
+            eq.equipmentEmployees = new List<EquipmentEmployees>();
             //foreach(var attach in equipment.attachments)
             //{
             //    eq.AttachmentId = attach.Id;
-            //}           
+            //}
             foreach (var empId in equipment.EmployeeIDs)
             {
-                eq.equipmentEmployees.Add(new Employees
+                eq.equipmentEmployees.Add(new EquipmentEmployees
                 {
                     UserId = empId,
-                    EquipmentId = equipment.Id
+                    AssetId = equipment.Id
                 });
                 //  var employee = _context.Employees.FirstOrDefault(e => e.Id == empId);              
             }
+
             eq.equipmentAttachments = new List<EquipmentAttachments>();
 
             //  equipments.Add(eq);
@@ -107,7 +108,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         public void Delete(int id)
         {
             Assets equipment = Find(id);
-            equipment.equipmentEmployees = _context.Employees.Where(e => e.EquipmentId == id).ToList();
+            equipment.equipmentEmployees = _context.Employees.Where(e => e.AssetId == id).ToList();
             if (equipment.equipmentEmployees.Count != 0)
             {
                 foreach (var item in equipment.equipmentEmployees)
@@ -218,7 +219,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             {
                 foreach (var eq in equips)
                 {
-                    if (inventory.EquipmentId == eq.Id)
+                    if (inventory.AssetId == eq.Id)
                     {
                         eq.CreatedAt = inventory.CreatedAt;
                     }
@@ -284,14 +285,14 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     HealthDistrictName = e.Hospital.City.Name,
                     HealthDistrictNameAr = e.Hospital.City.NameAr,
                     CustomizedField = e.CustomizedField,
-                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                    EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                     QrImgPath = e.QrImgPath,
                     OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
                     OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault(),
                     OrganizationId = e.Hospital.organizationId,
                     EquipmentRecallId = e.EquipmentRecall.Id,
-                    RecallDate = _context.EquipmentRecalls.Where(eqrcall => eqrcall.Id == e.EquipmentRecallId).Select(eqrcall => eqrcall.RecallDate).FirstOrDefault(),
-                    RecallNumber = _context.EquipmentRecalls.Where(eqrcall => eqrcall.Id == e.EquipmentRecallId).Select(eqrcall => eqrcall.RecallNumber).FirstOrDefault()
+                    RecallDate = _context.EquipmentRecalls.Where(eqrcall => eqrcall.Id == e.EquipmentRecallId).Select(eqrcall => eqrcall.Date).FirstOrDefault(),
+                    RecallNumber = _context.EquipmentRecalls.Where(eqrcall => eqrcall.Id == e.EquipmentRecallId).Select(eqrcall => eqrcall.Number).FirstOrDefault()
                 }).ToList();
             foreach (var recalledeq in equips)
             {
@@ -466,19 +467,19 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             List<scanningequipmentVM> scanVM = new List<scanningequipmentVM>();
             List<EquipmentDTO> eqqs = new List<EquipmentDTO>();
             var inventories = _context.Inventories.ToList()
-                .GroupBy(e => e.EquipmentId).ToList();
+                .GroupBy(e => e.AssetId).ToList();
             if (inventories.Count > 0)
 
             {
                 foreach (var item in inventories)
                 {
                     scanningequipmentVM equipmentsids = new scanningequipmentVM();
-                    equipmentsids.EquipmentId = item.FirstOrDefault().EquipmentId;
+                    equipmentsids.EquipmentId = item.FirstOrDefault().AssetId;
                     equipmentsids.Id = item.FirstOrDefault().Id;
                     equipmentsids.ListEquipment = (from inventory in _context.Inventories
                                                    join eq in _context.Assets
-                                                   on inventory.EquipmentId equals eq.Id
-                                                   where inventory.EquipmentId == item.First().EquipmentId
+                                                   on inventory.AssetId equals eq.Id
+                                                   where inventory.AssetId == item.First().AssetId
                                                    select eq).Include(e => e.Department)
                                     .Include(e => e.Supplier)
                                     .Include(e => e.MasterAsset)
@@ -528,7 +529,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                                     HealthDistrictName = e.Hospital.City.Name,
                                     HealthDistrictNameAr = e.Hospital.City.NameAr,
                                     CustomizedField = e.CustomizedField,
-                                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                                    EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                                     //AttachmentIDs = _context.equipmentAttachments.Where(a => a.EquipmentId == e.Id).Select(a => a.Id).ToList(),
                                     QrImgPath = e.QrImgPath,
                                     OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
@@ -537,7 +538,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                                 }).ToList();
                     scanVM.Add(equipmentsids);
                 
-                    var inve = _context.Inventories.Where(i => i.EquipmentId == equipmentsids.EquipmentId).ToList();
+                    var inve = _context.Inventories.Where(i => i.AssetId == equipmentsids.EquipmentId).ToList();
                     int i = 0;
                     foreach (var eq in equipmentsids.ListEquipment)
                     {
@@ -654,7 +655,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                          HealthDistrictName = e.Hospital.City.Name,
                          HealthDistrictNameAr = e.Hospital.City.NameAr,
                          CustomizedField = e.CustomizedField,
-                         EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                         EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                          QrImgPath = e.QrImgPath,
                          OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
                          OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault(),
@@ -734,7 +735,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                        HealthDistrictName = e.Hospital.City.Name,
                        HealthDistrictNameAr = e.Hospital.City.NameAr,
                        CustomizedField = e.CustomizedField,
-                       EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                       EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                        QrImgPath = e.QrImgPath,
                        OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
                        OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault(),
@@ -777,7 +778,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                 dates.Id = item.FirstOrDefault().Id;
                 dates.ListEquipment = (from inventory in _context.Inventories
                                        join eq in _context.Assets
-                                       on inventory.EquipmentId equals eq.Id
+                                       on inventory.AssetId equals eq.Id
                                        where inventory.CreatedAt.Value.Day == item.First().CreatedAt.Value.Day
                                        && inventory.CreatedAt.Value.Month == item.First().CreatedAt.Value.Month
                                        && inventory.CreatedAt.Value.Year == item.First().CreatedAt.Value.Year
@@ -830,7 +831,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                                 HealthDistrictName = e.Hospital.City.Name,
                                 HealthDistrictNameAr = e.Hospital.City.NameAr,
                                 CustomizedField = e.CustomizedField,
-                                EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                                EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                                 QrImgPath = e.QrImgPath,
                                 OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
                                 OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault()
@@ -1019,7 +1020,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                 CustomizedField = e.CustomizedField,
                 Floor = e.Floor,
                 Room = e.Room,
-                EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                 QrImgPath = e.QrImgPath
             };
             return eq;
@@ -1191,7 +1192,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             eq.CustomizedField = equipment.CustomizedField;
             eq.MasterAssetId = equipment.MasterEquipmentId;
             eq.EquipmentRecallId = equipment.EquipmentRecallId;
-            eq.equipmentEmployees = _context.Employees.Where(e => e.EquipmentId == equipment.Id).ToList();
+            eq.equipmentEmployees = _context.Employees.Where(e => e.AssetId == equipment.Id).ToList();
             if (eq.equipmentEmployees.Count != 0)
             {
                 foreach (var item in eq.equipmentEmployees)
@@ -1200,13 +1201,13 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                 }
             }
 
-            eq.equipmentEmployees = new List<Employees>();
+            eq.equipmentEmployees = new List<EquipmentEmployees>();
             foreach (var empId in equipment.EmployeeIDs)
             {
-                eq.equipmentEmployees.Add(new Employees
+                eq.equipmentEmployees.Add(new EquipmentEmployees
                 {
                     UserId = empId,
-                    EquipmentId = eq.Id
+                    AssetId = eq.Id
                 });
             }
             _context.Assets.Add(eq);
@@ -1639,7 +1640,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     ManufacturerId = e.MasterAsset.BrandId,
                     ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
                     ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,
-                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                    EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                     OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
                     OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault(),
                     OrganizationId = e.Hospital.organizationId
@@ -1692,7 +1693,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     HealthCareUnitNameAr=e.Hospital.NameAr,
                     ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
                     ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,
-                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                    EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                     ContractId = e.ContractId
                 };
                 equipments.Add(eq);
@@ -1743,7 +1744,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     HealthDirectoryName = e.Hospital.Governorate.Name,
                     HealthDistrictId = e.Hospital.City.Id,
                     HealthDistrictName = e.Hospital.City.Name,
-                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                    EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                     ContractId = e.ContractId
                 };
                 equips.Add(eq);
@@ -1787,7 +1788,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                         HealthDirectoryName = e.Hospital.Governorate.Name,
                         HealthDistrictId = e.Hospital.CityId,
                         HealthDistrictName = e.Hospital.City.Name,
-                        EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                        EmployeeIDs = _context.Employees.Where(a => a.AssetId == e.Id).Select(a => a.UserId).ToList(),
                         ContractId = e.ContractId
                     };
                     foreach (var item in equipment)

@@ -64,7 +64,7 @@ namespace BiomedicalSystemAPI.Repositories.ContractRepository
              Id = con.Id,
              Number = con.Number,
              SupplierId = con.SupplierId,
-             HealthCareUnitId = con.HealthCareUnitId,
+             HealthCareUnitId = con.HospitalId,
              StartDate = con.StartDate,
              EndDate = con.EndDate,
              Subject = con.Subject,
@@ -93,7 +93,7 @@ namespace BiomedicalSystemAPI.Repositories.ContractRepository
             contractObj.Id = contract.Id;
             contractObj.Number = contract.Number;       
             contractObj.SupplierId = contract.SupplierId;
-            contractObj.HealthCareUnitId = contract.HealthCareUnitId;
+            contractObj.HospitalId = contract.HospitalId;
             contractObj.StartDate = contract.StartDate;
             contractObj.EndDate = contract.EndDate;
             contractObj.Subject = contract.Subject;
@@ -102,19 +102,19 @@ namespace BiomedicalSystemAPI.Repositories.ContractRepository
        public IEnumerable<ContractDTO> GetAll()
         {
             var contracts = _context.Contracts
-              .Include(c => c.HealthCareUnit)
+              .Include(c => c.HospitalId)
               .Include(c => c.Supplier)
 
               .Select(c => new ContractDTO
               {
                   Id = c.Id,
                   Number = c.Number,
-                  HealthCareUnitId = c.HealthCareUnitId,
+                  HealthCareUnitId = c.HospitalId,
                   Subject = c.Subject,
                   EndDate = c.EndDate,
                   StartDate = c.StartDate,
-                  HealthCareUnitName = c.HealthCareUnit.Name,
-                  HealthCareUnitNameAr = c.HealthCareUnit.NameAr,
+                  HealthCareUnitName = c.Hospital.Name,
+                  HealthCareUnitNameAr = c.Hospital.NameAr,
                   SupplierId = c.SupplierId,
                   SupplierName = c.Supplier.Name,
                   SupplierNameAr = c.Supplier.NameAr,

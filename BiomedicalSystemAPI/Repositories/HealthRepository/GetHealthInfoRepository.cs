@@ -185,7 +185,7 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
         public IEnumerable<OrganizationViewModel> GetOrganizationDetails(getMultiIDViewModel modelID)
         {
             var organizations = new List<OrganizationViewModel>();
-            var m = new List<Models.HealthAppContext.HealthCareUnit>();
+            var m = new List<Hospital>();
             if(modelID.Id!=null)
             {
                foreach (var id in modelID.Id)
