@@ -18,13 +18,13 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
         }
         public void Add(HealthCareUnitDTO healthUnit)
         {
-            HealthCareUnit healthCareUnit = new HealthCareUnit();
+            Hospital healthCareUnit = new Hospital();
             //healthCareUnit.Id = healthUnit.Id;
-            healthCareUnit.HealthCareUnitName = healthUnit.HealthCareUnitName;
-            healthCareUnit.HealthCareUnitNameAr = healthUnit.HealthCareUnitNameAr;
-            healthCareUnit.HealthCareUnitCode = healthUnit.HealthCareUnitCode;
-            healthCareUnit.HealthDirectoryId = healthUnit.HealthDirectoryId;
-            healthCareUnit.HealthDistrictId = healthUnit.HealthDistrictId;
+            healthCareUnit.Name = healthUnit.HealthCareUnitName;
+            healthCareUnit.NameAr = healthUnit.HealthCareUnitNameAr;
+            healthCareUnit.Code = healthUnit.HealthCareUnitCode;
+            healthCareUnit.GovernorateId = healthUnit.HealthDirectoryId;
+            healthCareUnit.CityId = healthUnit.HealthDistrictId;
             healthCareUnit.organizationId = healthUnit.organizationId;
             healthCareUnit.Address = healthUnit.Address;
             healthCareUnit.Phone = healthUnit.Phone;
@@ -33,39 +33,39 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
             healthCareUnit.Lat = healthUnit.Lat;
             healthCareUnit.Long = healthUnit.Long;
             healthCareUnit.Mobile = healthUnit.Mobile;
-            _context.HealthCareUnits.Add(healthCareUnit);
+            _context.Hospitals.Add(healthCareUnit);
 
         }
 
         public void Delete(int id)
         {
-            HealthCareUnit healthCareUnit = _context.HealthCareUnits.Find(id);
-            _context.HealthCareUnits.Remove(healthCareUnit);
+            Hospital healthCareUnit = _context.Hospitals.Find(id);
+            _context.Hospitals.Remove(healthCareUnit);
         }
 
-        public HealthCareUnit Find(int id)
+        public Hospital Find(int id)
         {
             throw new NotImplementedException();
         }
 
         public IEnumerable<HealthCareUnitDTO> GetAll()
         {
-            var units = _context.HealthCareUnits
-                .Include(e => e.HealthDirectories)
-                .Include(e => e.HealthDistricts)
+            var units = _context.Hospitals
+                .Include(e => e.Governorate)
+                .Include(e => e.City)
                 .Include(e => e.organization)
                 .Select(e => new HealthCareUnitDTO
                 {
                     Id = e.Id,
-                    HealthCareUnitCode = e.HealthCareUnitCode,
-                    HealthCareUnitName = e.HealthCareUnitName,
-                    HealthCareUnitNameAr = e.HealthCareUnitNameAr,
-                    HealthDistrictId = e.HealthDistrictId,
-                    HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                    HealthDistrictNameAr = e.HealthDistricts.HealthDistrictNameAr,
-                    HealthDirectoryId = e.HealthDirectoryId,
-                    HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                    HealthDirectoryNameAr = e.HealthDirectories.HealthDirectoryNameAr,
+                    HealthCareUnitCode = e.Code,
+                    HealthCareUnitName = e.Name,
+                    HealthCareUnitNameAr = e.NameAr,
+                    HealthDistrictId = e.CityId,
+                    HealthDistrictName = e.City.Name,
+                    HealthDistrictNameAr = e.City.NameAr,
+                    HealthDirectoryId = e.GovernorateId,
+                    HealthDirectoryName = e.Governorate.Name,
+                    HealthDirectoryNameAr = e.Governorate.NameAr,
                     organizationId = e.organizationId,
                     organizationName = e.organization.Name,
                     organizationNameAr = e.organization.NameAr,
@@ -82,22 +82,22 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
 
         public HealthCareUnitDTO GetById(int id)
         {
-            var e = _context.HealthCareUnits
-                .Include(e => e.HealthDirectories)
-                .Include(e => e.HealthDistricts)
+            var e = _context.Hospitals
+                .Include(e => e.Governorate)
+                .Include(e => e.City)
                 .Include(e => e.organization).FirstOrDefault(e => e.Id == id);
 
             var unit = new HealthCareUnitDTO
             {
-                HealthCareUnitCode = e.HealthCareUnitCode,
-                HealthCareUnitName = e.HealthCareUnitName,
-                HealthCareUnitNameAr = e.HealthCareUnitNameAr,
-                HealthDistrictId = e.HealthDistrictId,
-                HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                HealthDistrictNameAr = e.HealthDistricts.HealthDistrictNameAr,
-                HealthDirectoryId = e.HealthDirectoryId,
-                HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                HealthDirectoryNameAr = e.HealthDirectories.HealthDirectoryNameAr,
+                HealthCareUnitCode = e.Code,
+                HealthCareUnitName = e.Name,
+                HealthCareUnitNameAr = e.NameAr,
+                HealthDistrictId = e.CityId,
+                HealthDistrictName = e.City.Name,
+                HealthDistrictNameAr = e.City.NameAr,
+                HealthDirectoryId = e.GovernorateId,
+                HealthDirectoryName = e.Governorate.Name,
+                HealthDirectoryNameAr = e.Governorate.NameAr,
                 organizationId = e.organizationId,
                 organizationName = e.organization.Name,
                 organizationNameAr = e.organization.NameAr,
@@ -114,12 +114,12 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
 
         public int GetHealthDirectoryByDistrict(int DistrictId)
         {
-            return _context.HealthDistricts.FirstOrDefault(d => d.Id == DistrictId).HealthDirectoryId;
+            return _context.Cities.FirstOrDefault(d => d.Id == DistrictId).Id;
         }
 
         public int GetHealthDistrictByCareUnit(int CareUnitId)
         {
-            return _context.HealthCareUnits.FirstOrDefault(c => c.Id == CareUnitId).HealthDistrictId;
+            return _context.Hospitals.FirstOrDefault(c => c.Id == CareUnitId).CityId;
         }
 
         public void Save()
@@ -129,13 +129,13 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
 
         public void Update(HealthCareUnitDTO healthUnit)
         {
-            HealthCareUnit healthCareUnit = new HealthCareUnit();
+            Hospital healthCareUnit = new Hospital();
             healthCareUnit.Id = healthUnit.Id;
-            healthCareUnit.HealthCareUnitName = healthUnit.HealthCareUnitName;
-            healthCareUnit.HealthCareUnitNameAr = healthUnit.HealthCareUnitNameAr;
-            healthCareUnit.HealthCareUnitCode = healthUnit.HealthCareUnitCode;
-            healthCareUnit.HealthDirectoryId = healthUnit.HealthDirectoryId;
-            healthCareUnit.HealthDistrictId = healthUnit.HealthDistrictId;
+            healthCareUnit.Name = healthUnit.HealthCareUnitName;
+            healthCareUnit.NameAr = healthUnit.HealthCareUnitNameAr;
+            healthCareUnit.Code = healthUnit.HealthCareUnitCode;
+            healthCareUnit.GovernorateId = healthUnit.HealthDirectoryId;
+            healthCareUnit.CityId = healthUnit.HealthDistrictId;
             healthCareUnit.organizationId = healthUnit.organizationId;
             healthCareUnit.Address = healthUnit.Address;
             healthCareUnit.Phone = healthUnit.Phone;

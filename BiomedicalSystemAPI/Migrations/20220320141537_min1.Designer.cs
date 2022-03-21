@@ -4,14 +4,16 @@ using BiomedicalSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BiomedicalSystemAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220320141537_min1")]
+    partial class min1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -375,7 +377,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Manufacturers");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Category", b =>
@@ -430,7 +432,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("GovernorateId");
 
-                    b.ToTable("Cities");
+                    b.ToTable("HealthDistricts");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Contract", b =>
@@ -487,7 +489,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("ContractId");
 
-                    b.ToTable("ContractAttachments");
+                    b.ToTable("contractAttachments");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.ContractRequest", b =>
@@ -764,7 +766,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Governorates");
+                    b.ToTable("HealthDirectories");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Hospital", b =>
@@ -849,7 +851,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Inventories");
+                    b.ToTable("inventories");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Language", b =>
@@ -1009,7 +1011,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("MasterEquipmentId");
 
-                    b.ToTable("MasterEquipmentAttachments");
+                    b.ToTable("masterEquipmentAttachments");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Mode", b =>
@@ -1045,7 +1047,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("organizations");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.OrganizationContractRequest", b =>
@@ -1068,7 +1070,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("OrganizationContractRequests");
+                    b.ToTable("organizationContractRequests");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Origin", b =>
@@ -1245,7 +1247,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("ServiceRequestId");
 
-                    b.ToTable("ServiceRequestAttachments");
+                    b.ToTable("serviceRequestAttachments");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.SparePart", b =>
@@ -1316,7 +1318,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("organizationId");
 
-                    b.ToTable("SubOrganizations");
+                    b.ToTable("subOrganizations");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Supplier", b =>
@@ -1378,7 +1380,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("WorkOrderId");
 
-                    b.ToTable("WorkOrderAttachments");
+                    b.ToTable("workOrderAttachments");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.WorkOrders", b =>

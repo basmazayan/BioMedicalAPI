@@ -24,12 +24,13 @@ namespace BiomedicalSystemAPI.Repositories.InventoryRepository
         {
 
 
-            var Inventory = _context.inventories.Find(id);
-
-
-
+            var Inventory = _context.Inventories.Find(id);
             return Inventory;
 
+        }
+        public List<Inventory> GetAll()
+        {
+            return _context.Inventories.ToList();
         }
 
 

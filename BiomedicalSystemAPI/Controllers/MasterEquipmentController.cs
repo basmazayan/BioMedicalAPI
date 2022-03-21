@@ -67,7 +67,7 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("getcount")]
         public int count()
         {
-            return _pagingRepository.Count<MasterEquipment>();
+            return _pagingRepository.Count<MasterAsset>();
         }
         [HttpPut("{id}")]
         public  IActionResult PuttMasterEquipment(int id,MasterEquipmentDTO masterEquipmentObj)

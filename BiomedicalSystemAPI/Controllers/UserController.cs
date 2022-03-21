@@ -1,5 +1,6 @@
 ﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
+using BiomedicalSystemAPI.Models.AssetAppContext;
 using BiomedicalSystemAPI.Repositories.PagingRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,16 +24,19 @@ namespace BiomedicalSystemAPI.Controllers
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _context;
         private readonly IPagingRepository _pagingRepository;
+        private readonly AssetDbContext _AssetContext;
 
         public UserController(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager, IConfiguration configuration
-            , ApplicationDbContext context, IPagingRepository pagingRepository)
+            , ApplicationDbContext context, IPagingRepository pagingRepository,
+            AssetDbContext AssetContext)
         {
             this.userManager = userManager;
             _roleManager = roleManager;
             _context = context;
             _configuration = configuration;
             _pagingRepository = pagingRepository;
+            _AssetContext = AssetContext;
         }
         // GET: api/<UsersController>
         [HttpGet]
@@ -206,11 +210,10 @@ namespace BiomedicalSystemAPI.Controllers
         //}
         [HttpGet]
         [Route("GetEquipments")]
-        public IEnumerable<Equipment> GetEquipmentsByuserId()
+        public IEnumerable<Models.AssetAppContext.AssetDetail> GetEquipmentsByuserId()
         {
             var users = userManager.Users.ToList();
-            var equipments = _context.Equipments.ToList();
-            //var emps = _context.Equiments.ToList();
+            var equipments = _AssetContext.AssetDetails.ToList();
             foreach (var eq in equipments)
             {
                 foreach (var user in users)
@@ -226,7 +229,7 @@ namespace BiomedicalSystemAPI.Controllers
         public ActionResult<List<ApplicationUser>> GetEquipmentemployees(int equipId)
         {
             List<ApplicationUser> emps = new List<ApplicationUser>();
-            var employeeIds = _context.equipmentEmployees.Where(e => e.EquipmentId == equipId)
+            var employeeIds = _context.Employees.Where(e => e.EquipmentId == equipId)
                 .Select(e => new ApplicationUser
                 {
                     Id = e.UserId,

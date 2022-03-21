@@ -32,13 +32,13 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SubOrganization>>> GetsubOrganizations()
         {
-            return await _context.subOrganizations.ToListAsync();
+            return await _context.SubOrganizations.ToListAsync();
         }
         [HttpPut]
         [Route("GetSubOrgsWithPaging")]
         public IEnumerable<SubOrganization> GetSubOrgsWithPaging(PagingParameter page)
         {
-            var subLst = _context.subOrganizations.ToList();
+            var subLst = _context.SubOrganizations.ToList();
             return _pagingRepository.GetAll(page, subLst);
         }
         [HttpGet]
@@ -51,7 +51,7 @@ namespace BiomedicalSystemAPI.Controllers
             [HttpGet]
             public async Task<ActionResult<IEnumerable<SubOrganization>>> GetSubOrganizationByOrganizationId(int orgId)
             {
-                var SubCategories = await _context.subOrganizations.Where(e => e.Id == orgId)
+                var SubCategories = await _context.SubOrganizations.Where(e => e.Id == orgId)
                       .Include(e => e.organization)
                       .Select(e => new SubOrganization
                       {
@@ -66,7 +66,7 @@ namespace BiomedicalSystemAPI.Controllers
             [HttpGet("{id}")]
             public async Task<ActionResult<SubOrganization>> GetSubOrganization(int id)
             {
-                var SubOrganization = await _context.subOrganizations.FindAsync(id);
+                var SubOrganization = await _context.SubOrganizations.FindAsync(id);
 
                 if (SubOrganization == null)
                 {
@@ -89,7 +89,7 @@ namespace BiomedicalSystemAPI.Controllers
             else if (id == SubOrganization.Id)
             {
 
-                var SubOrganizations = _context.subOrganizations.Where(e => e.Id != SubOrganization.Id).ToList();
+                var SubOrganizations = _context.SubOrganizations.Where(e => e.Id != SubOrganization.Id).ToList();
                 var checkName = SubOrganizations.Where(e => e.Name == SubOrganization.Name).ToList();
                 var SubOrganizationsAr = SubOrganizations.Where(e => e.NameAr == SubOrganization.NameAr).ToList();
 
@@ -142,8 +142,8 @@ namespace BiomedicalSystemAPI.Controllers
             [HttpPost]
             public async Task<ActionResult<SubOrganization>> PostSubOrganization(SubOrganization SubOrganization)
             {
-            var subOrganizations = _context.subOrganizations.Where(e => e.Name == SubOrganization.Name).ToList();
-            var subOrganizationsAr = _context.subOrganizations.Where(e => e.NameAr == SubOrganization.NameAr).ToList();
+            var subOrganizations = _context.SubOrganizations.Where(e => e.Name == SubOrganization.Name).ToList();
+            var subOrganizationsAr = _context.SubOrganizations.Where(e => e.NameAr == SubOrganization.NameAr).ToList();
 
             if (subOrganizations.Count > 0)
             {
@@ -165,7 +165,7 @@ namespace BiomedicalSystemAPI.Controllers
             }
             else
             {
-                _context.subOrganizations.Add(SubOrganization);
+                _context.SubOrganizations.Add(SubOrganization);
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -183,13 +183,13 @@ namespace BiomedicalSystemAPI.Controllers
             [HttpDelete("{id}")]
             public async Task<ActionResult<SubOrganization>> DeleteSubOrganization(int id)
             {
-                var SubOrganization = await _context.subOrganizations.FindAsync(id);
+                var SubOrganization = await _context.SubOrganizations.FindAsync(id);
                 if (SubOrganization == null)
                 {
                     return NotFound();
                 }
 
-                _context.subOrganizations.Remove(SubOrganization);
+                _context.SubOrganizations.Remove(SubOrganization);
                 await _context.SaveChangesAsync();
 
                 return SubOrganization;
@@ -197,7 +197,7 @@ namespace BiomedicalSystemAPI.Controllers
 
             private bool SubOrganizationExists(int id)
             {
-                return _context.subOrganizations.Any(e => e.Id == id);
+                return _context.SubOrganizations.Any(e => e.Id == id);
             }
         }
     }

@@ -102,7 +102,7 @@ namespace BiomedicalSystemAPI.Controllers
                     HealthdirId = user.HealthdirId,
                     HealthCareUnitId = user.HealthCareUnitId,
                     OrganizationId = user.OrganizationId,
-                    OrganizationName = _context.organizations.Where(org => org.Id == user.OrganizationId).Select(org => org.Name).FirstOrDefault(),
+                    OrganizationName = _context.Organizations.Where(org => org.Id == user.OrganizationId).Select(org => org.Name).FirstOrDefault(),
                     SubOrganizationId=user.SubOrganizationId,
                     SupplierId=user.SupplierId
                     
@@ -152,8 +152,7 @@ namespace BiomedicalSystemAPI.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (!result.Succeeded)
                     return StatusCode(StatusCodes.Status500InternalServerError,
-                    new Response { Status = "Error", Message = "Password is invalid,cannot" +
-                   "must contain numbers,lowercase and uppercase" });
+                    new Response { Status = "Error"+ result.Errors.ToList()[0].Code, Message =result.Errors.ToList()[0].Description });
 
 
                 //else

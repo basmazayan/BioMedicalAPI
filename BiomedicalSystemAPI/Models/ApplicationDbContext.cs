@@ -20,30 +20,31 @@ namespace BiomedicalSystemAPI.Models
         }
 
 
-       //public DbSet<Equipment> Equiments { get; set; }
-        public DbSet<Equipment> Equipments { get; set; }
-        public DbSet<HealthCareUnit> HealthCareUnits { get; set; }
+        //public DbSet<Equipment> Equiments { get; set; }
+        //    public DbSet<Equipment> Equipments { get; set; }
+        public DbSet<Assets> Assets { get; set; }
+        public DbSet<Hospital> Hospitals { get; set; }
         public DbSet<ServiceRequest> ServiceRequest { get; set; }
         public DbSet<WorkOrders> WorkOrders { get; set; }
         public DbSet<Origin> Origins { get; set; }
-        public DbSet<EquipmentCategory> EquipmentCategories { get; set; }
-        public DbSet<Manufacturer> Manufacturers { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Brand> Brands { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<EquipmentStatus> EquipmentStatus { get; set; }
-        public DbSet<EquipmentSubCategory> EquipmentSubCategories { get; set; }
+        public DbSet<EquipmentStatus> Status { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<DepreciationType> DepreciationTypes { get; set; }
-        public DbSet<Priority> Assets { get; set; }
+        public DbSet<Priority> priorities { get; set; }
        // public DbSet<Employee> Employees { get; set; }
         public DbSet<SparePart> spareParts { get; set; }
         public DbSet<EquipmentAttachments> Attachments { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Priority> Priorities { get; set; }
         public DbSet<Mode> Modes { get; set; }
-        public DbSet<HealthDirectory> HealthDirectories { get; set; }
-        public DbSet<HealthDistrict> HealthDistricts { get; set; }
+        public DbSet<Governorate> Governorates { get; set; }
+        public DbSet<City> Cities { get; set; }
         public DbSet<Language> Languages { get; set; }
-        public DbSet<EquipmentEmployees> equipmentEmployees { get; set; }
-        public DbSet<MasterEquipment> masterEquipments { get; set; }
+        public DbSet<Employees> Employees { get; set; }
+        public DbSet<MasterAsset> masterAssets { get; set; }
         public DbSet<MaintenanceService> MaintenanceServices { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<RequestStatus> requestStatuses { get; set; }
@@ -51,16 +52,16 @@ namespace BiomedicalSystemAPI.Models
         public DbSet<ContractRequest> contractRequests { get; set; }
         public DbSet<EquipmentCoverage> EquipmentCoverages { get; set; }
         public DbSet<Ecri> Ecris { get; set; }
-        public DbSet<Organization> organizations { get; set; }
-        public DbSet<EquipmentAttachments> equipmentAttachments { get; set; }
-        public DbSet<ContractAttachment> contractAttachments { get; set; }
-        public DbSet<ServiceRequestAttachment> serviceRequestAttachments { get; set; }
-        public DbSet<WorkOrderAttachment> workOrderAttachments { get; set; }
-        public DbSet<MasterEquipmentAttachment> masterEquipmentAttachments { get; set; }
-        public DbSet<SubOrganization> subOrganizations { get; set; }
-       public DbSet<Inventory> inventories { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
+        public DbSet<EquipmentAttachments> EquipmentAttachments { get; set; }
+        public DbSet<ContractAttachment> ContractAttachments { get; set; }
+        public DbSet<ServiceRequestAttachment> ServiceRequestAttachments { get; set; }
+        public DbSet<WorkOrderAttachment> WorkOrderAttachments { get; set; }
+        public DbSet<MasterEquipmentAttachment> MasterEquipmentAttachments { get; set; }
+        public DbSet<SubOrganization> SubOrganizations { get; set; }
+       public DbSet<Inventory> Inventories { get; set; }
         public DbSet<EquipmentRecall> EquipmentRecalls { get; set; }
-        public DbSet<OrganizationContractRequest> organizationContractRequests { get; set; }
+        public DbSet<OrganizationContractRequest> OrganizationContractRequests { get; set; }
 
         //public DbSet<Message> messages { get; set; }
 

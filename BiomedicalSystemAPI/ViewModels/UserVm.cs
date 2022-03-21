@@ -23,13 +23,13 @@ namespace BiomedicalSystemAPI.ViewModels
      
         public int ?HealthCareUnitId { get; set; }
         [ForeignKey("HealthCareUnitId")]
-        public virtual HealthCareUnit HealthCareUnit { get; set; }
+        public virtual Hospital HealthCareUnit { get; set; }
         public int? HealthdirId { get; set; }
         [ForeignKey("HealthdirId")]
-        public virtual HealthDirectory HealthDirectories { get; set; }
+        public virtual Governorate HealthDirectories { get; set; }
         public int? HealthDistrictId { get; set; }
         [ForeignKey("HealthDistrictId")]
-        public virtual HealthDistrict HealthDistricts { get; set; }
+        public virtual City HealthDistricts { get; set; }
         [ForeignKey("OrganizationId")]
         public int ? OrganizationId { get; set; }
         public string OrganizationName { get; set; }

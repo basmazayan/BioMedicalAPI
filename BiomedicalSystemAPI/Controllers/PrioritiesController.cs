@@ -24,14 +24,14 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Priority>>> GetAssets()
         {
-            return await _context.Assets.ToListAsync();
+            return await _context.priorities.ToListAsync();
         }
 
         // GET: api/Priorities/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Priority>> GetPriority(int id)
         {
-            var priority = await _context.Assets.FindAsync(id);
+            var priority = await _context.priorities.FindAsync(id);
 
             if (priority == null)
             {
@@ -121,7 +121,7 @@ namespace BiomedicalSystemAPI.Controllers
             else
             {
 
-                _context.Assets.Add(priorityObj);
+                _context.priorities.Add(priorityObj);
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction("GetPriority", new { id = priorityObj.Id }, priorityObj);
@@ -132,13 +132,13 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Priority>> DeletePriority(int id)
         {
-            var priority = await _context.Assets.FindAsync(id);
+            var priority = await _context.priorities.FindAsync(id);
             if (priority == null)
             {
                 return NotFound();
             }
 
-            _context.Assets.Remove(priority);
+            _context.priorities.Remove(priority);
             await _context.SaveChangesAsync();
 
             return priority;

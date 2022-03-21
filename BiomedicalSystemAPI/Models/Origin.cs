@@ -8,9 +8,9 @@ namespace BiomedicalSystemAPI.Models
     public class Origin
     {
         public int Id { get; set; }
-        public string OriginCode{ get; set; }
-        public string EnglishName { get; set; }
-        public string ArabicName { get; set; }
+        public string Code{ get; set; }
+        public string Name { get; set; }
+        public string NameAr { get; set; }
 
     }
 }

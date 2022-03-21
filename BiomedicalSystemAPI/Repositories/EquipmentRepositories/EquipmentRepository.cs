@@ -1,8 +1,5 @@
-﻿using BiomedicalSystemAPI.Controllers;
-using BiomedicalSystemAPI.DTO;
-using BiomedicalSystemAPI.Exceptions;
+﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
-using BiomedicalSystemAPI.Repositories.EmployeeRepository;
 using BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories;
 using BiomedicalSystemAPI.Repositories.InventoryRepository;
 using BiomedicalSystemAPI.Repositories.MasterEquipmentRepository;
@@ -22,8 +19,8 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         private readonly IMasterEquipmentRepository _masterEquipmentRepository;
         private readonly IHealthCareUnitRepository _healthCareUnitRepository;
         private readonly IInventoryRepository _inventoryRepository;
+        //private readonly AssetDbContext _AssetContext;
 
-        //private readonly IEquipmentRepository _equipmentRepository;
         public EquipmentRepository(ApplicationDbContext context, IMasterEquipmentRepository masterEquipmentRepository,
             IHealthCareUnitRepository healthCareUnitRepository,
             IInventoryRepository inventoryRepository
@@ -33,63 +30,59 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             _masterEquipmentRepository = masterEquipmentRepository;
             _healthCareUnitRepository = healthCareUnitRepository;
             _inventoryRepository = inventoryRepository;
+            //_AssetContext = AssetContext;
             // _equipmentRepository = equipmentRepository;
         }
         public void Add(EquipmentDTO equipment)
         {
 
-            List<Equipment> equip = new List<Equipment>();
-            equip = _context.Equipments.ToList();
+            List<Assets> equip = new List<Assets>();
+            equip = _context.Assets.ToList();
             MasterEquipmentDTO mequipment = _masterEquipmentRepository.GetById(equipment.MasterEquipmentId);
             int DistrictId = _healthCareUnitRepository.GetHealthDistrictByCareUnit(equipment.HealthCareUnitId);
             int DirectoryId = _healthCareUnitRepository.GetHealthDirectoryByDistrict(DistrictId);
-            Equipment eq = new Equipment();
+            Assets eq = new Assets();
             var masterCode = _masterEquipmentRepository.GetMasterCode(mequipment.Name);
             Random random = new Random();
             int num = random.Next(10000);
             var names = (equipment.EquipmentName).Split(" ");
-            eq.EquipmentCode = (names[0] + ' ' + num.ToString());
-            eq.EquipmentMasterCode = masterCode;
-            eq.EquipmentName = mequipment.Name;
-            eq.EquipmentNameAr = equipment.EquipmentNameAr;
-            eq.EquipmentType = equipment.EquipmentType;
+            eq.Code = (names[0] + ' ' + num.ToString());
+            eq.MasterCode = masterCode;
+            //eq.EquipmentName = mequipment.Name;
+            //eq.EquipmentNameAr = equipment.EquipmentNameAr;
+            //eq.EquipmentType = equipment.EquipmentType;
             eq.InstallationDate = equipment.InstallationDate;
-            //eq.EquipmentDescriptionAr = equipment.EquipmentDescriptionAr;
             eq.Remarks = equipment.Remarks;
-            //eq.ModelNumber = equipment.ModelNumber;
-            //eq.VersionNumber = equipment.VersionNumber;
             eq.SerialNumber = equipment.SerialNumber;
-            eq.InternalCode = masterCode + ' ' + eq.EquipmentCode;
+            eq.Barcode = masterCode + ' ' + eq.Code;
             eq.Barcode = equipment.Barcode;
             eq.PurchaseDate = equipment.PurchaseDate;
             eq.Price = equipment.Price;
-            eq.WarrantyExpires = equipment.WarrantyExpires;
-            //eq.ExpectedLifeTime = equipment.ExpectedLifeTime;
-            eq.Length = equipment.Length;
-            eq.Height = equipment.Height;
-            eq.Weight = equipment.Weight;
-            eq.ColorAr = equipment.ColorAr;
+            //eq.WarrantyExpires = equipment.WarrantyExpires;
+
+            //eq.Length = equipment.Length;
+            //eq.Height = equipment.Height;
+            //eq.Weight = equipment.Weight;     //in Master
+            //eq.ColorAr = equipment.ColorAr;
+
             eq.DepartmentId = equipment.DepartmentId;
-            //eq.PriorityId = equipment.PriorityId;
-            //eq.EquipmentCategoryId = equipment.EquipmentCategoryId;
-            //eq.EquipmentSubCategoryId = equipment.EquipmentSubCategoryId;
-            eq.EquipmentStatuSId = equipment.EquipmentStatuSId;
+            eq.StatusId = equipment.EquipmentStatuSId;
             //eq.ManufacturerId = equipment.ManufacturerId;
             //eq.OriginId = equipment.OriginId;
-            eq.HealthCareUnitId = equipment.HealthCareUnitId;
+            eq.HospitalId = equipment.HealthCareUnitId;
             eq.SupplierId = equipment.SupplierId;
-            eq.HealthDirectoryId = DirectoryId;
-            eq.HealthDistrictId = DistrictId;
-            eq.MasterEquipmentId = equipment.MasterEquipmentId;
+            //eq.HealthDirectoryId = DirectoryId;
+            //eq.HealthDistrictId = DistrictId;
+            eq.MasterAssetId = equipment.MasterEquipmentId;
             eq.QrImgPath = equipment.QrImgPath;
-            eq.equipmentEmployees = new List<EquipmentEmployees>();
+            eq.equipmentEmployees = new List<Employees>();
             //foreach(var attach in equipment.attachments)
             //{
             //    eq.AttachmentId = attach.Id;
             //}           
             foreach (var empId in equipment.EmployeeIDs)
             {
-                eq.equipmentEmployees.Add(new EquipmentEmployees
+                eq.equipmentEmployees.Add(new Employees
                 {
                     UserId = empId,
                     EquipmentId = equipment.Id
@@ -99,7 +92,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             eq.equipmentAttachments = new List<EquipmentAttachments>();
 
             //  equipments.Add(eq);
-            _context.Equipments.Add(eq);
+            _context.Assets.Add(eq);
             _context.SaveChanges();
             equipment.Id = eq.Id;
 
@@ -113,16 +106,16 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
 
         public void Delete(int id)
         {
-            Equipment equipment = Find(id);
-            equipment.equipmentEmployees = _context.equipmentEmployees.Where(e => e.EquipmentId == id).ToList();
+            Assets equipment = Find(id);
+            equipment.equipmentEmployees = _context.Employees.Where(e => e.EquipmentId == id).ToList();
             if (equipment.equipmentEmployees.Count != 0)
             {
                 foreach (var item in equipment.equipmentEmployees)
                 {
-                    _context.equipmentEmployees.Remove(item);
+                    _context.Employees.Remove(item);
                 }
             }
-            _context.Equipments.Remove(equipment);
+            _context.Assets.Remove(equipment);
         }
 
         private bool disposed = false;
@@ -144,48 +137,43 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         }
 
 
-        public Equipment Find(int id)
+        public Assets Find(int id)
         {
-            return _context.Equipments.Find(id);
+            return _context.Assets.Find(id);
         }
 
         public IEnumerable<EquipmentDTO> GetAll()//(PagingParameter paging)
         {
-            var inventories = _context.inventories.ToList();
 
-            var equips = _context.Equipments
+            var inventories = _inventoryRepository.GetAll();
+
+            var equips = _context.Assets
                 .Include(e => e.Department)
-                .Include(e => e.HealthDirectories)
-                .Include(e => e.HealthDistricts)
-                //.Include(e => e.Manufacturer)
                 .Include(e => e.Supplier)
-                .Include(e => e.MasterEquipment)
+                .Include(e => e.MasterAsset)
                 .Include(e => e.equipmentEmployees)
-                .Include(e => e.HealthCareUnit)
+                .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
                 .Include(e => e.equipmentAttachments)
                 .Include(e => e.ContractRequest)
                 .Include(e => e.OrganizationContract)
                 .Include(e => e.Contract)
-                //.OrderBy(e => e.EquipmentName)
-                //.Skip((paging.PageNumber - 1) * paging.PageSize)
-                //.Take(paging.PageSize)
                 .Select(e => new EquipmentDTO
                  {
                      Id = e.Id,
-                     EquipmentCode = e.EquipmentCode,
-                     UpaCode = e.MasterEquipment.UpaCode,
-                     EquipmentName = e.EquipmentName,
-                     EquipmentNameAr = e.EquipmentNameAr,
-                     EquipmentType = e.EquipmentType,
+                     EquipmentCode = e.Code,
+                     UpaCode = e.MasterAsset.MasterCode,
+                     EquipmentName = e.MasterAsset.Name,
+                     EquipmentNameAr = e.MasterAsset.NameAr,
+                     EquipmentType = e.Type,
                      InstallationDate = e.InstallationDate,
-                     HealthCareUnitId = e.HealthCareUnitId,
-                     HealthCareUnitName = e.HealthCareUnit.HealthCareUnitName,
-                     HealthCareUnitNameAr = e.HealthCareUnit.HealthCareUnitNameAr,
+                     HealthCareUnitId = e.HospitalId,
+                     HealthCareUnitName = e.Hospital.Name,
+                     HealthCareUnitNameAr = e.Hospital.NameAr,
                      Remarks = e.Remarks,
-                     ModelNumber = e.MasterEquipment.ModelNumber,
-                     VersionNumber = e.MasterEquipment.VersionNumber,
+                //     ModelNumber = e.MasterAsset.ModelNumber,
+                //     VersionNumber = e.MasterAsset.VersionNumber,
                      SerialNumber = e.SerialNumber,
-                     InternalCode = e.InternalCode,
+                     //InternalCode = e.InternalCode,
                      Barcode = e.Barcode,
                      PurchaseDate = e.PurchaseDate,
                      Price = e.Price,
@@ -198,31 +186,30 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                      Floor = e.Floor,
                      Room = e.Room,
                      DepartmentId = e.DepartmentId,
-                     MasterEquipmentId = e.MasterEquipmentId,
-                     DepartmentName = e.Department.DepartmentName,
-                     DepartmentNameAr = e.Department.DepartmentNameAr,
-                     EquipmentStatuSId = e.EquipmentStatuSId,
-                     ManufacturerId = e.MasterEquipment.ManufacturerId,
+                     MasterEquipmentId = e.MasterAssetId,
+                     DepartmentName = e.Department.Name,
+                     DepartmentNameAr = e.Department.NameAr,
+                     EquipmentStatuSId = e.StatusId,
+                //     ManufacturerId = e.MasterAsset.ManufacturerId,
                      SupplierId = e.SupplierId,
-                     SupplierName = e.Supplier.SupplierName,
-                     SupplierNameAr = e.Supplier.SupplierNameAr,
-                     ManufacturerName = e.MasterEquipment.Manufacturer.ManufacturerName,
-                     ManufacturerNameAr = e.MasterEquipment.Manufacturer.ManufacturerNameAr,
-                     HealthDirectoryId = e.HealthDirectoryId,
-                     HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                     HealthDirectoryNameAr = e.HealthDirectories.HealthDirectoryNameAr,
-                     HealthDistrictId = e.HealthDistrictId,
-                     HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                     HealthDistrictNameAr = e.HealthDistricts.HealthDistrictNameAr,
+                     SupplierName = e.Supplier.Name,
+                     SupplierNameAr = e.Supplier.NameAr,
+                //     ManufacturerName = e.MasterAsset.Manufacturer.ManufacturerName,
+                //     ManufacturerNameAr = e.MasterAsset.Manufacturer.ManufacturerNameAr,
+                     HealthDirectoryId = e.Hospital.Id,
+                     HealthDirectoryName = e.Hospital.Governorate.Name,
+                     HealthDirectoryNameAr = e.Hospital.Governorate.NameAr,
+                     HealthDistrictId = e.Hospital.City.Id,
+                     HealthDistrictName = e.Hospital.City.Name,
+                     HealthDistrictNameAr = e.Hospital.City.NameAr,
                      CustomizedField = e.CustomizedField,
                      ContractRequestId = e.ContractRequest.Id,
                      OrganizationRequestId = e.OrganizationContract.Id,
-                     EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
-                     //AttachmentIDs = _context.equipmentAttachments.Where(a => a.EquipmentId == e.Id).Select(a => a.Id).ToList(),
+                  //   EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                      QrImgPath = e.QrImgPath,
-                     OrganizationName = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.Name).FirstOrDefault(),
-                     OrganizationNameAr = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.NameAr).FirstOrDefault(),
-                     OrganizationId = e.HealthCareUnit.organizationId,
+                   //  OrganizationName = _context.organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
+                   //  OrganizationNameAr = _context.organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault(),
+                     OrganizationId = e.Hospital.organizationId,
                      ContractId = e.ContractId
                  })
                 
@@ -243,42 +230,35 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         {
             List<EquipmentDTO> recalledEqs = new List<EquipmentDTO>();
 
-            var equips = _context.Equipments
-                .Include(e => e.Department)
-                .Include(e => e.HealthDirectories)
-                .Include(e => e.HealthDistricts)
-                //.Include(e => e.Manufacturer)
+            var equips = _context.Assets
+                .Include(e => e.Department)            
                 .Include(e => e.Supplier)
-                .Include(e => e.MasterEquipment)
+                .Include(e => e.MasterAsset)
                 .Include(e => e.equipmentEmployees)
-                .Include(e => e.HealthCareUnit)
+                .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
                 .Include(e => e.equipmentAttachments)
                 .Include(e => e.EquipmentRecall)
-                //.Where(e => e.EquipmentRecallId == e.EquipmentRecall.Id)
                 .Select(e => new EquipmentDTO
                 {
                     Id = e.Id,
-                    EquipmentCode = e.EquipmentCode,
-                    UpaCode = e.MasterEquipment.UpaCode,
-                    EquipmentName = e.EquipmentName,
-                    EquipmentNameAr = e.EquipmentNameAr,
-                    EquipmentType = e.EquipmentType,
+                    EquipmentCode = e.Code,
+                    UpaCode = e.MasterAsset.UpaCode,
+                    EquipmentName = e.MasterAsset.Name,
+                    EquipmentNameAr = e.MasterAsset.NameAr,
+                    EquipmentType = e.Type,
                     InstallationDate = e.InstallationDate,
-                    HealthCareUnitId = e.HealthCareUnitId,
-                    HealthCareUnitName = e.HealthCareUnit.HealthCareUnitName,
-                    HealthCareUnitNameAr = e.HealthCareUnit.HealthCareUnitNameAr,
-                    //EquipmentDescription = e.EquipmentDescription,
-                    //EquipmentDescriptionAr = e.EquipmentDescriptionAr,
+                    HealthCareUnitId = e.HospitalId,
+                    HealthCareUnitName = e.Hospital.Name,
+                    HealthCareUnitNameAr = e.Hospital.NameAr,
                     Remarks = e.Remarks,
-                    ModelNumber = e.MasterEquipment.ModelNumber,
-                    VersionNumber = e.MasterEquipment.VersionNumber,
+                    ModelNumber = e.MasterAsset.ModelNumber,
+                    VersionNumber = e.MasterAsset.VersionNumber,
                     SerialNumber = e.SerialNumber,
-                    InternalCode = e.InternalCode,
+                    //InternalCode = e.InternalCode,
                     Barcode = e.Barcode,
                     PurchaseDate = e.PurchaseDate,
                     Price = e.Price,
                     WarrantyExpires = e.WarrantyExpires,
-                    //ExpectedLifeTime=e.ExpectedLifeTime,
                     Length = e.Length,
                     Height = e.Height,
                     Weight = e.Weight,
@@ -286,38 +266,29 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     ColorAr = e.ColorAr,
                     Floor = e.Floor,
                     Room = e.Room,
-                    //PriorityId = e.PriorityId,
-                    //EquipmentCategoryId = e.EquipmentCategoryId,
-                    //EquipmentSubCategoryId = e.EquipmentSubCategoryId,
                     DepartmentId = e.DepartmentId,
-                    MasterEquipmentId = e.MasterEquipmentId,
-                    DepartmentName = e.Department.DepartmentName,
-                    DepartmentNameAr = e.Department.DepartmentNameAr,
-                    EquipmentStatuSId = e.EquipmentStatuSId,
-                    ManufacturerId = e.MasterEquipment.ManufacturerId,
-                    //ManufacturerName = e.Manufacturer.ManufacturerName,
-                    //ManufacturerNameAr = e.Manufacturer.ManufacturerNameAr,
-                    //OriginId = e.OriginId,
+                    MasterEquipmentId = e.MasterAssetId,
+                    DepartmentName = e.Department.Name,
+                    DepartmentNameAr = e.Department.NameAr,
+                    EquipmentStatuSId = e.StatusId,
+                    ManufacturerId = e.MasterAsset.BrandId,
                     SupplierId = e.SupplierId,
-                    SupplierName = e.Supplier.SupplierName,
-                    SupplierNameAr = e.Supplier.SupplierNameAr,
-                    ManufacturerName = e.MasterEquipment.Manufacturer.ManufacturerName,
-                    ManufacturerNameAr = e.MasterEquipment.Manufacturer.ManufacturerNameAr,
-                    //EmployeeId = e.EmployeeId,
-                    HealthDirectoryId = e.HealthDirectoryId,
-                    HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                    HealthDirectoryNameAr = e.HealthDirectories.HealthDirectoryNameAr,
-                    HealthDistrictId = e.HealthDistrictId,
-                    HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                    HealthDistrictNameAr = e.HealthDistricts.HealthDistrictNameAr,
+                    SupplierName = e.Supplier.Name,
+                    SupplierNameAr = e.Supplier.NameAr,
+                    ManufacturerName = e.MasterAsset.Brand.Name,
+                    ManufacturerNameAr = e.MasterAsset.Brand.NameAr,
+                    HealthDirectoryId = e.Hospital.Governorate.Id,
+                    HealthDirectoryName = e.Hospital.Governorate.Name,
+                    HealthDirectoryNameAr = e.Hospital.Governorate.NameAr,
+                    HealthDistrictId = e.Hospital.City.Id,
+                    HealthDistrictName = e.Hospital.City.Name,
+                    HealthDistrictNameAr = e.Hospital.City.NameAr,
                     CustomizedField = e.CustomizedField,
-                    //AttachmentId=e.AttachmentId,
-                    EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
-                    //AttachmentIDs = _context.equipmentAttachments.Where(a => a.EquipmentId == e.Id).Select(a => a.Id).ToList(),
+                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                     QrImgPath = e.QrImgPath,
-                    OrganizationName = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.Name).FirstOrDefault(),
-                    OrganizationNameAr = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.NameAr).FirstOrDefault(),
-                    OrganizationId = e.HealthCareUnit.organizationId,
+                    OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
+                    OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault(),
+                    OrganizationId = e.Hospital.organizationId,
                     EquipmentRecallId = e.EquipmentRecall.Id,
                     RecallDate = _context.EquipmentRecalls.Where(eqrcall => eqrcall.Id == e.EquipmentRecallId).Select(eqrcall => eqrcall.RecallDate).FirstOrDefault(),
                     RecallNumber = _context.EquipmentRecalls.Where(eqrcall => eqrcall.Id == e.EquipmentRecallId).Select(eqrcall => eqrcall.RecallNumber).FirstOrDefault()
@@ -494,7 +465,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         {
             List<scanningequipmentVM> scanVM = new List<scanningequipmentVM>();
             List<EquipmentDTO> eqqs = new List<EquipmentDTO>();
-            var inventories = _context.inventories.ToList()
+            var inventories = _context.Inventories.ToList()
                 .GroupBy(e => e.EquipmentId).ToList();
             if (inventories.Count > 0)
 
@@ -504,33 +475,31 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     scanningequipmentVM equipmentsids = new scanningequipmentVM();
                     equipmentsids.EquipmentId = item.FirstOrDefault().EquipmentId;
                     equipmentsids.Id = item.FirstOrDefault().Id;
-                    equipmentsids.ListEquipment = (from inventory in _context.inventories
-                                                   join eq in _context.Equipments
+                    equipmentsids.ListEquipment = (from inventory in _context.Inventories
+                                                   join eq in _context.Assets
                                                    on inventory.EquipmentId equals eq.Id
                                                    where inventory.EquipmentId == item.First().EquipmentId
                                                    select eq).Include(e => e.Department)
-                                    .Include(e => e.HealthDirectories)
-                                    .Include(e => e.HealthDistricts)
                                     .Include(e => e.Supplier)
-                                    .Include(e => e.MasterEquipment)
+                                    .Include(e => e.MasterAsset)
                                     .Include(e => e.equipmentEmployees)
-                                    .Include(e => e.HealthCareUnit)
+                                    .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
                                     .Include(e => e.equipmentAttachments)
                                 .ToList().Select(e => new EquipmentDTO
                                 {
                                     Id = e.Id,
-                                    EquipmentCode = e.EquipmentCode,
-                                    UpaCode = e.MasterEquipment.UpaCode,
-                                    EquipmentName = e.EquipmentName,
-                                    EquipmentNameAr = e.EquipmentNameAr,
-                                    EquipmentType = e.EquipmentType,
+                                    EquipmentCode = e.Code,
+                                    UpaCode = e.MasterAsset.UpaCode,
+                                    EquipmentName = e.MasterAsset.Name,
+                                    EquipmentNameAr = e.MasterAsset.NameAr,
+                                    EquipmentType = e.Type,
                                     InstallationDate = e.InstallationDate,
-                                    HealthCareUnitId = e.HealthCareUnitId,
-                                    HealthCareUnitName = e.HealthCareUnit.HealthCareUnitName,
-                                    HealthCareUnitNameAr = e.HealthCareUnit.HealthCareUnitNameAr,
+                                    HealthCareUnitId = e.HospitalId,
+                                    HealthCareUnitName = e.Hospital.Name,
+                                    HealthCareUnitNameAr = e.Hospital.NameAr,
                                     Remarks = e.Remarks,
                                     SerialNumber = e.SerialNumber,
-                                    InternalCode = e.InternalCode,
+                                    //InternalCode = e.InternalCode,
                                     Barcode = e.Barcode,
                                     PurchaseDate = e.PurchaseDate,
                                     Price = e.Price,
@@ -543,36 +512,36 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                                     Floor = e.Floor,
                                     Room = e.Room,
                                     DepartmentId = e.DepartmentId,
-                                    MasterEquipmentId = e.MasterEquipmentId,
-                                    DepartmentName = e.Department.DepartmentName,
-                                    DepartmentNameAr = e.Department.DepartmentNameAr,
-                                    EquipmentStatuSId = e.EquipmentStatuSId,
+                                    MasterEquipmentId = e.MasterAssetId,
+                                    DepartmentName = e.Department.Name,
+                                    DepartmentNameAr = e.Department.NameAr,
+                                    EquipmentStatuSId = e.StatusId,
                                     SupplierId = e.SupplierId,
-                                    SupplierName = e.Supplier.SupplierName,
-                                    SupplierNameAr = e.Supplier.SupplierNameAr,
-                                    ManufacturerName = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                                    ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,                                    //EmployeeId = e.EmployeeId,
-                                    HealthDirectoryId = e.HealthDirectoryId,
-                                    HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                                    HealthDirectoryNameAr = e.HealthDirectories.HealthDirectoryNameAr,
-                                    HealthDistrictId = e.HealthDistrictId,
-                                    HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                                    HealthDistrictNameAr = e.HealthDistricts.HealthDistrictNameAr,
+                                    SupplierName = e.Supplier.Name,
+                                    SupplierNameAr = e.Supplier.NameAr,
+                                    ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
+                                    ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,                                    //EmployeeId = e.EmployeeId,
+                                    HealthDirectoryId = e.Hospital.Governorate.Id,
+                                    HealthDirectoryName = e.Hospital.Governorate.Name,
+                                    HealthDirectoryNameAr = e.Hospital.Governorate.NameAr,
+                                    HealthDistrictId = e.Hospital.City.Id,
+                                    HealthDistrictName = e.Hospital.City.Name,
+                                    HealthDistrictNameAr = e.Hospital.City.NameAr,
                                     CustomizedField = e.CustomizedField,
-                                    EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                                     //AttachmentIDs = _context.equipmentAttachments.Where(a => a.EquipmentId == e.Id).Select(a => a.Id).ToList(),
                                     QrImgPath = e.QrImgPath,
-                                    OrganizationName = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.Name).FirstOrDefault(),
-                                    OrganizationNameAr = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.NameAr).FirstOrDefault()
+                                    OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
+                                    OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault()
 
                                 }).ToList();
                     scanVM.Add(equipmentsids);
                 
-                    var inve = _context.inventories.Where(i => i.EquipmentId == equipmentsids.EquipmentId).ToList();
+                    var inve = _context.Inventories.Where(i => i.EquipmentId == equipmentsids.EquipmentId).ToList();
                     int i = 0;
                     foreach (var eq in equipmentsids.ListEquipment)
                     {
-                        for (; i < inve.Count; i++)
+                        for (; i < inve.Count;)
                         {
                             eq.CreatedAt = inve[i].CreatedAt;
                             eqqs.Add(eq);
@@ -633,28 +602,26 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                        
                     //}
                 }
-                var equips = _context.Equipments
+                var equips = _context.Assets
                      .Include(e => e.Department)
-                     .Include(e => e.HealthDirectories)
-                     .Include(e => e.HealthDistricts)
                      .Include(e => e.Supplier)
-                     .Include(e => e.MasterEquipment)
+                     .Include(e => e.MasterAsset)
                      .Include(e => e.equipmentEmployees)
-                     .Include(e => e.HealthCareUnit)
+                     .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
                      .Include(e => e.equipmentAttachments)
                      .Select(e => new EquipmentDTO
 
                      {
                          Id = e.Id,
-                         EquipmentCode = e.EquipmentCode,
-                         UpaCode = e.MasterEquipment.UpaCode,
-                         EquipmentName = e.EquipmentName,
-                         EquipmentNameAr = e.EquipmentNameAr,
-                         EquipmentType = e.EquipmentType,
+                         EquipmentCode = e.Code,
+                         UpaCode = e.MasterAsset.UpaCode,
+                         EquipmentName = e.MasterAsset.Name,
+                         EquipmentNameAr = e.MasterAsset.NameAr,
+                         EquipmentType = e.Type,
                          InstallationDate = e.InstallationDate,
-                         HealthCareUnitId = e.HealthCareUnitId,
-                         HealthCareUnitName = e.HealthCareUnit.HealthCareUnitName,
-                         HealthCareUnitNameAr = e.HealthCareUnit.HealthCareUnitNameAr,
+                         HealthCareUnitId = e.HospitalId,
+                         HealthCareUnitName = e.Hospital.Name,
+                         HealthCareUnitNameAr = e.Hospital.NameAr,
                          Remarks = e.Remarks,
                          SerialNumber = e.SerialNumber,
                          InternalCode = e.InternalCode,
@@ -670,28 +637,27 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                          Floor = e.Floor,
                          Room = e.Room,
                          DepartmentId = e.DepartmentId,
-                         MasterEquipmentId = e.MasterEquipmentId,
-                         DepartmentName = e.Department.DepartmentName,
-                         DepartmentNameAr = e.Department.DepartmentNameAr,
-                         EquipmentStatuSId = e.EquipmentStatuSId,
-                         ManufacturerId = e.MasterEquipment.ManufacturerId,
+                         MasterEquipmentId = e.MasterAssetId,
+                         DepartmentName = e.Department.Name,
+                         DepartmentNameAr = e.Department.NameAr,
+                         EquipmentStatuSId = e.StatusId,
+                         ManufacturerId = e.MasterAsset.BrandId,
                          SupplierId = e.SupplierId,
-                         SupplierName = e.Supplier.SupplierName,
-                         SupplierNameAr = e.Supplier.SupplierNameAr,
-                         ManufacturerName = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                         ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,                                    //EmployeeId = e.EmployeeId,
-                          HealthDirectoryId = e.HealthDirectoryId,
-                         HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                         HealthDirectoryNameAr = e.HealthDirectories.HealthDirectoryNameAr,
-                         HealthDistrictId = e.HealthDistrictId,
-                         HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                         HealthDistrictNameAr = e.HealthDistricts.HealthDistrictNameAr,
+                         SupplierName = e.Supplier.Name,
+                         SupplierNameAr = e.Supplier.NameAr,
+                         ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
+                         ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,                                    //EmployeeId = e.EmployeeId,
+                          HealthDirectoryId = e.Hospital.Governorate.Id,
+                         HealthDirectoryName = e.Hospital.Governorate.Name,
+                         HealthDirectoryNameAr = e.Hospital.Governorate.NameAr,
+                         HealthDistrictId = e.Hospital.City.Id,
+                         HealthDistrictName = e.Hospital.City.Name,
+                         HealthDistrictNameAr = e.Hospital.City.NameAr,
                          CustomizedField = e.CustomizedField,
-                         EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
-                         //AttachmentIDs = _context.equipmentAttachments.Where(a => a.EquipmentId == e.Id).Select(a => a.Id).ToList(),
+                         EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                          QrImgPath = e.QrImgPath,
-                         OrganizationName = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.Name).FirstOrDefault(),
-                         OrganizationNameAr = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.NameAr).FirstOrDefault(),
+                         OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
+                         OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault(),
                      }).ToList();
                 bool isFound = false;
                 for (int uns = 0; uns < equips.Count; uns++)
@@ -717,40 +683,32 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             else
             {
 
-                var equips = _context.Equipments
+                var equips = _context.Assets
                .Include(e => e.Department)
-               .Include(e => e.HealthDirectories)
-               .Include(e => e.HealthDistricts)
-               //.Include(e => e.Manufacturer)
                .Include(e => e.Supplier)
-               .Include(e => e.MasterEquipment)
+               .Include(e => e.MasterAsset)
                .Include(e => e.equipmentEmployees)
-               .Include(e => e.HealthCareUnit)
+               .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
                    .Include(e => e.equipmentAttachments)
                    .Select(e => new EquipmentDTO
                    {
                        Id = e.Id,
-                       EquipmentCode = e.EquipmentCode,
-                       UpaCode = e.MasterEquipment.UpaCode,
-                       EquipmentName = e.EquipmentName,
-                       EquipmentNameAr = e.EquipmentNameAr,
-                       EquipmentType = e.EquipmentType,
+                       EquipmentCode = e.Code,
+                       UpaCode = e.MasterAsset.UpaCode,
+                       EquipmentName = e.MasterAsset.Name,
+                       EquipmentNameAr = e.MasterAsset.NameAr,
+                       EquipmentType = e.Type,
                        InstallationDate = e.InstallationDate,
-                       HealthCareUnitId = e.HealthCareUnitId,
-                       HealthCareUnitName = e.HealthCareUnit.HealthCareUnitName,
-                       HealthCareUnitNameAr = e.HealthCareUnit.HealthCareUnitNameAr,
-                       //EquipmentDescription = e.EquipmentDescription,
-                       //EquipmentDescriptionAr = e.EquipmentDescriptionAr,
+                       HealthCareUnitId = e.HospitalId,
+                       HealthCareUnitName = e.Hospital.Name,
+                       HealthCareUnitNameAr = e.Hospital.NameAr,
                        Remarks = e.Remarks,
-                       //ModelNumber=e.ModelNumber,
-                       //VersionNumber=e.VersionNumber,
                        SerialNumber = e.SerialNumber,
-                       InternalCode = e.InternalCode,
+                       InternalCode = e.Barcode,
                        Barcode = e.Barcode,
                        PurchaseDate = e.PurchaseDate,
                        Price = e.Price,
                        WarrantyExpires = e.WarrantyExpires,
-                       //ExpectedLifeTime=e.ExpectedLifeTime,
                        Length = e.Length,
                        Height = e.Height,
                        Weight = e.Weight,
@@ -758,36 +716,28 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                        ColorAr = e.ColorAr,
                        Floor = e.Floor,
                        Room = e.Room,
-                       //PriorityId = e.PriorityId,
-                       //EquipmentCategoryId = e.EquipmentCategoryId,
-                       //EquipmentSubCategoryId = e.EquipmentSubCategoryId,
                        DepartmentId = e.DepartmentId,
-                       MasterEquipmentId = e.MasterEquipmentId,
-                       DepartmentName = e.Department.DepartmentName,
-                       DepartmentNameAr = e.Department.DepartmentNameAr,
-                       EquipmentStatuSId = e.EquipmentStatuSId,
-                       ManufacturerId = e.MasterEquipment.ManufacturerId,
-                       //ManufacturerName = e.Manufacturer.ManufacturerName,
-                       //ManufacturerNameAr = e.Manufacturer.ManufacturerNameAr,
-                       //OriginId = e.OriginId,
+                       MasterEquipmentId = e.MasterAssetId,
+                       DepartmentName = e.Department.Name,
+                       DepartmentNameAr = e.Department.NameAr,
+                       EquipmentStatuSId = e.StatusId,
+                       ManufacturerId = e.MasterAsset.BrandId,
                        SupplierId = e.SupplierId,
-                       SupplierName = e.Supplier.SupplierName,
-                       SupplierNameAr = e.Supplier.SupplierNameAr,
-                       ManufacturerName = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                       ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,                                    //EmployeeId = e.EmployeeId,
-                       HealthDirectoryId = e.HealthDirectoryId,
-                       HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                       HealthDirectoryNameAr = e.HealthDirectories.HealthDirectoryNameAr,
-                       HealthDistrictId = e.HealthDistrictId,
-                       HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                       HealthDistrictNameAr = e.HealthDistricts.HealthDistrictNameAr,
+                       SupplierName = e.Supplier.Name,
+                       SupplierNameAr = e.Supplier.NameAr,
+                       ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
+                       ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,                                    //EmployeeId = e.EmployeeId,
+                       HealthDirectoryId = e.Hospital.Governorate.Id,
+                       HealthDirectoryName = e.Hospital.Governorate.Name,
+                       HealthDirectoryNameAr = e.Hospital.Governorate.NameAr,
+                       HealthDistrictId = e.Hospital.City.Id,
+                       HealthDistrictName = e.Hospital.City.Name,
+                       HealthDistrictNameAr = e.Hospital.City.NameAr,
                        CustomizedField = e.CustomizedField,
-                       //AttachmentId=e.AttachmentId,
-                       EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
-                     //  AttachmentIDs = _context.equipmentAttachments.Where(a => a.EquipmentId == e.Id).Select(a => a.Id).ToList(),
+                       EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                        QrImgPath = e.QrImgPath,
-                       OrganizationName = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.Name).FirstOrDefault(),
-                       OrganizationNameAr = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.NameAr).FirstOrDefault(),
+                       OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
+                       OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault(),
 
                    }).ToList();
                 foreach (var unscanned in equips)
@@ -811,7 +761,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
 
             List<scanningDateVM> snanns = new List<scanningDateVM>();
 
-            var inventories = _context.inventories.ToList().GroupBy(
+            var inventories = _context.Inventories.ToList().GroupBy(
                 e => new
                 {
                     day = e.CreatedAt.Value.Day,
@@ -825,35 +775,33 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                 scanningDateVM dates = new scanningDateVM();
                 dates.CreatedAt = item.FirstOrDefault().CreatedAt;
                 dates.Id = item.FirstOrDefault().Id;
-                dates.ListEquipment = (from inventory in _context.inventories
-                                       join eq in _context.Equipments
+                dates.ListEquipment = (from inventory in _context.Inventories
+                                       join eq in _context.Assets
                                        on inventory.EquipmentId equals eq.Id
                                        where inventory.CreatedAt.Value.Day == item.First().CreatedAt.Value.Day
                                        && inventory.CreatedAt.Value.Month == item.First().CreatedAt.Value.Month
                                        && inventory.CreatedAt.Value.Year == item.First().CreatedAt.Value.Year
                                        select eq).Include(e => e.Department)
-                                .Include(e => e.HealthDirectories)
-                                .Include(e => e.HealthDistricts)
                                 .Include(e => e.Supplier)
-                                .Include(e => e.MasterEquipment)
+                                .Include(e => e.MasterAsset)
                                 .Include(e => e.equipmentEmployees)
-                                .Include(e => e.HealthCareUnit)
+                                .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
                                 .Include(e => e.equipmentAttachments)
                             .ToList().Select(e => new EquipmentDTO
                             {
                                 Id = e.Id,
-                                EquipmentCode = e.EquipmentCode,
-                                UpaCode = e.MasterEquipment.UpaCode,
-                                EquipmentName = e.EquipmentName,
-                                EquipmentNameAr = e.EquipmentNameAr,
-                                EquipmentType = e.EquipmentType,
+                                EquipmentCode = e.Code,
+                                UpaCode = e.MasterAsset.UpaCode,
+                                EquipmentName = e.MasterAsset.Name,
+                                EquipmentNameAr = e.MasterAsset.NameAr,
+                                EquipmentType = e.Type,
                                 InstallationDate = e.InstallationDate,
-                                HealthCareUnitId = e.HealthCareUnitId,
-                                HealthCareUnitName = e.HealthCareUnit.HealthCareUnitName,
-                                HealthCareUnitNameAr = e.HealthCareUnit.HealthCareUnitNameAr,
+                                HealthCareUnitId = e.HospitalId,
+                                HealthCareUnitName = e.Hospital.Name,
+                                HealthCareUnitNameAr = e.Hospital.NameAr,
                                 Remarks = e.Remarks,
                                 SerialNumber = e.SerialNumber,
-                                InternalCode = e.InternalCode,
+                                InternalCode = e.Barcode,
                                 Barcode = e.Barcode,
                                 PurchaseDate = e.PurchaseDate,
                                 Price = e.Price,
@@ -866,36 +814,33 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                                 Floor = e.Floor,
                                 Room = e.Room,
                                 DepartmentId = e.DepartmentId,
-                                MasterEquipmentId = e.MasterEquipmentId,
-                                DepartmentName = e.Department.DepartmentName,
-                                DepartmentNameAr = e.Department.DepartmentNameAr,
-                                EquipmentStatuSId = e.EquipmentStatuSId,
+                                MasterEquipmentId = e.MasterAssetId,
+                                DepartmentName = e.Department.Name,
+                                DepartmentNameAr = e.Department.NameAr,
+                                EquipmentStatuSId = e.StatusId,
                                 SupplierId = e.SupplierId,
-                                SupplierName = e.Supplier.SupplierName,
-                                SupplierNameAr = e.Supplier.SupplierNameAr,
-                                ManufacturerName = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                                ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,                                    //EmployeeId = e.EmployeeId,
-                                HealthDirectoryId = e.HealthDirectoryId,
-                                HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                                HealthDirectoryNameAr = e.HealthDirectories.HealthDirectoryNameAr,
-                                HealthDistrictId = e.HealthDistrictId,
-                                HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                                HealthDistrictNameAr = e.HealthDistricts.HealthDistrictNameAr,
+                                SupplierName = e.Supplier.Name,
+                                SupplierNameAr = e.Supplier.NameAr,
+                                ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
+                                ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,                                    //EmployeeId = e.EmployeeId,
+                                HealthDirectoryId = e.Hospital.Governorate.Id,
+                                HealthDirectoryName = e.Hospital.Governorate.Name,
+                                HealthDirectoryNameAr = e.Hospital.Governorate.NameAr,
+                                HealthDistrictId = e.Hospital.City.Id,
+                                HealthDistrictName = e.Hospital.City.Name,
+                                HealthDistrictNameAr = e.Hospital.City.NameAr,
                                 CustomizedField = e.CustomizedField,
-                                EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
-                                //AttachmentIDs = _context.equipmentAttachments.Where(a => a.EquipmentId == e.Id).Select(a => a.Id).ToList(),
+                                EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                                 QrImgPath = e.QrImgPath,
-                                OrganizationName = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.Name).FirstOrDefault(),
-                                OrganizationNameAr = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.NameAr).FirstOrDefault()
-                                //  CreatedAt=
-                                //    CreatedAt = _context.inventories.Where(i => i.EquipmentId == e.Id && i.Id==dates.Id).Select(i => i.CreatedAt).FirstOrDefault()
+                                OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
+                                OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault()
 
                             }).ToList();
-                var inve = _context.inventories.Where(i => i.CreatedAt.Value.Day == dates.CreatedAt.Value.Day).ToList();
+                var inve = _context.Inventories.Where(i => i.CreatedAt.Value.Day == dates.CreatedAt.Value.Day).ToList();
                 int i = 0;
                 foreach (var eq in dates.ListEquipment)
                 {
-                    for (; i < inve.Count; i++)
+                    for (; i < inve.Count;)
                     {
                         eq.CreatedAt = inve[i].CreatedAt;
                         eq.time = (eq.CreatedAt.Value.Hour + eq.CreatedAt.Value.Minute + eq.CreatedAt.Value.Second).ToString();
@@ -1025,13 +970,12 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         }
         public EquipmentDTO GetById(int id)
         {
-            var e = _context.Equipments
+            var e = _context.Assets
                 .Include(e => e.Department)
-                .Include(e => e.HealthDirectories)
-                .Include(e => e.HealthDistricts)
-                .Include(e => e.EquipmentStatus)
+                .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
+                .Include(e => e.Status)
                 .Include(e => e.Supplier)
-                .Include(e => e.MasterEquipment)
+                .Include(e => e.MasterAsset)
                 .Include(e => e.equipmentEmployees).FirstOrDefault(e => e.Id == id);
             if (e == null)
             {
@@ -1040,16 +984,16 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             var eq = new EquipmentDTO
             {
                 Id = e.Id,
-                EquipmentCode = e.EquipmentCode,
-                EquipmentName = e.EquipmentName,
-                EquipmentType = e.EquipmentType,
+                EquipmentCode = e.Code,
+                EquipmentName = e.MasterAsset.Name,
+                EquipmentType = e.Type,
                 InstallationDate = e.InstallationDate,
-                HealthCareUnitId = e.HealthCareUnitId,
+                HealthCareUnitId = e.HospitalId,
                 Remarks = e.Remarks,
                 SerialNumber = e.SerialNumber,
-                InternalCode = e.InternalCode,
-                UpaCode = e.MasterEquipment.UpaCode,
-                ModelNumber=e.MasterEquipment.ModelNumber,
+                InternalCode = e.Barcode,
+                UpaCode = e.MasterAsset.UpaCode,
+                ModelNumber=e.MasterAsset.ModelNumber,
                 Barcode = e.Barcode,
                 PurchaseDate = e.PurchaseDate,
                 Price = e.Price,
@@ -1058,24 +1002,24 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                 Height = e.Height,
                 Weight = e.Weight,
                 Color = e.Color,
-                EquipmentStatuSId = e.EquipmentStatuSId,
-                StatusName = e.EquipmentStatus.Status,
-                StatusNameAr = e.EquipmentStatus.StatusAr,
-                ManufacturerId = e.MasterEquipment.ManufacturerId,
+                EquipmentStatuSId = e.StatusId,
+                StatusName = e.Status.Status,
+                StatusNameAr = e.Status.StatusAr,
+                ManufacturerId = e.MasterAsset.BrandId,
                 DepartmentId = e.DepartmentId,
-                ManufacturerName=_context.Manufacturers.Where(m=>m.Id==e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                ManufacturerNameAr=_context.Manufacturers.Where(m=>m.Id==e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,
+                ManufacturerName=_context.Brands.Where(m=>m.Id==e.MasterAsset.BrandId).FirstOrDefault().Name,
+                ManufacturerNameAr=_context.Brands.Where(m=>m.Id==e.MasterAsset.BrandId).FirstOrDefault().NameAr,
                 SupplierId = e.SupplierId,
-                SupplierName = e.Supplier.SupplierName,
-                SupplierNameAr = e.Supplier.SupplierNameAr,
-                HealthDirectoryId = e.HealthDirectoryId,
-                HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                HealthDistrictId = e.HealthDistrictId,
-                HealthDistrictName = e.HealthDistricts.HealthDistrictName,
+                SupplierName = e.Supplier.Name,
+                SupplierNameAr = e.Supplier.NameAr,
+                HealthDirectoryId = e.Hospital.Governorate.Id,
+                HealthDirectoryName = e.Hospital.Governorate.Name,
+                HealthDistrictId = e.Hospital.CityId,
+                HealthDistrictName = e.Hospital.City.Name,
                 CustomizedField = e.CustomizedField,
                 Floor = e.Floor,
                 Room = e.Room,
-                EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                 QrImgPath = e.QrImgPath
             };
             return eq;
@@ -1220,71 +1164,53 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         public void Update(EquipmentDTO equipment)
 
         {
-            var eq = new Equipment();
+            var eq = new Assets();
             int DistrictId = _healthCareUnitRepository.GetHealthDistrictByCareUnit(equipment.HealthCareUnitId);
             int DirectoryId = _healthCareUnitRepository.GetHealthDirectoryByDistrict(DistrictId);
             eq.Id = equipment.Id;
-            eq.EquipmentCode = equipment.EquipmentCode;
-            eq.EquipmentName = equipment.EquipmentName;
-            eq.EquipmentNameAr = equipment.EquipmentNameAr;
-            eq.EquipmentType = equipment.EquipmentType;
+            eq.Code = equipment.EquipmentCode;
+            //eq.EquipmentName = equipment.EquipmentName;
+            //eq.EquipmentNameAr = equipment.EquipmentNameAr;
+            eq.Type = equipment.EquipmentType;
             eq.InstallationDate = equipment.InstallationDate;
-            eq.HealthCareUnitId = equipment.HealthCareUnitId;
-            //eq.EquipmentDescription = equipment.EquipmentDescription;
+            eq.HospitalId = equipment.HealthCareUnitId;
             eq.Remarks = equipment.Remarks;
-            //eq.ModelNumber = equipment.ModelNumber;
-            //eq.VersionNumber = equipment.VersionNumber;
             eq.SerialNumber = equipment.SerialNumber;
-            eq.InternalCode = equipment.InternalCode;
+            eq.Barcode = equipment.InternalCode;
             eq.Barcode = equipment.Barcode;
             eq.PurchaseDate = equipment.PurchaseDate;
             eq.Price = equipment.Price;
             eq.WarrantyExpires = equipment.WarrantyExpires;
-            //eq.ExpectedLifeTime = equipment.ExpectedLifeTime;
             eq.Length = equipment.Length;
             eq.Height = equipment.Height;
             eq.Weight = equipment.Weight;
             eq.Color = equipment.Color;
-            //  eq.PriorityId = equipment.PriorityId;
-            // eq.EquipmentCategoryId = equipment.EquipmentCategoryId;
-            // eq.EquipmentSubCategoryId = equipment.EquipmentSubCategoryId;
-            eq.EquipmentStatuSId = equipment.EquipmentStatuSId;
-            // eq.ManufacturerId = equipment.ManufacturerId;
+            eq.StatusId = equipment.EquipmentStatuSId;
             eq.DepartmentId = equipment.DepartmentId;
-            //  eq.OriginId = equipment.OriginId;
             eq.SupplierId = equipment.SupplierId;
-            eq.HealthDirectoryId = DirectoryId;
-            eq.HealthDistrictId = DistrictId;
             eq.CustomizedField = equipment.CustomizedField;
-            eq.MasterEquipmentId = equipment.MasterEquipmentId;
+            eq.MasterAssetId = equipment.MasterEquipmentId;
             eq.EquipmentRecallId = equipment.EquipmentRecallId;
-            //eq.QrImgPath = equipment.QrImgPath;
-            //   eq.AttachmentId = equipment.AttachmentId;
-            eq.equipmentEmployees = _context.equipmentEmployees.Where(e => e.EquipmentId == equipment.Id).ToList();
+            eq.equipmentEmployees = _context.Employees.Where(e => e.EquipmentId == equipment.Id).ToList();
             if (eq.equipmentEmployees.Count != 0)
             {
                 foreach (var item in eq.equipmentEmployees)
                 {
-                    _context.equipmentEmployees.Remove(item);
+                    _context.Employees.Remove(item);
                 }
             }
 
-            eq.equipmentEmployees = new List<EquipmentEmployees>();
+            eq.equipmentEmployees = new List<Employees>();
             foreach (var empId in equipment.EmployeeIDs)
             {
-                eq.equipmentEmployees.Add(new EquipmentEmployees
+                eq.equipmentEmployees.Add(new Employees
                 {
                     UserId = empId,
                     EquipmentId = eq.Id
                 });
             }
-            _context.Equipments.Add(eq);
+            _context.Assets.Add(eq);
             eq.equipmentAttachments = new List<EquipmentAttachments>();
-            //foreach (var AttachId in equipment.AttachmentIDs)
-            //{
-            //    var attachment = _context.equipmentAttachments.FirstOrDefault(e => e.Id == AttachId);
-            //    eq.equipmentAttachments.Add(attachment);
-            //}
             _context.Entry(eq).State = EntityState.Modified;
         }
         public void SaveChanges()
@@ -1292,7 +1218,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             _context.SaveChanges();
         }
 
-        public Task<ActionResult<IEnumerable<Equipment>>> ToList()
+        public Task<ActionResult<IEnumerable<Assets>>> ToList()
         {
             throw new NotImplementedException();
         }
@@ -1358,13 +1284,13 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         //return null;
         //    }
 
-        public ActionResult<List<Equipment>> GetAllEquimentsByeqCoverage(int eqCoverageId)
+        public ActionResult<List<Assets>> GetAllEquimentsByeqCoverage(int eqCoverageId)
         {
             throw new NotImplementedException();
         }
-        public ActionResult<List<Equipment>> GetoneEquipmentBymaster(int masterId)
+        public ActionResult<List<Assets>> GetoneEquipmentBymaster(int masterId)
         {
-            var equipments = _context.Equipments.Where(e => e.MasterEquipmentId == masterId).ToList();
+            var equipments = _context.Assets.Where(e => e.MasterAssetId == masterId).ToList();
             if (equipments.Count != 0)
             {
                 return equipments;
@@ -1374,7 +1300,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         public ActionResult<List<HospitalVM>> GetEquipmentByHospital(List<EquipmentDTO> equipmentModel)
         {
             List<HospitalVM> lstHospitalEquipment = new List<HospitalVM>();
-            var lstHosps = (from hos in _context.HealthCareUnits
+            var lstHosps = (from hos in _context.Hospitals
                             select hos).ToList()
                             .GroupBy(a => a.Id).ToList();
 
@@ -1384,8 +1310,8 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                 {
                     HospitalVM EquipmentHospitalObj = new HospitalVM();
                     EquipmentHospitalObj.Id = item.FirstOrDefault().Id;
-                    EquipmentHospitalObj.Name = item.FirstOrDefault().HealthCareUnitName;
-                    EquipmentHospitalObj.NameAr = item.FirstOrDefault().HealthCareUnitNameAr;
+                    EquipmentHospitalObj.Name = item.FirstOrDefault().Name;
+                    EquipmentHospitalObj.NameAr = item.FirstOrDefault().NameAr;
 
                     EquipmentHospitalObj.ListEquipment = equipmentModel.ToList().Where(e => e.HealthCareUnitId == EquipmentHospitalObj.Id)
                         .Select(equip => new EquipmentDTO
@@ -1417,7 +1343,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             List<GovernorateVM> lstGovEquipment = new List<GovernorateVM>();
             //var equipment = new List<EquipmentDTO>();
             var govEquipDTO = new List<EquipmentDTO>();
-            var GovLst = _context.HealthDirectories.ToList().GroupBy(g => g.Id).ToList();
+            var GovLst = _context.Governorates.ToList().GroupBy(g => g.Id).ToList();
             if (GovLst.Count > 0)
             {
                 foreach (var g in GovLst)
@@ -1425,8 +1351,8 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     GovernorateVM gov = new GovernorateVM();
 
                     gov.Id = g.FirstOrDefault().Id;
-                    gov.Name = g.FirstOrDefault().HealthDirectoryName;
-                    gov.NameAr = g.FirstOrDefault().HealthDirectoryNameAr;
+                    gov.Name = g.FirstOrDefault().Name;
+                    gov.NameAr = g.FirstOrDefault().NameAr;
                     gov.ListEquipment = equipmentmodel.ToList().Where(e => e.HealthDirectoryId == gov.Id)
                                          .Select(equip => new EquipmentDTO
                                          {
@@ -1458,7 +1384,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             List<CityVM> lstCityEquipment = new List<CityVM>();
             //var equipment = new List<EquipmentDTO>();
             var govEquipDTO = new List<EquipmentDTO>();
-            var CityLst = _context.HealthDistricts.ToList().GroupBy(g => g.Id).ToList();
+            var CityLst = _context.Cities.ToList().GroupBy(g => g.Id).ToList();
             if (CityLst.Count > 0)
             {
                 foreach (var g in CityLst)
@@ -1466,8 +1392,8 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     CityVM c = new CityVM();
 
                     c.Id = g.FirstOrDefault().Id;
-                    c.Name = g.FirstOrDefault().HealthDistrictName;
-                    c.NameAr = g.FirstOrDefault().HealthDistrictNameAr;
+                    c.Name = g.FirstOrDefault().Name;
+                    c.NameAr = g.FirstOrDefault().NameAr;
                     //  gov.ListEquipment = equipment;
                     c.ListEquipment = equipmentModel.ToList().Where(e => e.HealthDistrictId == c.Id).ToList()
                                          .Select(equip => new EquipmentDTO
@@ -1501,7 +1427,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             var equipment = new List<EquipmentDTO>();
             var govEquipDTO = new List<EquipmentDTO>();
             //    equipment.ToList().GroupBy(q => q.HealthDistrictId);
-            var OrganizationLst = _context.organizations.ToList().GroupBy(g => g.Id).ToList();
+            var OrganizationLst = _context.Organizations.ToList().GroupBy(g => g.Id).ToList();
             if (OrganizationLst.Count > 0)
             {
                 foreach (var g in OrganizationLst)
@@ -1552,8 +1478,8 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     SupplierVM sup = new SupplierVM();
 
                     sup.Id = g.FirstOrDefault().Id;
-                    sup.Name = g.FirstOrDefault().SupplierName;
-                    sup.NameAr = g.FirstOrDefault().SupplierNameAr;
+                    sup.Name = g.FirstOrDefault().Name;
+                    sup.NameAr = g.FirstOrDefault().NameAr;
                     sup.ListEquipment = equipmentModel.ToList().Where(e => e.SupplierId == sup.Id).ToList()
                                          .Select(equip => new EquipmentDTO
                                          {
@@ -1583,16 +1509,14 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         public List<EquipmentDTO> FilterEquipment(filterDto data)
         {
             List<EquipmentDTO> equip = new List<EquipmentDTO>();
-            var equipment = new List<Equipment>();
-            equipment = _context.Equipments.Include(e => e.HealthCareUnit)
-                                          .Include(e => e.HealthDistricts)
-                                          .Include(e => e.HealthDirectories)
-                                          .Include(e => e.MasterEquipment)
+            var equipment = new List<Assets>();
+            equipment = _context.Assets.Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
+                                          .Include(e => e.MasterAsset)
                                           .Include(e => e.Supplier).ToList();
 
             if (data.name != null && data.name != "")
             {
-                equipment = equipment.Where(e => e.EquipmentName == data.name || e.EquipmentNameAr == data.name).ToList();
+                equipment = equipment.Where(e => e.MasterAsset.Name == data.name || e.MasterAsset.NameAr == data.name).ToList();
             }
             else
             {
@@ -1600,9 +1524,9 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             }
             if (data.brandName != null && data.brandName != "")
             {
-                equipment = equipment.Where(e => (_context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId)
-                                               .FirstOrDefault().ManufacturerName == data.brandName || _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId)
-                                               .FirstOrDefault().ManufacturerNameAr == data.brandName)).ToList();
+                equipment = equipment.Where(e => (_context.Brands.Where(m => m.Id == e.MasterAsset.BrandId)
+                                               .FirstOrDefault().Name == data.brandName || _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId)
+                                               .FirstOrDefault().NameAr == data.brandName)).ToList();
             }
             else
             {
@@ -1610,7 +1534,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             }
             if (data.govName != null && data.govName != "")
             {
-                equipment = equipment.Where(e => e.HealthDirectories.HealthDirectoryName == data.govName || e.HealthDirectories.HealthDirectoryNameAr == data.govName).ToList();
+                equipment = equipment.Where(e => e.Hospital.Governorate.Name == data.govName || e.Hospital.Governorate.NameAr == data.govName).ToList();
             }
             else
             {
@@ -1618,11 +1542,11 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             }
             if (data.cityName != null && data.cityName != "")
             {
-                equipment = equipment.Where(e => e.HealthDistricts.HealthDistrictName == data.cityName || e.HealthDistricts.HealthDistrictNameAr == data.cityName).ToList();
+                equipment = equipment.Where(e => e.Hospital.City.Name == data.cityName || e.Hospital.City.NameAr == data.cityName).ToList();
             }
             if (data.hosName != null && data.hosName != "")
             {
-                equipment = equipment.Where(e => e.HealthCareUnit.HealthCareUnitName == data.hosName || e.HealthCareUnit.HealthCareUnitNameAr == data.hosName).ToList();
+                equipment = equipment.Where(e => e.Hospital.Name == data.hosName || e.Hospital.NameAr == data.hosName).ToList();
             }
             else
             {
@@ -1630,7 +1554,7 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             }
             if (data.SupplierName != null && data.SupplierName != "")
             {
-                equipment = equipment.Where(e => e.Supplier.SupplierName == data.SupplierName || e.Supplier.SupplierNameAr == data.SupplierName).ToList();
+                equipment = equipment.Where(e => e.Supplier.Name == data.SupplierName || e.Supplier.NameAr == data.SupplierName).ToList();
             }
             else
             {
@@ -1652,26 +1576,26 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     var eq = new EquipmentDTO
                     {
                         Id = item.Id,
-                        EquipmentName = item.EquipmentName,
-                        EquipmentNameAr = item.EquipmentNameAr,
-                        ManufacturerName = _context.Manufacturers.Where(m => m.Id == item.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                        ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == item.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,
-                        HealthDirectoryName = item.HealthDirectories.HealthDirectoryName,
-                        HealthDirectoryNameAr = item.HealthDirectories.HealthDirectoryNameAr,
-                        HealthDistrictName = item.HealthDistricts.HealthDistrictName,
-                        HealthDistrictNameAr = item.HealthDistricts.HealthDistrictNameAr,
-                        HealthCareUnitName = item.HealthCareUnit.HealthCareUnitName,
-                        HealthCareUnitNameAr = item.HealthCareUnit.HealthCareUnitNameAr,
-                        SupplierName = item.Supplier.SupplierName,
-                        SupplierNameAr = item.Supplier.SupplierNameAr,
-                        OrganizationName = _context.organizations.Where(h => h.Id == item.HealthCareUnit.organizationId).FirstOrDefault().Name,
-                        OrganizationNameAr = _context.organizations.Where(h => h.Id == item.HealthCareUnit.organizationId).FirstOrDefault().NameAr,
+                        EquipmentName = item.MasterAsset.Name,
+                        EquipmentNameAr = item.MasterAsset.NameAr,
+                        ManufacturerName = _context.Brands.Where(m => m.Id == item.MasterAsset.BrandId).FirstOrDefault().Name,
+                        ManufacturerNameAr = _context.Brands.Where(m => m.Id == item.MasterAsset.BrandId).FirstOrDefault().NameAr,
+                        HealthDirectoryName = item.Hospital.Governorate.Name,
+                        HealthDirectoryNameAr = item.Hospital.Governorate.NameAr,
+                        HealthDistrictName = item.Hospital.City.Name,
+                        HealthDistrictNameAr = item.Hospital.City.NameAr,
+                        HealthCareUnitName = item.Hospital.Name,
+                        HealthCareUnitNameAr = item.Hospital.NameAr,
+                        SupplierName = item.Supplier.Name,
+                        SupplierNameAr = item.Supplier.NameAr,
+                        OrganizationName = _context.Organizations.Where(h => h.Id == item.Hospital.organizationId).FirstOrDefault().Name,
+                        OrganizationNameAr = _context.Organizations.Where(h => h.Id == item.Hospital.organizationId).FirstOrDefault().NameAr,
                         PurchaseDate = item.PurchaseDate,
-                        HealthDistrictId = item.HealthDistrictId,
-                        HealthCareUnitId = item.HealthCareUnitId,
-                        HealthDirectoryId = item.HealthDirectoryId,
-                        OrganizationId = item.HealthCareUnit.organizationId,
-                        ManufacturerId = item.MasterEquipment.ManufacturerId,
+                        HealthDistrictId = item.Hospital.City.Id,
+                        HealthCareUnitId = item.HospitalId,
+                        HealthDirectoryId = item.Hospital.Governorate.Id,
+                        OrganizationId = item.Hospital.organizationId,
+                        ManufacturerId = item.MasterAsset.BrandId,
                         SupplierId = item.SupplierId
                     };
                     equip.Add(eq);
@@ -1685,10 +1609,10 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         {
             // var equipmentList = _context.Equipments.Where(e => e.HealthCareUnitId == hospitalId).ToList();
             List<EquipmentDTO> equipment = new List<EquipmentDTO>();
-            var equipmentList = _context.Equipments.Where(e => e.HealthCareUnitId == hospitalId && e.ContractId == null)
-                .Include(e => e.MasterEquipment)
+            var equipmentList = _context.Assets.Where(e => e.HospitalId == hospitalId && e.ContractId == null)
+                .Include(e => e.MasterAsset)
                 .Include(e => e.equipmentEmployees)
-                .Include(e => e.HealthCareUnit)
+                .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
                 .Include(e => e.equipmentAttachments)
                 .Include(e=>e.ContractRequest)
                 .Include(e=>e.OrganizationContract)
@@ -1697,29 +1621,28 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                     Id = e.Id,
                     ContractRequestId=e.ContractRequest.Id,
                     OrganizationRequestId=e.OrganizationContract.Id,
-                    EquipmentCode = e.EquipmentCode,
-                    UpaCode = e.MasterEquipment.UpaCode,
-                    EquipmentName = e.EquipmentName,
-                    EquipmentNameAr = e.EquipmentNameAr,
-                    EquipmentType = e.EquipmentType,
+                    EquipmentCode = e.Code,
+                    UpaCode = e.MasterAsset.UpaCode,
+                    EquipmentName = e.MasterAsset.Name,
+                    EquipmentNameAr = e.MasterAsset.NameAr,
+                    EquipmentType = e.Type,
                     InstallationDate = e.InstallationDate,
-                    HealthCareUnitId = e.HealthCareUnitId,
-                    HealthCareUnitName = e.HealthCareUnit.HealthCareUnitName,
-                    HealthCareUnitNameAr = e.HealthCareUnit.HealthCareUnitNameAr,
+                    HealthCareUnitId = e.HospitalId,
+                    HealthCareUnitName = e.Hospital.Name,
+                    HealthCareUnitNameAr = e.Hospital.NameAr,
                     Remarks = e.Remarks,
                     SerialNumber = e.SerialNumber,
-                    InternalCode = e.InternalCode,
+                    InternalCode = e.Barcode,
                     Barcode = e.Barcode,                 
-                    MasterEquipmentId = e.MasterEquipmentId,
-                    EquipmentStatuSId = e.EquipmentStatuSId,
-                    ManufacturerId = e.MasterEquipment.ManufacturerId,
-                    ManufacturerName = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                    ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,
-                    EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
-                    //AttachmentIDs = _context.equipmentAttachments.Where(a => a.EquipmentId == e.Id).Select(a => a.Id).ToList(),
-                    OrganizationName = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.Name).FirstOrDefault(),
-                    OrganizationNameAr = _context.organizations.Where(org => org.Id == e.HealthCareUnit.organizationId).Select(org => org.NameAr).FirstOrDefault(),
-                    OrganizationId = e.HealthCareUnit.organizationId
+                    MasterEquipmentId = e.MasterAssetId,
+                    EquipmentStatuSId = e.StatusId,
+                    ManufacturerId = e.MasterAsset.BrandId,
+                    ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
+                    ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,
+                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                    OrganizationName = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.Name).FirstOrDefault(),
+                    OrganizationNameAr = _context.Organizations.Where(org => org.Id == e.Hospital.organizationId).Select(org => org.NameAr).FirstOrDefault(),
+                    OrganizationId = e.Hospital.organizationId
                 }).ToList();
             return equipmentList;
 
@@ -1730,16 +1653,13 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
             List<EquipmentDTO> equipments = new List<EquipmentDTO>();
             foreach (var id in Ids)
             {
-                //var equip = _context.Equipments.Where(e => e.Id == id).FirstOrDefault()
-                var e = _context.Equipments
+                var e = _context.Assets
                .Include(e => e.Department)
-               .Include(e => e.HealthDirectories)
-               .Include(e => e.HealthDistricts)
-               .Include(e => e.EquipmentStatus)
+               .Include(e => e.Status)
                .Include(e => e.Supplier)
-               .Include(e => e.MasterEquipment)
+               .Include(e => e.MasterAsset)
                .Include(e => e.Contract)
-               .Include(e=>e.HealthCareUnit)
+               .Include(e=>e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
                .Include(e => e.equipmentEmployees).FirstOrDefault(e => e.Id == id);
                 if (e == null)
                 {
@@ -1748,31 +1668,31 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                 var eq = new EquipmentDTO
                 {
                     Id = e.Id,
-                    EquipmentCode = e.EquipmentCode,
-                    EquipmentName = e.EquipmentName,
-                    EquipmentType = e.EquipmentType,
+                    EquipmentCode = e.Code,
+                    EquipmentName = e.MasterAsset.Name,
+                    EquipmentType = e.Type,
                     InstallationDate = e.InstallationDate,
-                    HealthCareUnitId = e.HealthCareUnitId,
+                    HealthCareUnitId = e.HospitalId,
                     SerialNumber = e.SerialNumber,
-                    InternalCode = e.InternalCode,
+                    InternalCode = e.Barcode,
                     Barcode = e.Barcode,
                     PurchaseDate = e.PurchaseDate,
-                    ManufacturerId = e.MasterEquipment.ManufacturerId,
+                    ManufacturerId = e.MasterAsset.BrandId,
                     DepartmentId = e.DepartmentId,
-                    DepartmentName=e.Department.DepartmentName,
-                    DepartmentNameAr=e.Department.DepartmentNameAr,
+                    DepartmentName=e.Department.Name,
+                    DepartmentNameAr=e.Department.NameAr,
                     SupplierId = e.SupplierId,
-                    SupplierName = e.Supplier.SupplierName,
-                    SupplierNameAr = e.Supplier.SupplierNameAr,
-                    HealthDirectoryId = e.HealthDirectoryId,
-                    HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                    HealthDistrictId = e.HealthDistrictId,
-                    HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                    HealthCareUnitName=e.HealthCareUnit.HealthCareUnitName,
-                    HealthCareUnitNameAr=e.HealthCareUnit.HealthCareUnitNameAr,
-                    ManufacturerName = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                    ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,
-                    EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                    SupplierName = e.Supplier.Name,
+                    SupplierNameAr = e.Supplier.NameAr,
+                    HealthDirectoryId = e.Hospital.Governorate.Id,
+                    HealthDirectoryName = e.Hospital.Governorate.Name,
+                    HealthDistrictId = e.Hospital.City.Id,
+                    HealthDistrictName = e.Hospital.City.Name,
+                    HealthCareUnitName=e.Hospital.Name,
+                    HealthCareUnitNameAr=e.Hospital.NameAr,
+                    ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
+                    ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,
+                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                     ContractId = e.ContractId
                 };
                 equipments.Add(eq);
@@ -1783,15 +1703,13 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         public List<EquipmentDTO> EquipmentInContract(int cId)
         {
             List<EquipmentDTO> equips = new List<EquipmentDTO>();
-            var equipment = _context.Equipments
+            var equipment = _context.Assets
                .Include(e => e.Department)
-               .Include(e => e.HealthDirectories)
-               .Include(e => e.HealthDistricts)
-               .Include(e => e.EquipmentStatus)
+               .Include(e => e.Status)
                .Include(e => e.Supplier)
-               .Include(e => e.MasterEquipment)
+               .Include(e => e.MasterAsset)
                .Include(e => e.Contract)
-               .Include(e=>e.HealthCareUnit)
+               .Include(e=>e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
                .Include(e => e.equipmentEmployees).Where(e => e.ContractId == cId).ToList();
             if (equipment == null)
             {
@@ -1802,30 +1720,30 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
                 var eq = new EquipmentDTO
                 {
                     Id = e.Id,
-                    EquipmentCode = e.EquipmentCode,
-                    EquipmentName = e.EquipmentName,
-                    EquipmentType = e.EquipmentType,
+                    EquipmentCode = e.Code,
+                    EquipmentName = e.MasterAsset.Name,
+                    EquipmentType = e.MasterAsset.NameAr,
                     InstallationDate = e.InstallationDate,
-                    HealthCareUnitId = e.HealthCareUnitId,
+                    HealthCareUnitId = e.HospitalId,
                     SerialNumber = e.SerialNumber,
-                    InternalCode = e.InternalCode,
+                    InternalCode = e.Barcode,
                     Barcode = e.Barcode,
                     PurchaseDate = e.PurchaseDate,
-                    ManufacturerId = e.MasterEquipment.ManufacturerId,
-                    ManufacturerName = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                    ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,
-                    OrganizationName = _context.organizations.Where(o => o.Id == e.HealthCareUnit.organizationId).FirstOrDefault().Name,
-                    OrganizationNameAr = _context.organizations.Where(o => o.Id == e.HealthCareUnit.organizationId).FirstOrDefault().NameAr,
-                    HealthCareUnitName = e.HealthCareUnit.HealthCareUnitName,
-                    HealthCareUnitNameAr = e.HealthCareUnit.HealthCareUnitNameAr,
+                    ManufacturerId = e.MasterAsset.BrandId,
+                    ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
+                    ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,
+                    OrganizationName = _context.Organizations.Where(o => o.Id == e.Hospital.organizationId).FirstOrDefault().Name,
+                    OrganizationNameAr = _context.Organizations.Where(o => o.Id == e.Hospital.organizationId).FirstOrDefault().NameAr,
+                    HealthCareUnitName = e.Hospital.Name,
+                    HealthCareUnitNameAr = e.Hospital.NameAr,
                     SupplierId = e.SupplierId,
-                    SupplierName = e.Supplier.SupplierName,
-                    SupplierNameAr = e.Supplier.SupplierNameAr,
-                    HealthDirectoryId = e.HealthDirectoryId,
-                    HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                    HealthDistrictId = e.HealthDistrictId,
-                    HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                    EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                    SupplierName = e.Supplier.Name,
+                    SupplierNameAr = e.Supplier.NameAr,
+                    HealthDirectoryId = e.Hospital.Governorate.Id,
+                    HealthDirectoryName = e.Hospital.Governorate.Name,
+                    HealthDistrictId = e.Hospital.City.Id,
+                    HealthDistrictName = e.Hospital.City.Name,
+                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                     ContractId = e.ContractId
                 };
                 equips.Add(eq);
@@ -1837,41 +1755,39 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         {
             bool found = false;
             var equips = new List<EquipmentDTO>();
-            var equipments = _context.Equipments.Where(e=>e.HealthCareUnitId==hosId && e.ContractRequestId==null)
-                .Include(e=>e.HealthCareUnit)
+            var equipments = _context.Assets.Where(e=>e.HospitalId==hosId && e.ContractRequestId==null)
+                .Include(e=>e.Hospital).ThenInclude(e=>e.City).ThenInclude(e=>e.Governorate)
                 .Include(e => e.Supplier)
-                .Include(e => e.HealthDistricts)
-                .Include(e => e.HealthDirectories)
-                .Include(e=>e.MasterEquipment).ThenInclude(m=>m.Manufacturer)
+                .Include(e=>e.MasterAsset).ThenInclude(m=>m.Brand)
                 .ToList();
                 foreach (var e in equipments)
                 {
                     var equip = new EquipmentDTO
                     {
                         Id = e.Id,
-                        EquipmentCode = e.EquipmentCode,
-                        UpaCode=e.MasterEquipment.UpaCode,
-                        ManufacturerName=e.MasterEquipment.Manufacturer.ManufacturerName,
-                        ManufacturerNameAr=e.MasterEquipment.Manufacturer.ManufacturerNameAr,
-                        ModelNumber=e.MasterEquipment.ModelNumber,
+                        EquipmentCode = e.Code,
+                        UpaCode=e.MasterAsset.UpaCode,
+                        ManufacturerName=e.MasterAsset.Brand.Name,
+                        ManufacturerNameAr=e.MasterAsset.Brand.NameAr,
+                        ModelNumber=e.MasterAsset.ModelNumber,
                         SerialNumber=e.SerialNumber,
-                        EquipmentName = e.EquipmentName,
-                        EquipmentType = e.EquipmentType,
+                        EquipmentName = e.MasterAsset.Name,
+                        EquipmentType = e.Type,
                         InstallationDate = e.InstallationDate,
-                        HealthCareUnitId = e.HealthCareUnitId,
-                        InternalCode = e.InternalCode,
+                        HealthCareUnitId = e.HospitalId,
+                        InternalCode = e.Barcode,
                         Barcode = e.Barcode,
                         PurchaseDate = e.PurchaseDate,
-                        HealthCareUnitName = e.HealthCareUnit.HealthCareUnitName,
-                        HealthCareUnitNameAr = e.HealthCareUnit.HealthCareUnitNameAr,
+                        HealthCareUnitName = e.Hospital.Name,
+                        HealthCareUnitNameAr = e.Hospital.NameAr,
                         SupplierId = e.SupplierId,
-                        SupplierName = e.Supplier.SupplierName,
-                        SupplierNameAr = e.Supplier.SupplierNameAr,
-                        HealthDirectoryId = e.HealthDirectoryId,
-                        HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                        HealthDistrictId = e.HealthDistrictId,
-                        HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                        EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                        SupplierName = e.Supplier.Name,
+                        SupplierNameAr = e.Supplier.NameAr,
+                        HealthDirectoryId = e.Hospital.Id,
+                        HealthDirectoryName = e.Hospital.Governorate.Name,
+                        HealthDistrictId = e.Hospital.CityId,
+                        HealthDistrictName = e.Hospital.City.Name,
+                        EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                         ContractId = e.ContractId
                     };
                     foreach (var item in equipment)

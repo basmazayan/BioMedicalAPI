@@ -6,6 +6,7 @@ using BiomedicalSystemAPI.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using BiomedicalSystemAPI.Repositories;
 using BiomedicalSystemAPI.Models;
+using BiomedicalSystemAPI.Models.AssetAppContext;
 
 namespace BiomedicalSystemAPI.Repositories.HealthRepository
 {
@@ -13,10 +14,13 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
     {
         private readonly BioMedEquipmentDBContext _context;
         private readonly ApplicationDbContext _BioContext;
-        public GetHealthInfoRepository(BioMedEquipmentDBContext context, ApplicationDbContext BioContext)
+        private readonly AssetDbContext _AssetContext;
+        public GetHealthInfoRepository(BioMedEquipmentDBContext context, ApplicationDbContext BioContext,
+            AssetDbContext AssetContext)
         {
             _context = context;
             _BioContext = BioContext;
+            _AssetContext = AssetContext;
         }
 
         public IEnumerable<DepartmemtByHospitalCodeViewModels> GetDepartmant(int id)
@@ -103,19 +107,21 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
             {
                 return null;
             }
-            var equipment = _BioContext.Equipments.Where(e => e.HealthCareUnitId == hospitalId && e.DepartmentId == departmantId)
+            var equipment = _BioContext.Assets
+                .Include(e=>e.MasterAsset)
+                .Where(e => e.HospitalId == hospitalId && e.DepartmentId == departmantId)
                 .Select(equip=>new 
                 {
-                    HospitalArName = equip.HealthCareUnit.HealthCareUnitNameAr,
-                    HospitalEngName = equip.HealthCareUnit.HealthCareUnitName,
-                    DepartmentArName = equip.Department.DepartmentNameAr,
-                    DeviceArName = equip.EquipmentNameAr,
-                    DeviceEngName = equip.EquipmentName,
-                    DeviceInternData = equip.InstallationDate.ToString("dd-MM-yyyy"),
-                    DeviceModel = equip.MasterEquipment.ModelNumber,
+                    HospitalArName = equip.Hospital.NameAr,
+                    HospitalEngName = equip.Hospital.Name,
+                    DepartmentArName = equip.Department.NameAr,
+                    DeviceArName = equip.MasterAsset.NameAr,
+                    DeviceEngName = equip.MasterAsset.Name,
+                    DeviceInternData = equip.InstallationDate.ToString(),
+                    DeviceModel = equip.MasterAsset.ModelNumber,
                     DevicePrice = equip.Price.ToString(),
-                    HospitalId = equip.HealthCareUnit.Id,
-                    PurchaseDate = equip.PurchaseDate.ToString("dd-MM-yyyy"),
+                    HospitalId = equip.Hospital.Id,
+                    PurchaseDate = equip.PurchaseDate.ToString(),
                     DeviceId =equip.Id
                 }).AsEnumerable().Select(x => new HealthCareDevicesViewModels()
                 {
@@ -184,18 +190,18 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
             {
                foreach (var id in modelID.Id)
                {
-                    var city = _BioContext.HealthDistricts.Where(hd => hd.HealthDistrictCode == id).FirstOrDefault();
+                    var city = _BioContext.Cities.Where(hd => hd.Code == id).FirstOrDefault();
                     if(city!=null)
                     {
-                        var hospitals = _BioContext.HealthCareUnits.Where(h => h.HealthDistrictId == city.Id).ToList();
+                        var hospitals = _BioContext.Hospitals.Where(h => h.CityId == city.Id).ToList();
                         foreach (var item in hospitals)
                         {
-                            var organization = _BioContext.organizations.Where(o => o.Id == item.organizationId).Select(d => new
+                            var organization = _BioContext.Organizations.Where(o => o.Id == item.organizationId).Select(d => new
                         {
                                 OrginizationsEn = d.Name,
                                 OrginizationsAr = d.NameAr,
                                 Id = d.Id,
-                                HospitalId = item.HealthCareUnitCode
+                                HospitalId = item.Code
                             }).Select(x => new OrganizationViewModel()
                             {
                                 Name = x.OrginizationsEn,
@@ -251,14 +257,14 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
                  {
                         if(code!=null)
                         {
-                            var hospital = _BioContext.HealthCareUnits.Where(h => h.HealthCareUnitCode == code).FirstOrDefault();
-                            var organization = _BioContext.organizations.Where(o => o.Id == hospital.organizationId).FirstOrDefault();
-                            var subOrganization=_BioContext.subOrganizations.Where(s=>s.organizationId==organization.Id).Select(sub=> new
+                            var hospital = _BioContext.Hospitals.Where(h => h.Code == code).FirstOrDefault();
+                            var organization = _BioContext.Organizations.Where(o => o.Id == hospital.organizationId).FirstOrDefault();
+                            var subOrganization=_BioContext.SubOrganizations.Where(s=>s.organizationId==organization.Id).Select(sub=> new
                             {
                                 OrginizationsEn = sub.Name,
                                 OrginizationsAr = sub.NameAr,
                                 organizationId = sub.organizationId,
-                                HospitaIds = hospital.HealthCareUnitCode,
+                                HospitaIds = hospital.Code,
                                 Id = sub.Id
                             }).AsEnumerable().Select(x => new SubOrganizationViewModel()
                             {
@@ -318,7 +324,7 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
 
         }
 
-        public IEnumerable<Models.HealthAppContext.HealthCareUnit> GetHospitalsByOrginizationsDetails(getMultiIDViewModel modelID)
+        public IEnumerable<HealthCareUnit> GetHospitalsByOrginizationsDetails(getMultiIDViewModel modelID)
         {
             var model = (
                 from a in _context.HealthCareUnits
@@ -333,7 +339,7 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
                     HospitalNameAr = a.NameAr,
                     Code = a.Code,
                     SubOrganizationId = a.SubOrganizationId
-                }).AsEnumerable().Select(x => new Models.HealthAppContext.HealthCareUnit()
+                }).AsEnumerable().Select(x => new HealthCareUnit()
             {
                 Code = x.Code,
                 Name = x.HospitalName,
@@ -350,15 +356,15 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
             {
                 foreach (var deptId in models)
                 {
-                    var equipment = _BioContext.Equipments.Include(e=>e.HealthCareUnit).Where(e => e.DepartmentId == deptId).ToList();
+                    var equipment = _BioContext.Assets.Include(e=>e.Hospital).Where(e => e.DepartmentId == deptId).ToList();
                     foreach (var eq in equipment)
                     {
-                        var masterEq = _BioContext.masterEquipments.Where(meq => meq.Id == eq.MasterEquipmentId).FirstOrDefault();
-                        var brand = _BioContext.Manufacturers.Where(m => m.Id == masterEq.ManufacturerId).Select(b=>new 
+                        var masterEq = _BioContext.masterAssets.Where(meq => meq.Id == eq.MasterAssetId).FirstOrDefault();
+                        var brand = _BioContext.Brands.Where(m => m.Id == masterEq.BrandId).Select(b=>new 
                         {
-                            brandNameAr=b.ManufacturerNameAr,
-                            brandNameEn=b.ManufacturerName,
-                            HospitalCode=eq.HealthCareUnit.HealthCareUnitCode
+                            brandNameAr=b.NameAr,
+                            brandNameEn=b.Name,
+                            HospitalCode=eq.Hospital.Code
                         }).AsEnumerable().Select(x => new ManFactureViewModel()
                         {
                             ManFactureName = x.brandNameEn,
@@ -403,15 +409,15 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
             var suppliers = new List<SupplierViewModel>();
             foreach (var code in modelID.Id)
             {
-                var hospital = _BioContext.HealthCareUnits.Where(h => h.HealthCareUnitCode == code).FirstOrDefault();
-                var equipment = _BioContext.Equipments.Where(e => e.HealthCareUnitId == hospital.Id).ToList();
+                var hospital = _BioContext.Hospitals.Where(h => h.Code == code).FirstOrDefault();
+                var equipment = _BioContext.Assets.Where(e => e.HospitalId == hospital.Id).ToList();
                 foreach (var eq in equipment)
                 {
                     var supplier = _BioContext.Suppliers.Where(s => s.Id == eq.SupplierId).Select(sup => new
                     {
-                        Name=sup.SupplierName,
-                        NameAr=sup.SupplierNameAr,
-                        HospitalCod=eq.HealthCareUnit.HealthCareUnitCode,
+                        Name=sup.Name,
+                        NameAr=sup.NameAr,
+                        HospitalCod=eq.Hospital.Code,
                         Id=sup.Id
                     }).AsEnumerable().Select(x => new SupplierViewModel()
                     {
@@ -508,18 +514,18 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
             {
                 foreach (var code in models.Id)
             {
-                var hospital = _BioContext.HealthCareUnits.Where(h => h.HealthCareUnitCode == code).FirstOrDefault();
-                var eqiupment = _BioContext.Equipments.Where(e => e.HealthCareUnitId == hospital.Id).ToList();
+                var hospital = _BioContext.Hospitals.Where(h => h.Code == code).FirstOrDefault();
+                var eqiupment = _BioContext.Assets.Where(e => e.HospitalId == hospital.Id).ToList();
                 foreach (var eq in eqiupment)
                 {
                     var department = _BioContext.Departments.Where(d => d.Id == eq.DepartmentId).Select(dept => new
                     {
-                        HospitalArName = eq.HealthCareUnit.HealthCareUnitNameAr,
-                        HospitalEngName = eq.HealthCareUnit.HealthCareUnitName,
-                        HospitalCode = eq.HealthCareUnit.HealthCareUnitCode,
-                        HospitalID= eq.HealthCareUnit.Id,
-                        DepartmentArName = dept.DepartmentNameAr,
-                        DepartmentEngName = dept.DepartmentName,
+                        HospitalArName = eq.Hospital.NameAr,
+                        HospitalEngName = eq.Hospital.Name,
+                        HospitalCode = eq.Hospital.Code,
+                        HospitalID= eq.Hospital.Id,
+                        DepartmentArName = dept.NameAr,
+                        DepartmentEngName = dept.Name,
                         DepartmentID = dept.Id,
                     }).AsEnumerable().Select(x => new DepartmemtByHospitalCodeViewModels()
                     {

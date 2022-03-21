@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BiomedicalSystemAPI.Models.AssetAppContext;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace BiomedicalSystemAPI.Models
         public int? OrganizationId { get; set; }
         [ForeignKey("OrganizationId")]
         public virtual Organization Organization { get; set; }
-        public virtual ICollection<Equipment> equipment { get; set; }
+        public virtual ICollection<AssetAppContext.AssetDetail> equipment { get; set; }
 
     }
 }

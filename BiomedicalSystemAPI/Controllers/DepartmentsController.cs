@@ -54,17 +54,17 @@ namespace BiomedicalSystemAPI.Controllers
 
 
 
-            var lstDepartmentCodes = _context.Departments.Where(a => a.DepartmentCode == departmentObj.DepartmentCode && a.Id != id).ToList();
+            var lstDepartmentCodes = _context.Departments.Where(a => a.Code == departmentObj.Code && a.Id != id).ToList();
             if (lstDepartmentCodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Department code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstDepartmentNames = _context.Departments.Where(a => a.DepartmentName == departmentObj.DepartmentName && a.Id != id).ToList();
+            var lstDepartmentNames = _context.Departments.Where(a => a.Name == departmentObj.Name && a.Id != id).ToList();
             if (lstDepartmentNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Department name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
             }
-            var lstDepartmentNamesAr = _context.Departments.Where(a => a.DepartmentNameAr == departmentObj.DepartmentNameAr && a.Id != id).ToList();
+            var lstDepartmentNamesAr = _context.Departments.Where(a => a.NameAr == departmentObj.NameAr && a.Id != id).ToList();
             if (lstDepartmentNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Department arabic name already exist", MessageAr = "هذا الاسم العربي مسجل سابقاً" });
@@ -101,17 +101,17 @@ namespace BiomedicalSystemAPI.Controllers
         public async Task<ActionResult<Department>> PostDepartment(Department departmentObj)
         {
 
-            var lstDepartmentCodes = _context.Departments.Where(a => a.DepartmentCode == departmentObj.DepartmentCode).ToList();
+            var lstDepartmentCodes = _context.Departments.Where(a => a.Code == departmentObj.Code).ToList();
             if (lstDepartmentCodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Department code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstDepartmentNames = _context.Departments.Where(a => a.DepartmentName == departmentObj.DepartmentName).ToList();
+            var lstDepartmentNames = _context.Departments.Where(a => a.Name == departmentObj.Name).ToList();
             if (lstDepartmentNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Department name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
             }
-            var lstDepartmentNamesAr = _context.Departments.Where(a => a.DepartmentNameAr == departmentObj.DepartmentNameAr).ToList();
+            var lstDepartmentNamesAr = _context.Departments.Where(a => a.NameAr == departmentObj.NameAr).ToList();
             if (lstDepartmentNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Department arabic name already exist", MessageAr = "هذا الاسم العربي مسجل سابقاً" });

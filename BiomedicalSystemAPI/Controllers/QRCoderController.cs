@@ -11,6 +11,7 @@ using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using BiomedicalSystemAPI.Models.AssetAppContext;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BiomedicalSystemAPI.Controllers
@@ -22,13 +23,14 @@ namespace BiomedicalSystemAPI.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ApplicationDbContext _context;
         private IEquipmentRepository _equipmentRepository;
-      
+        private readonly AssetDbContext _AssetContext;
         public QRCoderController(IEquipmentRepository equipmentRepository, 
-            ApplicationDbContext context, 
+            ApplicationDbContext context, AssetDbContext AssetContext,
             UserManager<ApplicationUser> userManager)
         {
             _equipmentRepository = equipmentRepository;
             _context = context;
+            _AssetContext = AssetContext;
             this.userManager = userManager;
             // _healthCareUnitRepository = healthCareUnitRepository;
         }
@@ -78,8 +80,8 @@ namespace BiomedicalSystemAPI.Controllers
             QRCode qrCode = new QRCode(qrCodeData);
             Bitmap qrCodeImage = qrCode.GetGraphic(15);
             var bitmapFiles = BitmapToBytes(qrCodeImage);
-            var equipment = _context.Equipments.Where(e=>e.Id== equipmentId).FirstOrDefault();
-            equipment.QrImgPath = url2;
+            var equipment = _AssetContext.AssetDetails.Where(e=>e.Id== equipmentId).FirstOrDefault();
+            equipment.QrFilePath = url2;
             _context.Entry(equipment).State = EntityState.Modified;
             _context.SaveChanges();
             //var inventory = new Inventory();         

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BiomedicalSystemAPI.Models.AssetAppContext;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -16,6 +17,6 @@ namespace BiomedicalSystemAPI.Models
         public virtual ApplicationUser users { get; set; }
         public int EquipmentId { get; set; }
         [ForeignKey("EquipmentId")]
-        public virtual Equipment equipments { get; set; }
+        public virtual AssetAppContext.AssetDetail equipments { get; set; }
     }
 }

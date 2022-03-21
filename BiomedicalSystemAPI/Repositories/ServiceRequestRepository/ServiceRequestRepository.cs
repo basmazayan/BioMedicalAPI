@@ -101,8 +101,8 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
                     ModeId = e.ModeId,
                     RequestMode = e.Mode.RequestMode,
                     EquipmentId = e.EquipmentId,
-                    EquipmentName = e.Equipment.EquipmentName,
-                    EquipmentCode = e.Equipment.EquipmentCode,
+                    //EquipmentName = e.Equipment.EquipmentName,
+                    EquipmentCode = e.Equipment.Code,
                     PriorityId = e.PriorityId,
                     PriorityLevel = e.Priority.PriorityLevel,
                     HealthDistrictId = e.HealthDistrictId,
@@ -133,7 +133,7 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
                     ModeId = e.ModeId,
                     RequestMode = e.Mode.RequestMode,
                     EquipmentId = e.EquipmentId,
-                    EquipmentCode = e.Equipment.EquipmentCode,
+                    EquipmentCode = e.Equipment.Code,
                     PriorityId = e.PriorityId,
                     PriorityLevel = e.Priority.PriorityLevel
 
@@ -163,7 +163,7 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
                     ModeId = e.ModeId,
                     RequestMode = e.Mode.RequestMode,
                     EquipmentId = e.EquipmentId,
-                    EquipmentCode = e.Equipment.EquipmentCode,
+                    EquipmentCode = e.Equipment.Code,
                     PriorityId = e.PriorityId,
                     PriorityLevel = e.Priority.PriorityLevel,
                     
@@ -174,7 +174,7 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
 
         public IEnumerable<ServiceRequest> GetAllRequestsByDistrict(int districtId)
         {
-            var requests = _context.ServiceRequest.Where(e => e.Equipment.HealthDistrictId == districtId)
+            var requests = _context.ServiceRequest.Where(e => e.Equipment.Hospital.City.Id == districtId)
                 .Include(e => e.Equipment)
                 .Include(e => e.Mode)
                 .Include(e => e.Priority)
@@ -194,7 +194,7 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
                     ModeId = e.ModeId,
                     RequestMode = e.Mode.RequestMode,
                     EquipmentId = e.EquipmentId,
-                    EquipmentCode = e.Equipment.EquipmentCode,
+                    EquipmentCode = e.Equipment.Code,
                     PriorityId = e.PriorityId,
                     PriorityLevel = e.Priority.PriorityLevel,
                     HealthDistrictId=e.HealthDistrict.Id
@@ -204,7 +204,7 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
         }
         public IEnumerable<ServiceRequest> GetAllRequestsByDirectory(int directoryId)
         {
-            var requests = _context.ServiceRequest.Where(e => e.Equipment.HealthDirectoryId == directoryId)
+            var requests = _context.ServiceRequest.Where(e => e.Equipment.Hospital.Governorate.Id == directoryId)
                 .Include(e => e.Equipment)
                 .Include(e => e.Mode)
                 .Include(e => e.Priority)
@@ -225,7 +225,7 @@ namespace BiomedicalSystemAPI.Repositories.ServiceRequestRepository
                     ModeId = e.ModeId,
                     RequestMode = e.Mode.RequestMode,
                     EquipmentId = e.EquipmentId,
-                    EquipmentCode = e.Equipment.EquipmentCode,
+                    EquipmentCode = e.Equipment.Code,
                     PriorityId = e.PriorityId,
                     PriorityLevel = e.Priority.PriorityLevel,
                     HealthDistrictId = e.User.HealthDistrictId,

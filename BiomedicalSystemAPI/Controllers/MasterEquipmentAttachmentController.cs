@@ -28,14 +28,14 @@ namespace BiomedicalSystemAPI.Controllers
             foreach (var item in attachment)
             {
                 //  string dpPath = Upload().ToString();
-                _context.masterEquipmentAttachments.Add(item);
+                _context.MasterEquipmentAttachments.Add(item);
                 _context.SaveChanges();
             }
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<MasterEquipmentAttachment>> GetAttachment(int id)
         {
-            var attachment = await _context.masterEquipmentAttachments.FindAsync(id);
+            var attachment = await _context.MasterEquipmentAttachments.FindAsync(id);
 
             if (attachment == null)
             {
@@ -76,14 +76,14 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("getAttachmentsWithNoMasterEquipment")]
         public async Task<ActionResult<IEnumerable<MasterEquipmentAttachment>>> getAttachmentsWithNoMasterEquipment()
         {
-            var mA= await _context.masterEquipmentAttachments.Where(e => e.MasterEquipmentId == null).ToListAsync();
+            var mA= await _context.MasterEquipmentAttachments.Where(e => e.MasterEquipmentId == null).ToListAsync();
             return mA;
         }
         [HttpGet]
         [Route("getAttachmentsForMasterEquipment/{MasterequipId}")]
         public async Task<ActionResult<IEnumerable<MasterEquipmentAttachment>>> getAttachmentsForMasterEquipment(int MasterequipId)
         {
-            return await _context.masterEquipmentAttachments.Where(e => e.MasterEquipmentId == MasterequipId).ToListAsync();
+            return await _context.MasterEquipmentAttachments.Where(e => e.MasterEquipmentId == MasterequipId).ToListAsync();
         }
         [HttpPost,DisableRequestSizeLimit]
         [Route("Masterupload")]
@@ -112,7 +112,7 @@ namespace BiomedicalSystemAPI.Controllers
                     }
                     var attach = new MasterEquipmentAttachment();
                     attach.FileName = dbPath;
-                    _context.masterEquipmentAttachments.Add(attach);
+                    _context.MasterEquipmentAttachments.Add(attach);
                     _context.SaveChanges();
                     IDs.Add(attach.Id);
                 }
@@ -126,20 +126,20 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<MasterEquipmentAttachment>> DeleteAttachment(int id)
         {
-            var attachment = await _context.masterEquipmentAttachments.FindAsync(id);
+            var attachment = await _context.MasterEquipmentAttachments.FindAsync(id);
             if (attachment == null)
             {
                 return NotFound();
             }
 
-            _context.masterEquipmentAttachments.Remove(attachment);
+            _context.MasterEquipmentAttachments.Remove(attachment);
             await _context.SaveChangesAsync();
 
             return attachment;
         }
         private bool AttachmentExists(int id)
         {
-            return _context.masterEquipmentAttachments.Any(e => e.Id == id);
+            return _context.MasterEquipmentAttachments.Any(e => e.Id == id);
         }
     }
 }

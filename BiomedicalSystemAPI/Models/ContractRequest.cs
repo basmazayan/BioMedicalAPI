@@ -1,4 +1,5 @@
 ﻿using BiomedicalSystemAPI.DTO;
+using BiomedicalSystemAPI.Models.AssetAppContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,7 +18,7 @@ namespace BiomedicalSystemAPI.Models
         public Status Status { get; set; }
         public int HospitalId { get; set; }
         [ForeignKey("HospitalId")]
-        public virtual HealthCareUnit HealthCareUnit { get; set; }
-        public virtual ICollection<Equipment> equipment { get; set; }
+        public virtual Hospital HealthCareUnit { get; set; }
+        public virtual ICollection<AssetAppContext.AssetDetail> equipment { get; set; }
     }
 }

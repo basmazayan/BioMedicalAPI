@@ -33,7 +33,7 @@ namespace BiomedicalSystemAPI.Repositories
                    // Attachment Attach = new Attachment();
                   //  Attach.Id = attachment.Id;
                  //   Attach.FileName = attachment.FileName;
-                    _context.equipmentAttachments.Add(attachment);
+                    _context.EquipmentAttachments.Add(attachment);
            // return _context.equipmentAttachments.Select(eA => eA.Id).ToList();
            // }
  

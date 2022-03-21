@@ -1,5 +1,6 @@
 ﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
+using BiomedicalSystemAPI.Models.AssetAppContext;
 using BiomedicalSystemAPI.Repositories.ContractRequestRepositories;
 using BiomedicalSystemAPI.Repositories.ContractRequestRepository;
 using BiomedicalSystemAPI.Repositories.EmailConfirmation;
@@ -54,7 +55,7 @@ namespace BiomedicalSystemAPI.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "contarct", Message = "equipment can't be null", MessageAr = "يجب اختيار آله" });
                 }
                 _contractRequestRepository.Add(request);
-                var healthUnit = _context.HealthCareUnits.Where(h => h.Id == request.HospitalId).FirstOrDefault();
+                var healthUnit = _context.Hospitals.Where(h => h.Id == request.HospitalId).FirstOrDefault();
                 List<AssignedUserDTO> assignedUsers = new List<AssignedUserDTO>();
                 AssignedUserDTO assignedUsersDTO;
                 var users = _userManager.Users.ToList();
@@ -266,7 +267,7 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("getcount")]
         public int count()
         {
-            return _pagingRepository.Count<Equipment>();
+            return _pagingRepository.Count<Models.AssetAppContext.AssetDetail>();
         }
         [HttpGet("UpdateRequestStatus/{reqId}")]
         public ActionResult UpdateRequestStatus(int reqId)

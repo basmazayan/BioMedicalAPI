@@ -21,8 +21,8 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
         }
         public void AddNewMasterEquipment(MasterEquipmentDTO masterEquipment)
         {
-            MasterEquipment meq = new MasterEquipment();
-            List<MasterEquipment> master = new List<MasterEquipment>();
+            MasterAsset meq = new MasterAsset();
+            List<MasterAsset> master = new List<MasterAsset>();
             foreach (var item in master)
             {
                 if (item.Name == masterEquipment.Name)
@@ -44,25 +44,25 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                 meq.Name = masterEquipment.Name;
                 meq.NameAr = masterEquipment.NameAr;
                 meq.MasterCode = masterEquipment.MasterCode;
-                meq.EquipmentDescriptionAr = masterEquipment.EquipmentDescriptionAr;
+                meq.DescriptionAr = masterEquipment.EquipmentDescriptionAr;
                 meq.ModelNumber = masterEquipment.ModelNumber;
                 meq.VersionNumber = masterEquipment.VersionNumber;
                 meq.ExpectedLifeTime = masterEquipment.ExpectedLifeTime;
                 meq.PriorityId = masterEquipment.PriorityId;
-                meq.EquipmentCategoryId = masterEquipment.EquipmentCategoryId;
-                meq.EquipmentSubCategoryId = masterEquipment.EquipmentSubCategoryId;
+                meq.CategoryId = masterEquipment.EquipmentCategoryId;
+                meq.SubCategoryId = masterEquipment.EquipmentSubCategoryId;
                 if (masterEquipment.EquipmentSubCategoryId == 0)
                 {
-                    meq.EquipmentSubCategoryId = null;
+                    meq.SubCategoryId = null;
                 }
-                meq.ManufacturerId = masterEquipment.ManufacturerId;
+                meq.BrandId = masterEquipment.ManufacturerId;
                 meq.OriginId = masterEquipment.OriginId;
                 meq.UpaCode = masterEquipment.UpaCode;
-                _context.masterEquipments.Add(meq);
+                _context.masterAssets.Add(meq);
                 meq.masterequipmentAttachments = new List<MasterEquipmentAttachment>();
                 foreach (var AttachId in masterEquipment.AttachmentIDs)
                 {
-                    var attachment = _context.masterEquipmentAttachments.FirstOrDefault(e => e.Id == AttachId);
+                    var attachment = _context.MasterEquipmentAttachments.FirstOrDefault(e => e.Id == AttachId);
                     meq.masterequipmentAttachments.Add(attachment);
                 }
             }
@@ -98,8 +98,8 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
         {
             try
             {
-                var masterEquip = _context.masterEquipments
-                    .Include(mE => mE.Manufacturer)
+                var masterEquip = _context.masterAssets
+                    .Include(mE => mE.Brand)
                     .Include(mE => mE.Origin)
                     .OrderBy(e => e.Name)
                     .Skip((paging.PageNumber - 1) * paging.PageSize)
@@ -110,18 +110,18 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                         Name = mE.Name,
                         NameAr = mE.NameAr,
                         MasterCode = mE.MasterCode,
-                        EquipmentDescriptionAr = mE.EquipmentDescriptionAr,
+                        EquipmentDescriptionAr = mE.DescriptionAr,
                         ModelNumber = mE.ModelNumber,
                         VersionNumber = mE.VersionNumber,
                         ExpectedLifeTime = mE.ExpectedLifeTime,
                         PriorityId = mE.PriorityId,
-                        EquipmentCategoryId = mE.EquipmentCategoryId,
-                        EquipmentSubCategoryId = mE.EquipmentSubCategoryId,
-                        ManufacturerId = mE.ManufacturerId,
-                        ManufacturerName = mE.Manufacturer.ManufacturerName,
-                        ManufacturerNameAr = mE.Manufacturer.ManufacturerNameAr,
+                        EquipmentCategoryId = mE.CategoryId,
+                        EquipmentSubCategoryId = mE.SubCategoryId,
+                        ManufacturerId = mE.BrandId,
+                        ManufacturerName = mE.Brand.Name,
+                        ManufacturerNameAr = mE.Brand.NameAr,
                         OriginId = mE.OriginId,
-                        OriginCode = mE.Origin.OriginCode,
+                        OriginCode = mE.Origin.Code,
                         UpaCode = mE.UpaCode
                     }).ToList();
                 return masterEquip;
@@ -134,14 +134,14 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
         }
         public int getCount()
         {
-            return _context.masterEquipments.Count();
+            return _context.masterAssets.Count();
         }
         public IEnumerable<MasterEquipmentDTO> GetAll()
         {
             try
             {
-                var masterEquip = _context.masterEquipments
-                    .Include(mE => mE.Manufacturer)
+                var masterEquip = _context.masterAssets
+                    .Include(mE => mE.Brand)
                     .Include(mE => mE.Origin)
                     .Select(mE => new MasterEquipmentDTO
                     {
@@ -149,18 +149,18 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                         Name = mE.Name,
                         NameAr = mE.NameAr,
                         MasterCode = mE.MasterCode,
-                        EquipmentDescriptionAr = mE.EquipmentDescriptionAr,
+                        EquipmentDescriptionAr = mE.DescriptionAr,
                         ModelNumber = mE.ModelNumber,
                         VersionNumber = mE.VersionNumber,
                         ExpectedLifeTime = mE.ExpectedLifeTime,
                         PriorityId = mE.PriorityId,
-                        EquipmentCategoryId = mE.EquipmentCategoryId,
-                        EquipmentSubCategoryId = mE.EquipmentSubCategoryId,
-                        ManufacturerId = mE.ManufacturerId,
-                        ManufacturerName = mE.Manufacturer.ManufacturerName,
-                        ManufacturerNameAr = mE.Manufacturer.ManufacturerNameAr,
+                        EquipmentCategoryId = mE.CategoryId,
+                        EquipmentSubCategoryId = mE.SubCategoryId,
+                        ManufacturerId = mE.BrandId,
+                        ManufacturerName = mE.Brand.Name,
+                        ManufacturerNameAr = mE.Brand.NameAr,
                         OriginId = mE.OriginId,
-                        OriginCode = mE.Origin.OriginCode,
+                        OriginCode = mE.Origin.Code,
                         UpaCode = mE.UpaCode
                     }).ToList();
                 return masterEquip;
@@ -174,8 +174,8 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
 
         public void Update(int id, MasterEquipmentDTO masterEquipment)
         {
-            MasterEquipment mEquipment = _context.masterEquipments.FirstOrDefault(me => me.Id == id);
-            List<MasterEquipment> master = new List<MasterEquipment>();
+            MasterAsset mEquipment = _context.masterAssets.FirstOrDefault(me => me.Id == id);
+            List<MasterAsset> master = new List<MasterAsset>();
             foreach (var item in master)
             {
                 if (item.Name == masterEquipment.Name)
@@ -194,24 +194,24 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
             mEquipment.Name = masterEquipment.Name;
             mEquipment.NameAr = masterEquipment.NameAr;
             mEquipment.MasterCode = masterEquipment.MasterCode;
-            mEquipment.EquipmentDescriptionAr = masterEquipment.EquipmentDescriptionAr;
+            mEquipment.DescriptionAr = masterEquipment.EquipmentDescriptionAr;
             mEquipment.ModelNumber = masterEquipment.ModelNumber;
             mEquipment.VersionNumber = masterEquipment.VersionNumber;
             mEquipment.ExpectedLifeTime = masterEquipment.ExpectedLifeTime;
             mEquipment.PriorityId = masterEquipment.PriorityId;
-            mEquipment.EquipmentCategoryId = masterEquipment.EquipmentCategoryId;
-            mEquipment.EquipmentSubCategoryId = masterEquipment.EquipmentSubCategoryId;
+            mEquipment.CategoryId = masterEquipment.EquipmentCategoryId;
+            mEquipment.SubCategoryId = masterEquipment.EquipmentSubCategoryId;
             if (masterEquipment.EquipmentSubCategoryId == 0)
             {
-                mEquipment.EquipmentSubCategoryId = null;
+                mEquipment.SubCategoryId = null;
             }
-            mEquipment.ManufacturerId = masterEquipment.ManufacturerId;
+            mEquipment.BrandId = masterEquipment.ManufacturerId;
             mEquipment.OriginId = masterEquipment.OriginId;
             mEquipment.UpaCode = masterEquipment.UpaCode;
             mEquipment.masterequipmentAttachments = new List<MasterEquipmentAttachment>();
             foreach (var AttachId in masterEquipment.AttachmentIDs)
             {
-                var attachment = _context.masterEquipmentAttachments.FirstOrDefault(e => e.Id == AttachId);
+                var attachment = _context.MasterEquipmentAttachments.FirstOrDefault(e => e.Id == AttachId);
                 mEquipment.masterequipmentAttachments.Add(attachment);
             }
             _context.Entry(mEquipment).State = EntityState.Modified;
@@ -224,14 +224,14 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                 throw new NullReferenceException();
 
             }
-            var masterEquipment = _context.masterEquipments.FirstOrDefault(mE => mE.Id == id);
-            _context.masterEquipments.Remove(masterEquipment);
+            var masterEquipment = _context.masterAssets.FirstOrDefault(mE => mE.Id == id);
+            _context.masterAssets.Remove(masterEquipment);
 
         }
 
         public string GetMasterCode(string Name)
         {
-            var mastereq = _context.masterEquipments.FirstOrDefault(me => me.Name == Name);
+            var mastereq = _context.masterAssets.FirstOrDefault(me => me.Name == Name);
             return mastereq.MasterCode;
         }
 
@@ -239,8 +239,8 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
         {
             try
             {
-                var masterEquip = _context.masterEquipments
-                    .Include(mE => mE.Manufacturer)
+                var masterEquip = _context.masterAssets
+                    .Include(mE => mE.Brand)
                     .Include(mE => mE.Origin)
                     .Select(mE => new MasterEquipmentDTO
                     {
@@ -248,18 +248,18 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                         Name = mE.Name,
                         NameAr = mE.NameAr,
                         MasterCode = mE.MasterCode,
-                        EquipmentDescriptionAr = mE.EquipmentDescriptionAr,
+                        EquipmentDescriptionAr = mE.DescriptionAr,
                         ModelNumber = mE.ModelNumber,
                         VersionNumber = mE.VersionNumber,
                         ExpectedLifeTime = mE.ExpectedLifeTime,
                         PriorityId = mE.PriorityId,
-                        EquipmentCategoryId = mE.EquipmentCategoryId,
-                        EquipmentSubCategoryId = mE.EquipmentSubCategoryId,
-                        ManufacturerId = mE.ManufacturerId,
-                        ManufacturerName = mE.Manufacturer.ManufacturerName,
-                        ManufacturerNameAr = mE.Manufacturer.ManufacturerNameAr,
+                        EquipmentCategoryId = mE.CategoryId,
+                        EquipmentSubCategoryId = mE.SubCategoryId,
+                        ManufacturerId = mE.BrandId,
+                        ManufacturerName = mE.Brand.Name,
+                        ManufacturerNameAr = mE.Brand.NameAr,
                         OriginId = mE.OriginId,
-                        OriginCode = mE.Origin.OriginCode,
+                        OriginCode = mE.Origin.Code,
                         UpaCode = mE.UpaCode
                     }).FirstOrDefault(e => e.Id == id);
                 return masterEquip;
@@ -275,7 +275,7 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
         public ActionResult<List<BrandVM>> GetMasterEquipmentsByBrand(List<EquipmentDTO> equipmentModel)
         {
             List<BrandVM> lstBrandEquipment = new List<BrandVM>();
-            var lstBrands = (from brnd in _context.Manufacturers
+            var lstBrands = (from brnd in _context.Brands
                              select brnd).ToList()
                             .GroupBy(a => a.Id).ToList();
             if (lstBrands.Count > 0)
@@ -284,8 +284,8 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                 {
                     BrandVM brandEquipmentObj = new BrandVM();
                     brandEquipmentObj.Id = item.FirstOrDefault().Id;
-                    brandEquipmentObj.BrandName = item.FirstOrDefault().ManufacturerName;
-                    brandEquipmentObj.BrandNameAr = item.FirstOrDefault().ManufacturerNameAr;
+                    brandEquipmentObj.BrandName = item.FirstOrDefault().Name;
+                    brandEquipmentObj.BrandNameAr = item.FirstOrDefault().NameAr;
                     brandEquipmentObj.ListEquipment = equipmentModel.ToList().Where(e => e.ManufacturerId == brandEquipmentObj.Id)
 
 

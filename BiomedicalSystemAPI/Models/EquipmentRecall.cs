@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BiomedicalSystemAPI.Models.AssetAppContext;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace BiomedicalSystemAPI.Models
     public class EquipmentRecall
     {
         public int Id { get; set; }
-        public int MasterEquipmentId { get; set; }
-        [ForeignKey("MasterEquipmentId")]
-        public virtual MasterEquipment MasterEquipment { get; set; }
+        public int MasterAssetId { get; set; }
+        [ForeignKey("MasterAssetId")]
+        public virtual MasterAsset MasterAsset { get; set; }
         public DateTime RecallDate { get; set; }
         public int RecallNumber { get; set; }
         public string RecallSubject { get; set; }
@@ -21,7 +22,7 @@ namespace BiomedicalSystemAPI.Models
         public int SupplierId { get; set; }
         [ForeignKey("SupplierId")]
         public virtual Supplier Supplier { get; set; }
-        public ICollection<Equipment> Equipments{ get; set; }
+        public ICollection<Assets> Equipments{ get; set; }
 
 }
 }

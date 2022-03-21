@@ -20,24 +20,24 @@ namespace BiomedicalSystemAPI.Controllers
         }
         // GET: api/HealthDistricts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HealthDistrict>>> GetHealthDistricts()
+        public async Task<ActionResult<IEnumerable<City>>> GetHealthDistricts()
         {
-            var HealthDistricts = await _context.HealthDistricts.ToListAsync();
+            var HealthDistricts = await _context.Cities.ToListAsync();
             return HealthDistricts;
         }
 
         [HttpGet]
         [Route("getHealthDirectoryBydirId/{directoryId}")]
-        public async Task<ActionResult<IEnumerable<HealthDirectory>>> getHealthDistrictsByempDistrictId(int directoryId)
+        public async Task<ActionResult<IEnumerable<Governorate>>> getHealthDistrictsByempDistrictId(int directoryId)
         {
 
-            var HealthDirectory = await _context.HealthDirectories.Where(e => e.Id == directoryId)
-                .Select(e => new HealthDirectory
+            var HealthDirectory = await _context.Governorates.Where(e => e.Id == directoryId)
+                .Select(e => new Governorate
                 {
                     Id = e.Id,
-                    HealthDirectoryCode = e.HealthDirectoryCode,
-                     HealthDirectoryName= e.HealthDirectoryName,
-                    HealthDirectoryNameAr = e.HealthDirectoryNameAr,
+                    Code = e.Code,
+                    Name= e.Name,
+                    NameAr = e.NameAr,
                     
                 }).ToListAsync();
             return HealthDirectory;
@@ -45,9 +45,9 @@ namespace BiomedicalSystemAPI.Controllers
 
         // GET: api/HealthDistricts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<HealthDistrict>> GetHealthDistrict(int id)
+        public async Task<ActionResult<City>> GetHealthDistrict(int id)
         {
-            var HealthDistrict = await _context.HealthDistricts.FindAsync(id);
+            var HealthDistrict = await _context.Cities.FindAsync(id);
 
             if (HealthDistrict == null)
             {
@@ -57,21 +57,21 @@ namespace BiomedicalSystemAPI.Controllers
         }
         [HttpGet]
         [Route("AllHealthDistrictsByhealthDirectoryId/{DirectoryId}")]
-        public async Task<ActionResult<IEnumerable<HealthDistrict>>> AllHealthDistrictsByhealthDirectoryId(int DirectoryId)
+        public async Task<ActionResult<IEnumerable<City>>> AllHealthDistrictsByhealthDirectoryId(int DirectoryId)
         {
             if (DirectoryId != 0)
             {
-                return await _context.HealthDistricts.Where(d => d.HealthDirectoryId == DirectoryId).ToListAsync();
+                return await _context.Cities.Where(d => d.Id == DirectoryId).ToListAsync();
             }
             return BadRequest();
         }
         [HttpGet]
         [Route("AllHealthDistrictsByhealthDirectoryName/{DirectoryName}")]
-        public async Task<ActionResult<IEnumerable<HealthDistrict>>> AllHealthDistrictsByhealthDirectoryName(string DirectoryName)
+        public async Task<ActionResult<IEnumerable<City>>> AllHealthDistrictsByhealthDirectoryName(string DirectoryName)
         {
             if (DirectoryName != null)
             {
-                var dists = await _context.HealthDistricts.Where(d => d.HealthDistrictName == DirectoryName || d.HealthDistrictNameAr== DirectoryName).ToListAsync();
+                var dists = await _context.Cities.Where(d => d.Name == DirectoryName || d.NameAr== DirectoryName).ToListAsync();
 
                 return dists;
             }
@@ -80,7 +80,7 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpGet("GetHealthDistrictsIdbyName/{name}")]
         public async Task<ActionResult<int>> GetHealthDistrictsIdbyName(string name)
         {
-            var HealthDistrict = await _context.HealthDistricts.FirstOrDefaultAsync(d => d.HealthDistrictName == name || d.HealthDistrictNameAr == name);
+            var HealthDistrict = await _context.Cities.FirstOrDefaultAsync(d => d.Name == name || d.NameAr == name);
 
             if (HealthDistrict == null)
             {
@@ -105,7 +105,7 @@ namespace BiomedicalSystemAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHealthDistricts(int id, HealthDistrict HealthDistrict)
+        public async Task<IActionResult> PutHealthDistricts(int id, City HealthDistrict)
         {
             if (id != HealthDistrict.Id)
             {
@@ -137,9 +137,9 @@ namespace BiomedicalSystemAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<HealthDistrict>> PostHealthDistrict(HealthDistrict healthDistrict)
+        public async Task<ActionResult<City>> PostHealthDistrict(City healthDistrict)
         {
-            _context.HealthDistricts.Add(healthDistrict);
+            _context.Cities.Add(healthDistrict);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetHealthDistrict", new { id = healthDistrict.Id }, healthDistrict);
@@ -147,15 +147,15 @@ namespace BiomedicalSystemAPI.Controllers
         
         // DELETE: api/HealthDistricts/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<HealthDistrict>> DeletehealthDistrict(int id)
+        public async Task<ActionResult<City>> DeletehealthDistrict(int id)
         {
-            var healthDistrict = await _context.HealthDistricts.FindAsync(id);
+            var healthDistrict = await _context.Cities.FindAsync(id);
             if (healthDistrict == null)
             {
                 return NotFound();
             }
 
-            _context.HealthDistricts.Remove(healthDistrict);
+            _context.Cities.Remove(healthDistrict);
             await _context.SaveChangesAsync();
 
             return healthDistrict;
@@ -163,7 +163,7 @@ namespace BiomedicalSystemAPI.Controllers
 
         private bool HealthDistrictExists(int id)
         {
-            return _context.HealthDistricts.Any(e => e.Id == id);
+            return _context.Cities.Any(e => e.Id == id);
         }
     }
 }

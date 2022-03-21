@@ -1,5 +1,6 @@
 ﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
+using BiomedicalSystemAPI.Models.AssetAppContext;
 using BiomedicalSystemAPI.Repositories.ContractRequestRepositories;
 using BiomedicalSystemAPI.Repositories.EquipmentReposatories;
 using BiomedicalSystemAPI.Repositories.PagingRepository;
@@ -16,11 +17,13 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IPagingRepository _pagingRepository;
-
-        public ContractRequestRepository(ApplicationDbContext  context,IPagingRepository pagingRepository)
+        private readonly AssetDbContext _AssetContext;
+        public ContractRequestRepository(ApplicationDbContext  context,IPagingRepository pagingRepository,
+            AssetDbContext AssetContext)
         {
             _context = context;
             _pagingRepository = pagingRepository;
+            _AssetContext = AssetContext;
         }
         public void Add(ContractRequestDTO contractRequest)
         {
@@ -35,7 +38,7 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
             _context.SaveChanges();
             foreach (var eq in contractRequest.equipments)
             {
-                var equip = _context.Equipments.Where(e => e.Id == eq.Id).FirstOrDefault();
+                var equip = _context.Assets.Where(e => e.Id == eq.Id).FirstOrDefault();
                 equip.ContractRequestId= contractrequest.Id;
                 //eq.ContractRequestId = contractrequest.Id;
             }
@@ -50,7 +53,7 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
             contractrequest.Date = contractRequest.Date;
             contractrequest.Status = contractRequest.Status;
             contractrequest.HospitalId = contractRequest.HospitalId;
-            var req = _context.Equipments.Where(e => e.ContractRequestId == contractrequest.Id).ToList();
+            var req = _context.Assets.Where(e => e.ContractRequestId == contractrequest.Id).ToList();
             foreach (var item in req)
             {
                 item.ContractRequestId = null;
@@ -60,7 +63,7 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
             foreach (var eq in contractRequest.equipments)
             {
 
-                var equip = _context.Equipments.Where(e => e.Id == eq.Id).FirstOrDefault();
+                var equip = _context.Assets.Where(e => e.Id == eq.Id).FirstOrDefault();
                 equip.ContractRequestId = contractrequest.Id;
             }
             _context.Entry(contractrequest).State = EntityState.Modified;
@@ -90,7 +93,7 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
         public List<ContractVM> getRequestForOrganizations(int OrgId)
         {
             List<ContractVM> contracts = new List<ContractVM>();
-            var hospitals = _context.HealthCareUnits.Where(h => h.organizationId == OrgId).ToList().GroupBy(h => h.Id).ToList();           
+            var hospitals = _context.Hospitals.Where(h => h.organizationId == OrgId).ToList().GroupBy(h => h.Id).ToList();           
             if (hospitals.Count > 0)
             {
                 foreach (var hos in hospitals)
@@ -99,29 +102,31 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
 
                     contractRequest.Id = hos.FirstOrDefault().Id;
                     contractRequest.HospitalId = hos.FirstOrDefault().Id;
-                    contractRequest.HospitalName = hos.FirstOrDefault().HealthCareUnitName;
-                    contractRequest.HospitalNameAr = hos.FirstOrDefault().HealthCareUnitNameAr;
+                    contractRequest.HospitalName = hos.FirstOrDefault().Name;
+                    contractRequest.HospitalNameAr = hos.FirstOrDefault().NameAr;
                     contractRequest.ContractRequests = _context.contractRequests.Where(c => c.HospitalId == contractRequest.Id && c.Status==Status.SentToOrganization)
                         .Select(contRequest => new ContractRequestVM
                         {
                             Id = contRequest.Id,
                             Number = contRequest.Number,
                             Date = contRequest.Date,
-                            Equipments = _context.Equipments.Where(e => e.ContractRequestId == contRequest.Id)
+                            Equipments = _context.Assets
+                            .Include(e=>e.MasterAsset)
+                            .Where(e => e.ContractRequestId == contRequest.Id)
                             .Select(equip => new EquipmentDTO
                             {
                                 Id=equip.Id,
-                                EquipmentCode = equip.EquipmentCode,
-                                EquipmentName = equip.EquipmentName,
-                                EquipmentNameAr = equip.EquipmentNameAr,
-                                ManufacturerName = _context.Manufacturers.Where(m => m.Id == equip.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                                ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == equip.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,
+                                EquipmentCode = equip.Code,
+                                EquipmentName = equip.MasterAsset.Name,
+                                EquipmentNameAr = equip.MasterAsset.NameAr,
+                                ManufacturerName = _context.Brands.Where(m => m.Id == equip.MasterAsset.BrandId).FirstOrDefault().Name,
+                                ManufacturerNameAr = _context.Brands.Where(m => m.Id == equip.MasterAsset.BrandId).FirstOrDefault().NameAr,
                                 SerialNumber = equip.SerialNumber,
-                                DepartmentName = equip.Department.DepartmentName,
-                                DepartmentNameAr = equip.Department.DepartmentNameAr,
+                                DepartmentName = equip.Department.Name,
+                                DepartmentNameAr = equip.Department.NameAr,
                                 OrganizationRequestId=equip.OrganizationContract.Id,
-                                InternalCode=equip.InternalCode,
-                                UpaCode=equip.MasterEquipment.UpaCode,
+                                InternalCode=equip.Barcode,
+                                UpaCode=equip.MasterAsset.UpaCode,
                                 ContractRequestId=equip.ContractRequest.Id
                             }).ToList()
                         }).ToList();
@@ -155,11 +160,11 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
             organizationRequest.Number = OrgRequest.Number;
             organizationRequest.Date = OrgRequest.Date;
             organizationRequest.OrganizationId = OrgRequest.OrganizationId;
-            _context.organizationContractRequests.Add(organizationRequest);
+            _context.OrganizationContractRequests.Add(organizationRequest);
             _context.SaveChanges();
             foreach (var eqId in OrgRequest.equipmentIDs)
             {
-                var equip = _context.Equipments.Where(e => e.Id == eqId).FirstOrDefault();
+                var equip = _context.Assets.Where(e => e.Id == eqId).FirstOrDefault();
                 equip.OrganizationRequestId = organizationRequest.Id;
             }
             _context.SaveChanges();
@@ -217,7 +222,7 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
         {
             List<OrganizationRequestsVM> organizationcontracts = new List<OrganizationRequestsVM>();
             //var organizations = _context.organizationContractRequests.Include(oc => oc.Organization).ToList().GroupBy(o=>o.Id).ToList();
-            var organizations=_context.organizations.ToList().GroupBy(o => o.Id).ToList();
+            var organizations=_context.Organizations.ToList().GroupBy(o => o.Id).ToList();
             if(organizations.Count>0)
             {
                 foreach (var org in organizations)
@@ -227,35 +232,37 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
                     organizationRequest.OrganizationId= org.FirstOrDefault().Id;
                     organizationRequest.OrganizationName = org.FirstOrDefault().Name;
                     organizationRequest.OrganizationNameAr = org.FirstOrDefault().NameAr;
-                    organizationRequest.orgRequests = _context.organizationContractRequests.Where(o => o.OrganizationId == organizationRequest.Id)
+                    organizationRequest.orgRequests = _context.OrganizationContractRequests.Where(o => o.OrganizationId == organizationRequest.Id)
                                     .Select(orgReq => new OrganizationContractRequestVM
                                     {
 
                                         Id = orgReq.Id,
                                         Date = orgReq.Date,
                                         Number = orgReq.Number,
-                                        Equipments = _context.Equipments.Where(e => e.OrganizationRequestId == orgReq.Id && e.ContractId==null)
+                                        Equipments = _context.Assets
+                                        .Include(e=>e.MasterAsset)
+                                        .Where(e => e.OrganizationRequestId == orgReq.Id && e.ContractId==null)
                                         .Select(equip => new EquipmentDTO
                                         {
                                             Id=equip.Id,
-                                            EquipmentCode = equip.EquipmentCode,
-                                            EquipmentName = equip.EquipmentName,
-                                            EquipmentNameAr = equip.EquipmentNameAr,
-                                            ManufacturerName = _context.Manufacturers.Where(m => m.Id == equip.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                                            ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == equip.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,
+                                            EquipmentCode = equip.Code,
+                                            EquipmentName = equip.MasterAsset.Name,
+                                            EquipmentNameAr = equip.MasterAsset.NameAr,
+                                            ManufacturerName = _context.Brands.Where(m => m.Id == equip.MasterAsset.BrandId).FirstOrDefault().Name,
+                                            ManufacturerNameAr = _context.Brands.Where(m => m.Id == equip.MasterAsset.BrandId).FirstOrDefault().NameAr,
                                             SerialNumber = equip.SerialNumber,
-                                            DepartmentName = equip.Department.DepartmentName,
-                                            DepartmentNameAr = equip.Department.DepartmentNameAr,
+                                            DepartmentName = equip.Department.Name,
+                                            DepartmentNameAr = equip.Department.NameAr,
                                             OrganizationRequestId = equip.OrganizationContract.Id,
                                             ContractRequestId = equip.ContractRequest.Id,
-                                            HealthDirectoryName=equip.HealthDirectories.HealthDirectoryName,
-                                            HealthDirectoryNameAr=equip.HealthDirectories.HealthDirectoryNameAr,
-                                            HealthDistrictName=equip.HealthDistricts.HealthDistrictName,
-                                            HealthDistrictNameAr=equip.HealthDistricts.HealthDistrictNameAr,
-                                            HealthCareUnitName = equip.HealthCareUnit.HealthCareUnitName,
-                                            HealthCareUnitNameAr = equip.HealthCareUnit.HealthCareUnitNameAr,
-                                            UpaCode=equip.MasterEquipment.UpaCode,
-                                            InternalCode=equip.InternalCode,
+                                            HealthDirectoryName=equip.Hospital.Governorate.Name,
+                                            HealthDirectoryNameAr=equip.Hospital.Governorate.NameAr,
+                                            HealthDistrictName=equip.Hospital.City.Name,
+                                            HealthDistrictNameAr=equip.Hospital.City.NameAr,
+                                            HealthCareUnitName = equip.Hospital.Name,
+                                            HealthCareUnitNameAr = equip.Hospital.NameAr,
+                                            UpaCode=equip.MasterAsset.UpaCode,
+                                            InternalCode=equip.Barcode,
                                             ContractId=equip.ContractId
                                         }).ToList()
                                     }).ToList();
@@ -299,16 +306,18 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
                     Number = req.Number,
 
                     Status = req.Status,
-                    NumberOfEquipment = _context.Equipments.Where(e => e.ContractRequestId == req.Id).Count(),
-                    Equipments =_context.Equipments.Where(e=>e.ContractRequestId==req.Id)
+                    NumberOfEquipment = _context.Assets.Where(e => e.ContractRequestId == req.Id).Count(),
+                    Equipments = _context.Assets
+                    .Include(e=>e.MasterAsset)
+                    .Where(e=>e.ContractRequestId==req.Id)
                     .Select(equip => new EquipmentDTO
                     {
                         Id = equip.Id,
-                        EquipmentCode = equip.EquipmentCode,
-                        EquipmentName = equip.EquipmentName,
-                        EquipmentNameAr = equip.EquipmentNameAr,
+                        EquipmentCode = equip.Code,
+                        EquipmentName = equip.MasterAsset.Name,
+                        EquipmentNameAr = equip.MasterAsset.NameAr,
                         SerialNumber = equip.SerialNumber,
-                        InternalCode = equip.InternalCode,
+                        InternalCode = equip.Barcode,
                         ContractRequestId = equip.ContractRequest.Id
                     }).ToList()
                 };
@@ -340,21 +349,21 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
                     Date = r.Date,
                     Id = r.Id,
                     Number = r.Number,
-                    Equipments= _context.Equipments.Where(e => e.ContractRequestId == r.Id)
-                    .Include(e=>e.MasterEquipment).ThenInclude(m=>m.Manufacturer)
+                    Equipments = _context.Assets.Where(e => e.ContractRequestId == r.Id)
+                    .Include(e=>e.MasterAsset).ThenInclude(m=>m.Brand)
                     .Select(equip => new EquipmentDTO
                     {
                         Id = equip.Id,
-                        EquipmentCode = equip.EquipmentCode,
-                        EquipmentName = equip.EquipmentName,
-                        EquipmentNameAr = equip.EquipmentNameAr,
+                        EquipmentCode = equip.Code,
+                        EquipmentName = equip.MasterAsset.Name,
+                        EquipmentNameAr = equip.MasterAsset.NameAr,
                         SerialNumber = equip.SerialNumber,
-                        InternalCode = equip.InternalCode,
+                        InternalCode = equip.Barcode,
                         ContractRequestId = equip.ContractRequest.Id,
-                        UpaCode=equip.MasterEquipment.UpaCode,
-                        ManufacturerName=equip.MasterEquipment.Manufacturer.ManufacturerName,
-                        ManufacturerNameAr=equip.MasterEquipment.Manufacturer.ManufacturerNameAr,
-                        ModelNumber=equip.MasterEquipment.ModelNumber,
+                        UpaCode=equip.MasterAsset.UpaCode,
+                        ManufacturerName=equip.MasterAsset.Brand.Name,
+                        ManufacturerNameAr=equip.MasterAsset.Brand.NameAr,
+                        ModelNumber=equip.MasterAsset.ModelNumber,
                         
                     }).ToList()
                 }).FirstOrDefault();
@@ -364,7 +373,7 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
         public void Delete(int id)
         {
             var hospitalRequest = _context.contractRequests.Find(id);
-            var equip = _context.Equipments.Where(e => e.ContractRequestId == hospitalRequest.Id).ToList();
+            var equip = _context.Assets.Where(e => e.ContractRequestId == hospitalRequest.Id).ToList();
             foreach (var eq in equip)
             {
                 eq.ContractRequest = null;

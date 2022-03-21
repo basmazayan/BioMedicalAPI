@@ -23,17 +23,17 @@ namespace BiomedicalSystemAPI.Controllers
 
         // GET: api/Manufacturers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Manufacturer>>> GetManufacturers()
+        public async Task<ActionResult<IEnumerable<Brand>>> GetManufacturers()
         {
-            var m= await _context.Manufacturers.ToListAsync();
+            var m= await _context.Brands.ToListAsync();
             return m;
         }
 
         // GET: api/Manufacturers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Manufacturer>> GetManufacturer(int id)
+        public async Task<ActionResult<Brand>> GetManufacturer(int id)
         {
-            var manufacturer = await _context.Manufacturers.FindAsync(id);
+            var manufacturer = await _context.Brands.FindAsync(id);
 
             if (manufacturer == null)
             {
@@ -47,7 +47,7 @@ namespace BiomedicalSystemAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutManufacturer(int id, Manufacturer manufacturer)
+        public async Task<IActionResult> PutManufacturer(int id, Brand manufacturer)
         {
             if (id != manufacturer.Id)
             {
@@ -72,17 +72,17 @@ namespace BiomedicalSystemAPI.Controllers
             //}
 
 
-            var lstBrandCodes = _context.Manufacturers.Where(a => a.Code == manufacturer.Code && a.Id != id).ToList();
+            var lstBrandCodes = _context.Brands.Where(a => a.Code == manufacturer.Code && a.Id != id).ToList();
             if (lstBrandCodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Brand code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstBrandNames = _context.Manufacturers.Where(a => a.ManufacturerName == manufacturer.ManufacturerName && a.Id != id).ToList();
+            var lstBrandNames = _context.Brands.Where(a => a.Name == manufacturer.Name && a.Id != id).ToList();
             if (lstBrandNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Brand name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
             }
-            var lstBrandNamesAr = _context.Manufacturers.Where(a => a.ManufacturerNameAr == manufacturer.ManufacturerNameAr && a.Id != id).ToList();
+            var lstBrandNamesAr = _context.Brands.Where(a => a.NameAr == manufacturer.NameAr && a.Id != id).ToList();
             if (lstBrandNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Brand arabic name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
@@ -115,9 +115,9 @@ namespace BiomedicalSystemAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public ActionResult<Manufacturer> PostManufacturer(Manufacturer manufacturer)
+        public ActionResult<Brand> PostManufacturer(Brand manufacturer)
         {
-            var manufacturers = _context.Manufacturers.ToList();
+            var manufacturers = _context.Brands.ToList();
             //foreach (var maunfact in manufacturers)
             //{      
             //    if (maunfact.Code == manufacturer.Code)
@@ -135,17 +135,17 @@ namespace BiomedicalSystemAPI.Controllers
             //}
 
 
-            var lstBrandCodes = _context.Manufacturers.Where(a => a.Code == manufacturer.Code).ToList();
+            var lstBrandCodes = _context.Brands.Where(a => a.Code == manufacturer.Code).ToList();
             if (lstBrandCodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Brand code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstBrandNames = _context.Manufacturers.Where(a => a.ManufacturerName == manufacturer.ManufacturerName).ToList();
+            var lstBrandNames = _context.Brands.Where(a => a.Name == manufacturer.Name).ToList();
             if (lstBrandNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Brand name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
             }
-            var lstBrandNamesAr = _context.Manufacturers.Where(a => a.ManufacturerNameAr == manufacturer.ManufacturerNameAr).ToList();
+            var lstBrandNamesAr = _context.Brands.Where(a => a.NameAr == manufacturer.NameAr).ToList();
             if (lstBrandNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Brand arabic name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
@@ -158,7 +158,7 @@ namespace BiomedicalSystemAPI.Controllers
 
                 try
                 {
-                    _context.Manufacturers.Add(manufacturer);
+                    _context.Brands.Add(manufacturer);
                     _context.SaveChangesAsync();
                 }
                 catch (Exception ex)
@@ -171,15 +171,15 @@ namespace BiomedicalSystemAPI.Controllers
 
         // DELETE: api/Manufacturers/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Manufacturer>> DeleteManufacturer(int id)
+        public async Task<ActionResult<Brand>> DeleteManufacturer(int id)
         {
-            var manufacturer = await _context.Manufacturers.FindAsync(id);
+            var manufacturer = await _context.Brands.FindAsync(id);
             if (manufacturer == null)
             {
                 return NotFound();
             }
 
-            _context.Manufacturers.Remove(manufacturer);
+            _context.Brands.Remove(manufacturer);
             await _context.SaveChangesAsync();
 
             return manufacturer;
@@ -187,7 +187,7 @@ namespace BiomedicalSystemAPI.Controllers
 
         private bool ManufacturerExists(int id)
         {
-            return _context.Manufacturers.Any(e => e.Id == id);
+            return _context.Brands.Any(e => e.Id == id);
         }
     }
 }

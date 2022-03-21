@@ -38,7 +38,7 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("getcount")]
         public int count()
         {
-            return _pagingRepository.Count<HealthCareUnit>();
+            return _pagingRepository.Count<Hospital>();
         }
         // GET: api/HealthCareUnits
         [HttpGet]
@@ -49,18 +49,18 @@ namespace BiomedicalSystemAPI.Controllers
         }
         [HttpGet]
         [Route("GetHealthCareUnitsByDistrictId/{districtId}")]
-        public async Task<ActionResult<IEnumerable<HealthCareUnit>>> GetHealthCareUnitsByDistrictId(int districtId)
+        public async Task<ActionResult<IEnumerable<Hospital>>> GetHealthCareUnitsByDistrictId(int districtId)
         {
 
-            var HealthDistricts = await _context.HealthCareUnits.Where(e => e.HealthDistrictId == districtId)
-                .Include(e => e.HealthDistricts)
-                .Select(e => new HealthCareUnit
+            var HealthDistricts = await _context.Hospitals.Where(e => e.Id == districtId)
+                .Include(e => e.City)
+                .Select(e => new Hospital
                 {
                     Id = e.Id,
-                    HealthCareUnitCode = e.HealthCareUnitCode,
-                    HealthCareUnitName = e.HealthCareUnitName,
-                    HealthCareUnitNameAr = e.HealthCareUnitNameAr,
-                    HealthDistrictId = e.HealthDistrictId,
+                    Code = e.Code,
+                    Name = e.Name,
+                    NameAr = e.NameAr,
+                    CityId = e.CityId,
                 }).ToListAsync();
             return HealthDistricts;
         }
@@ -89,9 +89,9 @@ namespace BiomedicalSystemAPI.Controllers
             else
             {
                 //var healthUnits = _context.HealthCareUnits.Where(e => e.Id != id).ToList();
-                var CheckCode = _context.HealthCareUnits.Where(e => e.HealthCareUnitCode == healthCareUnit.HealthCareUnitCode && e.Id != id).ToList();
-                var checkName = _context.HealthCareUnits.Where(e => e.HealthCareUnitName == healthCareUnit.HealthCareUnitName && e.Id != id).ToList();
-                var checkNameAr = _context.HealthCareUnits.Where(e => e.HealthCareUnitNameAr == healthCareUnit.HealthCareUnitNameAr && e.Id != id).ToList();
+                var CheckCode = _context.Hospitals.Where(e => e.Code == healthCareUnit.HealthCareUnitCode && e.Id != id).ToList();
+                var checkName = _context.Hospitals.Where(e => e.Name == healthCareUnit.HealthCareUnitName && e.Id != id).ToList();
+                var checkNameAr = _context.Hospitals.Where(e => e.NameAr == healthCareUnit.HealthCareUnitNameAr && e.Id != id).ToList();
                 if (CheckCode.Count > 0)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Department code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
@@ -142,12 +142,12 @@ namespace BiomedicalSystemAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public ActionResult<HealthCareUnit> PostHealthCareUnit(HealthCareUnitDTO healthCareUnit)
+        public ActionResult<Hospital> PostHealthCareUnit(HealthCareUnitDTO healthCareUnit)
         {
-            var CheckCode = _context.HealthCareUnits.Where(e => e.HealthCareUnitCode == healthCareUnit.HealthCareUnitCode).ToList();
+            var CheckCode = _context.Hospitals.Where(e => e.Code == healthCareUnit.HealthCareUnitCode).ToList();
 
-            var healthCareUnits = _context.HealthCareUnits.Where(e => e.HealthCareUnitName == healthCareUnit.HealthCareUnitName).ToList();
-            var healthCareUnitsAr = _context.HealthCareUnits.Where(e => e.HealthCareUnitNameAr == healthCareUnit.HealthCareUnitNameAr).ToList();
+            var healthCareUnits = _context.Hospitals.Where(e => e.Name == healthCareUnit.HealthCareUnitName).ToList();
+            var healthCareUnitsAr = _context.Hospitals.Where(e => e.NameAr == healthCareUnit.HealthCareUnitNameAr).ToList();
             if (CheckCode.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Health care unit code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
@@ -191,7 +191,7 @@ namespace BiomedicalSystemAPI.Controllers
         }
         private bool HealthCareUnitExists(int id)
         {
-            return _context.HealthCareUnits.Any(e => e.Id == id);
+            return _context.Hospitals.Any(e => e.Id == id);
         }
 
     }

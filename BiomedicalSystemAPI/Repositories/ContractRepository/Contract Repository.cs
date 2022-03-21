@@ -1,5 +1,6 @@
 ﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
+using BiomedicalSystemAPI.Models.AssetAppContext;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,14 @@ namespace BiomedicalSystemAPI.Repositories.ContractRepository
 {
     public class Contract_Repository : IContractRepository
     {
-    private readonly ApplicationDbContext _context;
-     
+         private readonly ApplicationDbContext _context;
+         private readonly AssetDbContext _AssetContext;
 
-        public Contract_Repository(ApplicationDbContext context)
+
+        public Contract_Repository(ApplicationDbContext context, AssetDbContext AssetContext)
         {
             _context = context;
-            // _equipmentRepository = equipmentRepository;
+            _AssetContext = AssetContext;
         }
         public void Add(ContractDTO contractdto)
         {
@@ -31,7 +33,7 @@ namespace BiomedicalSystemAPI.Repositories.ContractRepository
             _context.SaveChanges();
             foreach (var equipId in contractdto.equipmentIDs)
             {
-                var equip = _context.Equipments.Where(e => e.Id == equipId).FirstOrDefault();
+                var equip = _context.Assets.Where(e => e.Id == equipId).FirstOrDefault();
                 equip.ContractId = contract.Id;
             }
             //foreach (var equipId in contractdto.equipmentIDs)
@@ -66,8 +68,8 @@ namespace BiomedicalSystemAPI.Repositories.ContractRepository
              StartDate = con.StartDate,
              EndDate = con.EndDate,
              Subject = con.Subject,
-             SupplierName= con.Supplier.SupplierName,
-             SupplierNameAr= con.Supplier.SupplierNameAr
+             SupplierName= con.Supplier.Name,
+             SupplierNameAr= con.Supplier.NameAr
             };
             if (contract == null)
             {
@@ -111,11 +113,11 @@ namespace BiomedicalSystemAPI.Repositories.ContractRepository
                   Subject = c.Subject,
                   EndDate = c.EndDate,
                   StartDate = c.StartDate,
-                  HealthCareUnitName = c.HealthCareUnit.HealthCareUnitName,
-                  HealthCareUnitNameAr = c.HealthCareUnit.HealthCareUnitNameAr,
+                  HealthCareUnitName = c.HealthCareUnit.Name,
+                  HealthCareUnitNameAr = c.HealthCareUnit.NameAr,
                   SupplierId = c.SupplierId,
-                  SupplierName = c.Supplier.SupplierName,
-                  SupplierNameAr = c.Supplier.SupplierNameAr,
+                  SupplierName = c.Supplier.Name,
+                  SupplierNameAr = c.Supplier.NameAr,
                 
               }).ToList();
 

@@ -41,6 +41,7 @@ using BiomedicalSystemAPI.Repositories.PagingRepository;
 using BiomedicalSystemAPI.Repositories.HealthRepository;
 using BiomedicalSystemAPI.Models.HealthAppContext;
 using Wkhtmltopdf.NetCore;
+using BiomedicalSystemAPI.Models.AssetAppContext;
 
 namespace BiomedicalSystemAPI
 {
@@ -67,6 +68,7 @@ namespace BiomedicalSystemAPI
             services.AddControllers();
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
             services.AddDbContext<BioMedEquipmentDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("HealthAppConnetion")));
+            services.AddDbContext<AssetDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("AssetConnection")));
 
             services.Configure<FormOptions>(o => {
                 o.ValueLengthLimit = int.MaxValue;

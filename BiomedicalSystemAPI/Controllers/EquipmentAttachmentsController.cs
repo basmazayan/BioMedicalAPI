@@ -95,13 +95,13 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("getEquipAttachmentsWithNoEquipment")]
         public async Task<ActionResult<IEnumerable<EquipmentAttachments>>> getEquipAttachmentsWithNoEquipment()
         {
-            return await _context.equipmentAttachments.Where(e => e.EquipmentId == null).ToListAsync();
+            return await _context.EquipmentAttachments.Where(e => e.EquipmentId == null).ToListAsync();
         }
         [HttpGet]
         [Route("getEquipAttachmentsForEquipment/{equipId}")]
         public async Task<ActionResult<IEnumerable<EquipmentAttachments>>> getEquipAttachmentsForEquipment(int equipId)
         {
-            return await _context.equipmentAttachments.Where(e => e.EquipmentId == equipId).ToListAsync();
+            return await _context.EquipmentAttachments.Where(e => e.EquipmentId == equipId).ToListAsync();
         }
         [HttpGet]
         [Route("getPathOfImage/{ImgName}")]
@@ -168,13 +168,13 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<EquipmentAttachments>> DeleteAttachment(int id)
         {
-            var attachment = await _context.equipmentAttachments.FindAsync(id);
+            var attachment = await _context.EquipmentAttachments.FindAsync(id);
             if (attachment == null)
             {
                 return NotFound();
             }
 
-            _context.equipmentAttachments.Remove(attachment);
+            _context.EquipmentAttachments.Remove(attachment);
             await _context.SaveChangesAsync();
 
             return attachment;

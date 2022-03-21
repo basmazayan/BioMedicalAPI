@@ -89,17 +89,17 @@ namespace BiomedicalSystemAPI.Controllers
 
                 // }
 
-                var lstOriginCodes = _context.Origins.Where(a => a.OriginCode == originObj.OriginCode && a.Id != id).ToList();
+                var lstOriginCodes = _context.Origins.Where(a => a.Code == originObj.Code && a.Id != id).ToList();
                 if (lstOriginCodes.Count > 0)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Origin code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
                 }
-                var lstOriginNames = _context.Origins.Where(a => a.EnglishName == originObj.EnglishName && a.Id != id).ToList();
+                var lstOriginNames = _context.Origins.Where(a => a.Name == originObj.Name && a.Id != id).ToList();
                 if (lstOriginNames.Count > 0)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Origin name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
                 }
-                var lstOriginNamesAr = _context.Origins.Where(a => a.ArabicName == originObj.ArabicName && a.Id != id).ToList();
+                var lstOriginNamesAr = _context.Origins.Where(a => a.NameAr == originObj.NameAr && a.Id != id).ToList();
                 if (lstOriginNamesAr.Count > 0)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Origin arabic name already exist", MessageAr = "هذا الاسم العربي مسجل سابقاً" });
@@ -135,17 +135,17 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Origin>> PostOrigin(Origin originObj)
         {
-            var lstOriginCodes = _context.Origins.Where(a => a.OriginCode == originObj.OriginCode).ToList();
+            var lstOriginCodes = _context.Origins.Where(a => a.Code == originObj.Code).ToList();
             if (lstOriginCodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Origin code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstOriginNames = _context.Origins.Where(a => a.EnglishName == originObj.EnglishName).ToList();
+            var lstOriginNames = _context.Origins.Where(a => a.Name == originObj.Name).ToList();
             if (lstOriginNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Origin name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
             }
-            var lstOriginNamesAr = _context.Origins.Where(a => a.ArabicName == originObj.ArabicName).ToList();
+            var lstOriginNamesAr = _context.Origins.Where(a => a.NameAr == originObj.NameAr).ToList();
             if (lstOriginNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Origin arabic name already exist", MessageAr = "هذا الاسم العربي مسجل سابقاً" });

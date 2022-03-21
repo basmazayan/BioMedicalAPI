@@ -4,14 +4,16 @@ using BiomedicalSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BiomedicalSystemAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220320114247_mig")]
+    partial class mig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -356,83 +358,6 @@ namespace BiomedicalSystemAPI.Migrations
                     b.ToTable("Assets");
                 });
 
-            modelBuilder.Entity("BiomedicalSystemAPI.Models.Brand", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Brands");
-                });
-
-            modelBuilder.Entity("BiomedicalSystemAPI.Models.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DescriptionAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("BiomedicalSystemAPI.Models.City", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("GovernorateId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GovernorateId");
-
-                    b.ToTable("Cities");
-                });
-
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Contract", b =>
                 {
                     b.Property<int>("Id")
@@ -487,7 +412,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("ContractId");
 
-                    b.ToTable("ContractAttachments");
+                    b.ToTable("contractAttachments");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.ContractRequest", b =>
@@ -526,13 +451,13 @@ namespace BiomedicalSystemAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Code")
+                    b.Property<string>("DepartmentCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("DepartmentName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameAr")
+                    b.Property<string>("DepartmentNameAr")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -626,6 +551,35 @@ namespace BiomedicalSystemAPI.Migrations
                     b.HasIndex("EquipmentId");
 
                     b.ToTable("EquipmentAttachments");
+                });
+
+            modelBuilder.Entity("BiomedicalSystemAPI.Models.EquipmentCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CategoryCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CategoryDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CategoryDescriptionAr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CategoryNameAr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.EquipmentCoverage", b =>
@@ -724,6 +678,33 @@ namespace BiomedicalSystemAPI.Migrations
                     b.ToTable("Status");
                 });
 
+            modelBuilder.Entity("BiomedicalSystemAPI.Models.EquipmentSubCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<int>("EquipmentCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubCategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubCategoryNameAr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EquipmentCategoryId");
+
+                    b.ToTable("SubCategories");
+                });
+
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Equipment_EquipmentCoverage", b =>
                 {
                     b.Property<int>("Id")
@@ -746,25 +727,51 @@ namespace BiomedicalSystemAPI.Migrations
                     b.ToTable("Equipment_EquipmentCoverage");
                 });
 
-            modelBuilder.Entity("BiomedicalSystemAPI.Models.Governorate", b =>
+            modelBuilder.Entity("BiomedicalSystemAPI.Models.HealthDirectory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Code")
+                    b.Property<string>("HealthDirectoryCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("HealthDirectoryName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameAr")
+                    b.Property<string>("HealthDirectoryNameAr")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Governorates");
+                    b.ToTable("HealthDirectories");
+                });
+
+            modelBuilder.Entity("BiomedicalSystemAPI.Models.HealthDistrict", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("HealthDirectoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("HealthDistrictCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HealthDistrictName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HealthDistrictNameAr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HealthDirectoryId");
+
+                    b.ToTable("HealthDistricts");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Hospital", b =>
@@ -777,19 +784,25 @@ namespace BiomedicalSystemAPI.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Director")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GovernorateId")
+                    b.Property<string>("HealthCareUnitCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HealthCareUnitName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HealthCareUnitNameAr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HealthDirectoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HealthDistrictId")
                         .HasColumnType("int");
 
                     b.Property<double?>("Lat")
@@ -801,12 +814,6 @@ namespace BiomedicalSystemAPI.Migrations
                     b.Property<string>("Mobile")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameAr")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
@@ -815,9 +822,9 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
+                    b.HasIndex("HealthDirectoryId");
 
-                    b.HasIndex("GovernorateId");
+                    b.HasIndex("HealthDistrictId");
 
                     b.HasIndex("organizationId");
 
@@ -849,7 +856,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Inventories");
+                    b.ToTable("inventories");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Language", b =>
@@ -888,6 +895,28 @@ namespace BiomedicalSystemAPI.Migrations
                     b.ToTable("MaintenanceServices");
                 });
 
+            modelBuilder.Entity("BiomedicalSystemAPI.Models.Manufacturer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("ManufacturerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ManufacturerNameAr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Manufacturers");
+                });
+
             modelBuilder.Entity("BiomedicalSystemAPI.Models.MasterAsset", b =>
                 {
                     b.Property<int>("Id")
@@ -895,38 +924,23 @@ namespace BiomedicalSystemAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Ampair")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<int>("BrandId")
+                    b.Property<int>("EquipmentCategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<string>("EquipmentDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EquipmentDescriptionAr")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("EquipmentSubCategoryId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DescriptionAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ElectricRequirement")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("ExpectedLifeTime")
                         .HasColumnType("int");
 
-                    b.Property<string>("Frequency")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<double?>("Height")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("Length")
-                        .HasColumnType("float");
+                    b.Property<int>("ManufacturerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("MasterCode")
                         .HasColumnType("nvarchar(max)");
@@ -943,22 +957,7 @@ namespace BiomedicalSystemAPI.Migrations
                     b.Property<int>("OriginId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PMBGColor")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("PMColor")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Power")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<int>("PriorityId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SubCategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("UpaCode")
@@ -967,27 +966,17 @@ namespace BiomedicalSystemAPI.Migrations
                     b.Property<string>("VersionNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Voltage")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<double?>("Weight")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("Width")
-                        .HasColumnType("float");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("BrandId");
+                    b.HasIndex("EquipmentCategoryId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("EquipmentSubCategoryId");
+
+                    b.HasIndex("ManufacturerId");
 
                     b.HasIndex("OriginId");
 
                     b.HasIndex("PriorityId");
-
-                    b.HasIndex("SubCategoryId");
 
                     b.ToTable("masterAssets");
                 });
@@ -1009,7 +998,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("MasterEquipmentId");
 
-                    b.ToTable("MasterEquipmentAttachments");
+                    b.ToTable("masterEquipmentAttachments");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Mode", b =>
@@ -1045,7 +1034,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organizations");
+                    b.ToTable("organizations");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.OrganizationContractRequest", b =>
@@ -1068,7 +1057,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("OrganizationContractRequests");
+                    b.ToTable("organizationContractRequests");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Origin", b =>
@@ -1078,13 +1067,13 @@ namespace BiomedicalSystemAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Code")
+                    b.Property<string>("ArabicName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("EnglishName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameAr")
+                    b.Property<string>("OriginCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1245,7 +1234,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("ServiceRequestId");
 
-                    b.ToTable("ServiceRequestAttachments");
+                    b.ToTable("serviceRequestAttachments");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.SparePart", b =>
@@ -1269,33 +1258,6 @@ namespace BiomedicalSystemAPI.Migrations
                     b.ToTable("spareParts");
                 });
 
-            modelBuilder.Entity("BiomedicalSystemAPI.Models.SubCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Code")
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("SubCategories");
-                });
-
             modelBuilder.Entity("BiomedicalSystemAPI.Models.SubOrganization", b =>
                 {
                     b.Property<int>("Id")
@@ -1316,7 +1278,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("organizationId");
 
-                    b.ToTable("SubOrganizations");
+                    b.ToTable("subOrganizations");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Supplier", b =>
@@ -1326,13 +1288,13 @@ namespace BiomedicalSystemAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Code")
+                    b.Property<string>("SupplierCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("SupplierName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameAr")
+                    b.Property<string>("SupplierNameAr")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1347,13 +1309,13 @@ namespace BiomedicalSystemAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Code")
+                    b.Property<string>("VendorCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("VendorName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameAr")
+                    b.Property<string>("VendorNameAr")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1378,7 +1340,7 @@ namespace BiomedicalSystemAPI.Migrations
 
                     b.HasIndex("WorkOrderId");
 
-                    b.ToTable("WorkOrderAttachments");
+                    b.ToTable("workOrderAttachments");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.WorkOrders", b =>
@@ -1388,11 +1350,8 @@ namespace BiomedicalSystemAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AssetId")
+                    b.Property<int>("EquipmentId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("MaintenanceId")
                         .HasColumnType("int");
@@ -1415,9 +1374,12 @@ namespace BiomedicalSystemAPI.Migrations
                     b.Property<int?>("VendorId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("WorkOrderDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AssetId");
+                    b.HasIndex("EquipmentId");
 
                     b.HasIndex("MaintenanceId");
 
@@ -1573,11 +1535,11 @@ namespace BiomedicalSystemAPI.Migrations
                         .WithMany()
                         .HasForeignKey("HealthCareUnitId");
 
-                    b.HasOne("BiomedicalSystemAPI.Models.City", "HealthDistricts")
+                    b.HasOne("BiomedicalSystemAPI.Models.HealthDistrict", "HealthDistricts")
                         .WithMany()
                         .HasForeignKey("HealthDistrictId");
 
-                    b.HasOne("BiomedicalSystemAPI.Models.Governorate", "HealthDirectories")
+                    b.HasOne("BiomedicalSystemAPI.Models.HealthDirectory", "HealthDirectories")
                         .WithMany()
                         .HasForeignKey("HealthdirId");
 
@@ -1686,17 +1648,6 @@ namespace BiomedicalSystemAPI.Migrations
                     b.Navigation("Status");
 
                     b.Navigation("Supplier");
-                });
-
-            modelBuilder.Entity("BiomedicalSystemAPI.Models.City", b =>
-                {
-                    b.HasOne("BiomedicalSystemAPI.Models.Governorate", "Governorate")
-                        .WithMany()
-                        .HasForeignKey("GovernorateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Governorate");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Contract", b =>
@@ -1808,6 +1759,17 @@ namespace BiomedicalSystemAPI.Migrations
                     b.Navigation("Supplier");
                 });
 
+            modelBuilder.Entity("BiomedicalSystemAPI.Models.EquipmentSubCategory", b =>
+                {
+                    b.HasOne("BiomedicalSystemAPI.Models.EquipmentCategory", "EquipmentCategory")
+                        .WithMany()
+                        .HasForeignKey("EquipmentCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EquipmentCategory");
+                });
+
             modelBuilder.Entity("BiomedicalSystemAPI.Models.Equipment_EquipmentCoverage", b =>
                 {
                     b.HasOne("BiomedicalSystemAPI.Models.EquipmentCoverage", "equipmentCoverage")
@@ -1827,17 +1789,28 @@ namespace BiomedicalSystemAPI.Migrations
                     b.Navigation("equipmentCoverage");
                 });
 
-            modelBuilder.Entity("BiomedicalSystemAPI.Models.Hospital", b =>
+            modelBuilder.Entity("BiomedicalSystemAPI.Models.HealthDistrict", b =>
                 {
-                    b.HasOne("BiomedicalSystemAPI.Models.City", "City")
+                    b.HasOne("BiomedicalSystemAPI.Models.HealthDirectory", "HealthDirectories")
                         .WithMany()
-                        .HasForeignKey("CityId")
+                        .HasForeignKey("HealthDirectoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BiomedicalSystemAPI.Models.Governorate", "Governorate")
+                    b.Navigation("HealthDirectories");
+                });
+
+            modelBuilder.Entity("BiomedicalSystemAPI.Models.Hospital", b =>
+                {
+                    b.HasOne("BiomedicalSystemAPI.Models.HealthDirectory", "HealthDirectories")
                         .WithMany()
-                        .HasForeignKey("GovernorateId")
+                        .HasForeignKey("HealthDirectoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BiomedicalSystemAPI.Models.HealthDistrict", "HealthDistricts")
+                        .WithMany()
+                        .HasForeignKey("HealthDistrictId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1847,9 +1820,9 @@ namespace BiomedicalSystemAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("City");
+                    b.Navigation("HealthDirectories");
 
-                    b.Navigation("Governorate");
+                    b.Navigation("HealthDistricts");
 
                     b.Navigation("organization");
                 });
@@ -1873,15 +1846,19 @@ namespace BiomedicalSystemAPI.Migrations
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.MasterAsset", b =>
                 {
-                    b.HasOne("BiomedicalSystemAPI.Models.Brand", "Brand")
+                    b.HasOne("BiomedicalSystemAPI.Models.EquipmentCategory", "EquipmentCategory")
                         .WithMany()
-                        .HasForeignKey("BrandId")
+                        .HasForeignKey("EquipmentCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BiomedicalSystemAPI.Models.Category", "Category")
+                    b.HasOne("BiomedicalSystemAPI.Models.EquipmentSubCategory", "EquipmentSubCategory")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
+                        .HasForeignKey("EquipmentSubCategoryId");
+
+                    b.HasOne("BiomedicalSystemAPI.Models.Manufacturer", "Manufacturer")
+                        .WithMany()
+                        .HasForeignKey("ManufacturerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1897,19 +1874,15 @@ namespace BiomedicalSystemAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BiomedicalSystemAPI.Models.SubCategory", "SubCategory")
-                        .WithMany()
-                        .HasForeignKey("SubCategoryId");
+                    b.Navigation("EquipmentCategory");
 
-                    b.Navigation("Brand");
+                    b.Navigation("EquipmentSubCategory");
 
-                    b.Navigation("Category");
+                    b.Navigation("Manufacturer");
 
                     b.Navigation("Origin");
 
                     b.Navigation("Priority");
-
-                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.MasterEquipmentAttachment", b =>
@@ -1938,11 +1911,11 @@ namespace BiomedicalSystemAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BiomedicalSystemAPI.Models.Governorate", "HealthDirectories")
+                    b.HasOne("BiomedicalSystemAPI.Models.HealthDirectory", "HealthDirectories")
                         .WithMany()
                         .HasForeignKey("HealthDirectoryId");
 
-                    b.HasOne("BiomedicalSystemAPI.Models.City", "HealthDistrict")
+                    b.HasOne("BiomedicalSystemAPI.Models.HealthDistrict", "HealthDistrict")
                         .WithMany()
                         .HasForeignKey("HealthDistrictId");
 
@@ -1986,17 +1959,6 @@ namespace BiomedicalSystemAPI.Migrations
                     b.Navigation("serviceRequest");
                 });
 
-            modelBuilder.Entity("BiomedicalSystemAPI.Models.SubCategory", b =>
-                {
-                    b.HasOne("BiomedicalSystemAPI.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
             modelBuilder.Entity("BiomedicalSystemAPI.Models.SubOrganization", b =>
                 {
                     b.HasOne("BiomedicalSystemAPI.Models.Organization", "organization")
@@ -2021,9 +1983,9 @@ namespace BiomedicalSystemAPI.Migrations
 
             modelBuilder.Entity("BiomedicalSystemAPI.Models.WorkOrders", b =>
                 {
-                    b.HasOne("BiomedicalSystemAPI.Models.Assets", "Asset")
+                    b.HasOne("BiomedicalSystemAPI.Models.Assets", "Equipment")
                         .WithMany()
-                        .HasForeignKey("AssetId")
+                        .HasForeignKey("EquipmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2063,7 +2025,7 @@ namespace BiomedicalSystemAPI.Migrations
                         .WithMany()
                         .HasForeignKey("VendorId");
 
-                    b.Navigation("Asset");
+                    b.Navigation("Equipment");
 
                     b.Navigation("MaintenanceService");
 

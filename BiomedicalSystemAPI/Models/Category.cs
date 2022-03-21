@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace BiomedicalSystemAPI.Models
 {
-    public class EquipmentCategory
+    public class Category
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "CategoryCode is required")]
-        public string CategoryCode { get; set; }
+        public string Code { get; set; }
         [Required(ErrorMessage = "CategoryName is required")]
-        public string CategoryName { get; set; }
-        public string CategoryNameAr { get; set; }
+        public string Name { get; set; }
+        public string NameAr { get; set; }
       
-        public string CategoryDescription { get; set; }
-        public string CategoryDescriptionAr { get; set; }
+        public string Description { get; set; }
+        public string DescriptionAr { get; set; }
        
     }
 }

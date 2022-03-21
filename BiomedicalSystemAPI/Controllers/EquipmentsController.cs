@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using BiomedicalSystemAPI.Repositories.EmailConfirmation;
 using System.Text;
 using BiomedicalSystemAPI.Repositories.PagingRepository;
+using BiomedicalSystemAPI.Models.AssetAppContext;
 
 namespace BiomedicalSystemAPI.Controllers
 {
@@ -33,6 +34,8 @@ namespace BiomedicalSystemAPI.Controllers
         private readonly IConfiguration _configuration;
         private readonly IEmailRepository _emailRepository;
         private readonly IPagingRepository _pagingRepository;
+        private readonly AssetDbContext _AssetContext;
+
         // private IHealthCareUnitRepository _healthCareUnitRepository;
         public EquipmentsController(IEquipmentRepository equipmentRepository,
             IAttachmentRepository attachmentRepository,
@@ -40,7 +43,7 @@ namespace BiomedicalSystemAPI.Controllers
             QRCoderController qRCoderController,
             UserManager<ApplicationUser> userManager,
              IConfiguration configuration,
-            IEmailRepository emailRepository,
+            IEmailRepository emailRepository, AssetDbContext AssetContext,
             RoleManager<IdentityRole> roleManager, IPagingRepository pagingRepository)
         {
             _equipmentRepository = equipmentRepository;
@@ -52,7 +55,7 @@ namespace BiomedicalSystemAPI.Controllers
             _configuration = configuration;
             _emailRepository = emailRepository;
             _pagingRepository = pagingRepository;
-            // _healthCareUnitRepository = healthCareUnitRepository;
+            _AssetContext = AssetContext;
         }
         // GET: api/Equipments
         [HttpGet]
@@ -71,7 +74,7 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("getcount")]
         public int count()
         {
-            return _pagingRepository.Count<Equipment>();
+            return _pagingRepository.Count<Models.AssetAppContext.AssetDetail>();
         }
         [HttpGet]
         [Route("recalledEqs")]
@@ -115,9 +118,7 @@ namespace BiomedicalSystemAPI.Controllers
             else
             {
                 return equipment;
-            }
-
-            return NoContent();
+            }        
         }
 
         //[HttpGet("{serialNumber}")]
@@ -181,7 +182,7 @@ namespace BiomedicalSystemAPI.Controllers
 
         // DELETE: api/Equipments/5
         [HttpDelete("{id}")]
-        public ActionResult<Equipment> DeleteEquipment(int id)
+        public ActionResult<Assets> DeleteEquipment(int id)
         {
             var equipment = _equipmentRepository.Find(id);
             if (equipment == null)
@@ -202,15 +203,15 @@ namespace BiomedicalSystemAPI.Controllers
         //}
         [HttpGet]
         [Route("GetEquipmentCoverageEquipments/{eqCoverageId}")]
-        public ActionResult<List<Equipment>> GetEquipmentCoverageEquipments(int eqCoverageId)
+        public ActionResult<List<Assets>> GetEquipmentCoverageEquipments(int eqCoverageId)
         {
             return _equipmentRepository.GetAllEquimentsByeqCoverage(eqCoverageId);
         }
         [Route("GetmasterEquipment/{masterId}")]
         [HttpGet]
-        public ActionResult<List<Equipment>> GetmasterEquipment(int masterId)
+        public ActionResult<List<Assets>> GetmasterEquipment(int masterId)
         {
-            List<Equipment> Equip = new List<Equipment>();
+            List<Assets> Equip = new List<Assets>();
             var newEquip = _equipmentRepository.GetoneEquipmentBymaster(masterId);
 
             if (newEquip != null)
@@ -272,7 +273,7 @@ namespace BiomedicalSystemAPI.Controllers
         {
             if (Ids.Count == 0)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "contarct", Message = "equipment can't be null", MessageAr = "يجب اختيار آله" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "contarct", Message = "equipment can't be empty", MessageAr = "يجب اختيار آله" });
             }
             return _equipmentRepository.getEquipmentInContract(Ids);
         }
@@ -287,17 +288,15 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<EquipmentDTO>> getEquipmentInContract(int contractId)
         {
-            List<HealthCareUnit> healthUnits = new List<HealthCareUnit>();
+            List<Hospital> healthUnits = new List<Hospital>();
             List<EquipmentDTO> equips = new List<EquipmentDTO>();
-            var equipment = _context.Equipments
+            var equipment = _context.Assets
                .Include(e => e.Department)
-               .Include(e => e.HealthDirectories)
-               .Include(e => e.HealthDistricts)
-               .Include(e => e.EquipmentStatus)
+               .Include(e => e.Status)
                .Include(e => e.Supplier)
-               .Include(e => e.MasterEquipment)
+               .Include(e => e.MasterAsset)
                .Include(e => e.Contract)
-               .Include(e => e.HealthCareUnit)
+               .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
                .Include(e => e.equipmentEmployees).Where(e => e.ContractId == contractId).ToList();
             if (equipment == null)
             {
@@ -308,30 +307,30 @@ namespace BiomedicalSystemAPI.Controllers
                 var eq = new EquipmentDTO
                 {
                     Id = e.Id,
-                    EquipmentCode = e.EquipmentCode,
-                    EquipmentName = e.EquipmentName,
-                    EquipmentType = e.EquipmentType,
+                    EquipmentCode = e.Code,
+                    EquipmentName = e.MasterAsset.Name,
+                    EquipmentType = e.Type,
                     InstallationDate = e.InstallationDate,
-                    HealthCareUnitId = e.HealthCareUnitId,
+                    HealthCareUnitId = e.HospitalId,
                     SerialNumber = e.SerialNumber,
-                    InternalCode = e.InternalCode,
+                    InternalCode = e.Barcode,
                     Barcode = e.Barcode,
                     PurchaseDate = e.PurchaseDate,
-                    ManufacturerId = e.MasterEquipment.ManufacturerId,
-                    ManufacturerName = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerName,
-                    ManufacturerNameAr = _context.Manufacturers.Where(m => m.Id == e.MasterEquipment.ManufacturerId).FirstOrDefault().ManufacturerNameAr,
-                    OrganizationName = _context.organizations.Where(o => o.Id == e.HealthCareUnit.organizationId).FirstOrDefault().Name,
-                    OrganizationNameAr = _context.organizations.Where(o => o.Id == e.HealthCareUnit.organizationId).FirstOrDefault().NameAr,
-                    HealthCareUnitName = e.HealthCareUnit.HealthCareUnitName,
-                    HealthCareUnitNameAr = e.HealthCareUnit.HealthCareUnitNameAr,
+                    ManufacturerId = e.MasterAsset.BrandId,
+                    ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
+                    ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,
+                    OrganizationName = _context.Organizations.Where(o => o.Id == e.Hospital.organizationId).FirstOrDefault().Name,
+                    OrganizationNameAr = _context.Organizations.Where(o => o.Id == e.Hospital.organizationId).FirstOrDefault().NameAr,
+                    HealthCareUnitName = e.Hospital.Name,
+                    HealthCareUnitNameAr = e.Hospital.NameAr,
                     SupplierId = e.SupplierId,
-                    SupplierName = e.Supplier.SupplierName,
-                    SupplierNameAr = e.Supplier.SupplierNameAr,
-                    HealthDirectoryId = e.HealthDirectoryId,
-                    HealthDirectoryName = e.HealthDirectories.HealthDirectoryName,
-                    HealthDistrictId = e.HealthDistrictId,
-                    HealthDistrictName = e.HealthDistricts.HealthDistrictName,
-                    EmployeeIDs = _context.equipmentEmployees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
+                    SupplierName = e.Supplier.Name,
+                    SupplierNameAr = e.Supplier.NameAr,
+                    HealthDirectoryId = e.Hospital.Governorate.Id,
+                    HealthDirectoryName = e.Hospital.Governorate.Name,
+                    HealthDistrictId = e.Hospital.City.Id,
+                    HealthDistrictName = e.Hospital.City.Name,
+                    EmployeeIDs = _context.Employees.Where(a => a.EquipmentId == e.Id).Select(a => a.UserId).ToList(),
                     ContractId = e.ContractId
                 };
                 StringBuilder table = new StringBuilder();
@@ -340,13 +339,13 @@ namespace BiomedicalSystemAPI.Controllers
                 for (int i = 0; i < equipment.Count; i++)
                 {
 
-                    table.Append("<tr><td>").Append(equipment[i].EquipmentName).Append("</td><td>").Append(equipment[i].Contract.Subject).Append("</td></tr>");
+                    table.Append("<tr><td>").Append(equipment[i].MasterAsset.Name).Append("</td><td>").Append(equipment[i].Contract.Subject).Append("</td></tr>");
                     // try e instead of equipment[i]  //  table.Append("<tr><td>").Append(e.EquipmentName).Append("</td><td>").Append(equipment[i].Contract.Subject).Append("</td></tr>");
 
                 }
 
                 bool isFound = false;
-                var healthunit = _context.HealthCareUnits.Where(h => h.Id == eq.HealthCareUnitId).FirstOrDefault();
+                var healthunit = _context.Hospitals.Where(h => h.Id == eq.HealthCareUnitId).FirstOrDefault();
                 for (int i = 0; i < healthUnits.Count; i++)
                 {
                     if (healthUnits[i].Id == healthunit.Id)

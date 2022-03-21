@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BiomedicalSystemAPI.Models.AssetAppContext;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,11 +19,11 @@ namespace BiomedicalSystemAPI.Models
         public DateTime ?EndDate { get; set; }
         public int? HealthCareUnitId { get; set; }
         [ForeignKey("HealthCareUnitId")]
-        public virtual HealthCareUnit HealthCareUnit { get; set; }
+        public virtual Hospital HealthCareUnit { get; set; }
         public int SupplierId { get; set; }
         [ForeignKey("SupplierId")]
         public virtual Supplier Supplier { get; set; }
-        public virtual ICollection<Equipment> equipment { get; set; }
+        public virtual ICollection<AssetAppContext.AssetDetail> equipment { get; set; }
 
 
     }

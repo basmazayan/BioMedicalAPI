@@ -53,17 +53,17 @@ namespace BiomedicalSystemAPI.Controllers
             }
 
 
-            var lstSupplierCodes = _context.Suppliers.Where(a => a.SupplierCode == supplierObj.SupplierCode && a.Id != supplierObj.Id).ToList();
+            var lstSupplierCodes = _context.Suppliers.Where(a => a.Code == supplierObj.Code && a.Id != supplierObj.Id).ToList();
             if (lstSupplierCodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Supplier code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstSupplierNames = _context.Suppliers.Where(a => a.SupplierName == supplierObj.SupplierName && a.Id != supplierObj.Id).ToList();
+            var lstSupplierNames = _context.Suppliers.Where(a => a.Name == supplierObj.Name && a.Id != supplierObj.Id).ToList();
             if (lstSupplierNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Supplier name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
             }
-  var lstSupplierNamesAr = _context.Suppliers.Where(a => a.SupplierNameAr == supplierObj.SupplierNameAr && a.Id != supplierObj.Id).ToList();
+  var lstSupplierNamesAr = _context.Suppliers.Where(a => a.NameAr == supplierObj.NameAr && a.Id != supplierObj.Id).ToList();
             if (lstSupplierNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Supplier arabic name already exist", MessageAr = "هذا الاسم العربي مسجل سابقاً" });
@@ -99,17 +99,17 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Supplier>> PostSupplier(Supplier supplierObj)
         {
-            var lstSupplierCodes = _context.Suppliers.Where(a => a.SupplierCode == supplierObj.SupplierCode).ToList();
+            var lstSupplierCodes = _context.Suppliers.Where(a => a.Code == supplierObj.Code).ToList();
             if (lstSupplierCodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Supplier code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstSupplierNames = _context.Suppliers.Where(a => a.SupplierName == supplierObj.SupplierName).ToList();
+            var lstSupplierNames = _context.Suppliers.Where(a => a.Name == supplierObj.Name).ToList();
             if (lstSupplierNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Supplier name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
             }  
-            var lstSupplierNamesAr = _context.Suppliers.Where(a => a.SupplierNameAr == supplierObj.SupplierNameAr).ToList();
+            var lstSupplierNamesAr = _context.Suppliers.Where(a => a.NameAr == supplierObj.NameAr).ToList();
             if (lstSupplierNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Supplier arabic name already exist", MessageAr = "هذا الاسم العربي مسجل سابقاً" });

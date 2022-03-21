@@ -29,10 +29,10 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
             }
             wo.UserId = workorder.UserId;
             wo.VendorId = workorder.VendorId;
-            wo.WorkOrderDate = workorder.WorkOrderDate;
+            wo.Date = workorder.WorkOrderDate;
             wo.PriorityId = workorder.PriorityId;
             wo.RequestStatusId = workorder.RequestStatusId;
-            wo.EquipmentId = eqId;
+            wo.AssetId = eqId;
             wo.MaintenanceId = workorder.MaintenanceId;
             wo.ServiceRequestId = workorder.ServiceRequestId;
             wo.SparePartId = workorder.SparePartId;
@@ -76,12 +76,12 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
         {
             var Worder=_context.WorkOrders
                 .Where(w=>w.ServiceRequestId!=null)
-                .Include(w=>w.Equipment)
+                .Include(w=>w.Asset).ThenInclude(e=>e.MasterAsset)
                 .Select(
                 w => new WorkOrdersDTO
                 {
                     Id = w.Id,
-                    WorkOrderDate =w.WorkOrderDate,
+                    WorkOrderDate =w.Date,
                     PriorityId = w.PriorityId,
                     UserId = w.UserId,
                     VendorId = w.VendorId,
@@ -90,9 +90,9 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
                     StatusNameAr = w.RequestStatus.statusAr,
                     color=w.RequestStatus.color,
                     MaintenanceId = w.MaintenanceId,
-                    EquipmentId=w.EquipmentId,
-                    EquipmentName=w.Equipment.EquipmentName,
-                    EquipmentNameAr=w.Equipment.EquipmentNameAr,
+                    EquipmentId=w.AssetId,
+                    EquipmentName=w.Asset.MasterAsset.Name,
+                    EquipmentNameAr=w.Asset.MasterAsset.NameAr,
                     SparePartId=w.SparePartId,
                     ServiceRequestId=w.ServiceRequestId
                 }).ToList();
@@ -116,12 +116,12 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
             var wo = new WorkOrdersDTO
             {
                 Id = workOrder.Id,
-                WorkOrderDate = workOrder.WorkOrderDate,
+                WorkOrderDate = workOrder.Date,
                 PriorityId = workOrder.PriorityId,
                 UserId = workOrder.UserId,
                 VendorId = workOrder.VendorId,
                 RequestStatusId = workOrder.RequestStatusId,
-                EquipmentId = workOrder.EquipmentId,
+                EquipmentId = workOrder.AssetId,
                 MaintenanceId = workOrder.MaintenanceId,
                 SparePartId = workOrder.SparePartId,
                 ServiceRequestId = workOrder.ServiceRequestId,
@@ -144,9 +144,9 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
             wo.RequestStatusId = workorder.RequestStatusId;
             wo.PriorityId = workorder.PriorityId;
             wo.UserId = workorder.UserId;
-            wo.EquipmentId = workorder.EquipmentId;
+            wo.AssetId = workorder.EquipmentId;
             wo.SparePartId = workorder.SparePartId;
-            wo.WorkOrderDate = workorder.WorkOrderDate;
+            wo.Date = workorder.WorkOrderDate;
             if(workorder.ServiceRequestId==0)
             {
                 wo.ServiceRequestId = null;
@@ -165,13 +165,13 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
             if (Worder == null)
                 return null;
             wo.Id = Worder.Id;
-            wo.WorkOrderDate = Worder.WorkOrderDate;
+            wo.WorkOrderDate = Worder.Date;
             wo.PriorityId = Worder.PriorityId;
             wo.UserId = Worder.UserId;
             wo.VendorId = Worder.VendorId;
             wo.RequestStatusId = Worder.RequestStatusId;
             wo.MaintenanceId = Worder.MaintenanceId;
-            wo.EquipmentId = Worder.EquipmentId;
+            wo.EquipmentId = Worder.AssetId;
             wo.SparePartId = Worder.SparePartId;
             wo.ServiceRequestId = Worder.ServiceRequestId;
             return wo;
@@ -190,10 +190,10 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
             }
             wo.UserId = workorder.UserId;
             wo.VendorId = workorder.VendorId;
-            wo.WorkOrderDate = workorder.WorkOrderDate;
+            wo.Date = workorder.WorkOrderDate;
             wo.PriorityId = workorder.PriorityId;
             wo.RequestStatusId = workorder.RequestStatusId;
-            wo.EquipmentId = workorder.EquipmentId;
+            wo.AssetId = workorder.EquipmentId;
             wo.MaintenanceId = workorder.MaintenanceId;
             wo.SparePartId = workorder.SparePartId;
             _context.WorkOrders.Add(wo);
@@ -203,7 +203,7 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
         {
             var Worder = _context.WorkOrders
                 .Where(w=>w.ServiceRequestId==null)
-               .Include(w => w.Equipment)
+               .Include(w => w.Asset).ThenInclude(e=>e.MasterAsset)
                .Include(w=>w.User)
                .Include(w=>w.Vendor)
                
@@ -211,22 +211,22 @@ namespace BiomedicalSystemAPI.Repositories.WorkOrdersRepositories
                w => new WorkOrdersDTO
                {
                    Id = w.Id,
-                   WorkOrderDate = w.WorkOrderDate,
+                   WorkOrderDate = w.Date,
                    PriorityId = w.PriorityId,
                    UserId = w.UserId,
                    UserName=w.User.UserName,
                    UserNameAr=w.User.UserName,
                    VendorId = w.VendorId,
-                   VendorName=w.Vendor.VendorName,
-                   VendorNameAr=w.Vendor.VendorNameAr,
+                   VendorName=w.Vendor.Name,
+                   VendorNameAr=w.Vendor.NameAr,
                    RequestStatusId = w.RequestStatusId,
                    StatusName = w.RequestStatus.status,
                    StatusNameAr = w.RequestStatus.statusAr,
                    color=w.RequestStatus.color,
                    MaintenanceId = w.MaintenanceId,
-                   EquipmentId = w.EquipmentId,
-                   EquipmentName = w.Equipment.EquipmentName,
-                   EquipmentNameAr = w.Equipment.EquipmentNameAr,
+                   EquipmentId = w.AssetId,
+                   EquipmentName = w.Asset.MasterAsset.Name,
+                   EquipmentNameAr = w.Asset.MasterAsset.NameAr,
                    SparePartId = w.SparePartId,
                    SparePartName=w.SparePart.SparePartName,
                    SparePartNameAr=w.SparePart.SparePartNameAr

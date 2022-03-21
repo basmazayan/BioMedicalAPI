@@ -11,7 +11,7 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
     {
         IEnumerable<HealthCareUnitDTO> GetAll();
         HealthCareUnitDTO GetById(int id);
-        HealthCareUnit Find(int id);
+        Hospital Find(int id);
         void Add(HealthCareUnitDTO healthUnit);
         void Update(HealthCareUnitDTO healthUnit);
         void Delete(int id);

@@ -17,13 +17,13 @@ namespace BiomedicalSystemAPI.Repositories.OrganizationRepository
         }
         public void Add(Organization organization)
         {
-            _context.organizations.Add(organization);
+            _context.Organizations.Add(organization);
             _context.SaveChanges();                      
         }
 
         public void Delete(int id)
         {      
-            Organization organization= _context.organizations.Find(id);
+            Organization organization= _context.Organizations.Find(id);
             if(organization!=null)
             {
                 _context.Remove(organization);
@@ -50,12 +50,12 @@ namespace BiomedicalSystemAPI.Repositories.OrganizationRepository
 
         public IEnumerable<Organization> GetAll()
         {
-            return _context.organizations.ToList();
+            return _context.Organizations.ToList();
         }
 
         public Organization GetById(int id)
         {
-           return _context.organizations.Find(id);
+           return _context.Organizations.Find(id);
         }
 
         public void Update(Organization organization)
@@ -73,7 +73,7 @@ namespace BiomedicalSystemAPI.Repositories.OrganizationRepository
         }
         public IEnumerable<Organization> GetAllbutOne(int id)
         {
-            return _context.organizations.Where(o => o.Id != id).ToList();
+            return _context.Organizations.Where(o => o.Id != id).ToList();
         }
     }
 }

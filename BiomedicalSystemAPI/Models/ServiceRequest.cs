@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BiomedicalSystemAPI.Models.AssetAppContext;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace BiomedicalSystemAPI.Models
         public string RequestTypeAr { get; set; }
         public int EquipmentId { get; set; }
         [ForeignKey("EquipmentId")]
-        public virtual Equipment Equipment { get; set; }
+        public virtual Assets Equipment { get; set; }
         public string EquipmentCode { get; set; }
         public string EquipmentName { get; set; }
         public int ModeId { get; set; }
@@ -38,10 +39,10 @@ namespace BiomedicalSystemAPI.Models
         public string PriorityLevel { get; set; }
         public int? HealthDirectoryId { get; set; }
         [ForeignKey("HealthDirectoryId")]
-        public virtual HealthDirectory HealthDirectories { get; set; }
+        public virtual Governorate HealthDirectories { get; set; }
           public int? HealthDistrictId { get; set; }
         [ForeignKey("HealthDistrictId")]
-        public virtual HealthDistrict HealthDistrict { get; set; }
+        public virtual City HealthDistrict { get; set; }
 
     }
 }

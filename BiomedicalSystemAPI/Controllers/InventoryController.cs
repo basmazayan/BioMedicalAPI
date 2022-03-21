@@ -36,7 +36,7 @@ namespace BiomedicalSystemAPI.Controllers
         {
             // MasterEquipmentDTO mequipment = _masterEquipmentRepository.GetById(equipment.MasterEquipmentId);
         
-            var inventories =  _context.inventories.Include(e => e.equipments)
+            var inventories =  _context.Inventories.Include(e => e.equipments)
                 .Include(e=>e.users)
                 .Select(e => new InventoryDTO
                 {
@@ -143,7 +143,7 @@ namespace BiomedicalSystemAPI.Controllers
             invent.EquipmentId = InventoryObj.EquipmentId;
             invent.Code = InventoryObj.Code;
             invent.CreatedAt =  DateTime.Now;
-            _context.inventories.Add(invent);
+            _context.Inventories.Add(invent);
             _context.SaveChanges();
             return CreatedAtAction("GetInventory", new { id = InventoryObj.Id }, InventoryObj);
 
@@ -152,13 +152,13 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Inventory>> DeleteInventory(int id)
         {
-            var Inventory = await _context.inventories.FindAsync(id);
+            var Inventory = await _context.Inventories.FindAsync(id);
             if (Inventory == null)
             {
                 return NotFound();
             }
 
-            _context.inventories.Remove(Inventory);
+            _context.Inventories.Remove(Inventory);
             await _context.SaveChangesAsync();
 
             return Inventory;
@@ -166,7 +166,7 @@ namespace BiomedicalSystemAPI.Controllers
 
         private bool InventoryExists(int id)
         {
-            return _context.inventories.Any(e => e.Id == id);
+            return _context.Inventories.Any(e => e.Id == id);
         }
 
     }

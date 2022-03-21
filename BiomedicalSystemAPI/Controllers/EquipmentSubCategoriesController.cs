@@ -22,31 +22,31 @@ namespace BiomedicalSystemAPI.Controllers
 
         // GET: api/EquipmentSubCategories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EquipmentSubCategory>>> GetEquipmentSubCategories()
+        public async Task<ActionResult<IEnumerable<SubCategory>>> GetEquipmentSubCategories()
         {
-            return await _context.EquipmentSubCategories.ToListAsync();
+            return await _context.SubCategories.ToListAsync();
         }
         [Route("AllSubCategoriesBycategoryId/{categoryId}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EquipmentSubCategory>>> GetSubCategoriesByCategoryId(int categoryId)
+        public async Task<ActionResult<IEnumerable<SubCategory>>> GetSubCategoriesByCategoryId(int categoryId)
         {
-            var SubCategories = await _context.EquipmentSubCategories.Where(e => e.EquipmentCategoryId == categoryId)
-                  .Include(e => e.EquipmentCategory)
-                  .Select(e => new EquipmentSubCategory
+            var SubCategories = await _context.SubCategories.Where(e => e.CategoryId == categoryId)
+                  .Include(e => e.Category)
+                  .Select(e => new SubCategory
                   {
                       Id = e.Id,
-                      SubCategoryName = e.SubCategoryName,
-                      SubCategoryNameAr = e.SubCategoryNameAr,
-                      EquipmentCategoryId = e.EquipmentCategoryId,
+                      Name = e.Name,
+                      NameAr = e.NameAr,
+                      CategoryId = e.CategoryId,
                       Code= e.Code
                   }).ToListAsync();
             return SubCategories;
         }
         // GET: api/EquipmentSubCategories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<EquipmentSubCategory>> GetEquipmentSubCategory(int id)
+        public async Task<ActionResult<SubCategory>> GetEquipmentSubCategory(int id)
         {
-            var equipmentSubCategory = await _context.EquipmentSubCategories.FindAsync(id);
+            var equipmentSubCategory = await _context.SubCategories.FindAsync(id);
 
             if (equipmentSubCategory == null)
             {
@@ -60,24 +60,24 @@ namespace BiomedicalSystemAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEquipmentSubCategory(int id, EquipmentSubCategory equipmentSubCategory)
+        public async Task<IActionResult> PutEquipmentSubCategory(int id, SubCategory equipmentSubCategory)
         {
             if (id != equipmentSubCategory.Id)
             {
                 return BadRequest();
             }
-            var lstCategoryCodes = _context.EquipmentSubCategories.Where(a => a.Code == equipmentSubCategory.Code && a.Id != id).ToList();
+            var lstCategoryCodes = _context.SubCategories.Where(a => a.Code == equipmentSubCategory.Code && a.Id != id).ToList();
             if (lstCategoryCodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Sub Category code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstCategoryNames = _context.EquipmentSubCategories.Where(a => a.SubCategoryName == equipmentSubCategory.SubCategoryName && a.Id != id).ToList();
+            var lstCategoryNames = _context.SubCategories.Where(a => a.Name == equipmentSubCategory.Name && a.Id != id).ToList();
             if (lstCategoryNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Sub Category name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
             }
 
-            var lstCategoryNamesAr = _context.EquipmentSubCategories.Where(a => a.SubCategoryNameAr == equipmentSubCategory.SubCategoryNameAr && a.Id != id).ToList();
+            var lstCategoryNamesAr = _context.SubCategories.Where(a => a.NameAr == equipmentSubCategory.NameAr && a.Id != id).ToList();
             if (lstCategoryNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Sub Category arabic name already exist", MessageAr = "هذا الاسم العربي مسجل سابقاً" });
@@ -110,21 +110,21 @@ namespace BiomedicalSystemAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<EquipmentSubCategory>> PostEquipmentSubCategory(EquipmentSubCategory equipmentSubCategory)
+        public async Task<ActionResult<SubCategory>> PostEquipmentSubCategory(SubCategory equipmentSubCategory)
         {
-            var subCategories = _context.EquipmentSubCategories.ToList();
-            var lstCategoryCodes = _context.EquipmentSubCategories.Where(a => a.Code == equipmentSubCategory.Code).ToList();
+            var subCategories = _context.SubCategories.ToList();
+            var lstCategoryCodes = _context.SubCategories.Where(a => a.Code == equipmentSubCategory.Code).ToList();
             if (lstCategoryCodes.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Sub Category code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
             }
-            var lstCategoryNames = _context.EquipmentSubCategories.Where(a => a.SubCategoryName == equipmentSubCategory.SubCategoryName).ToList();
+            var lstCategoryNames = _context.SubCategories.Where(a => a.Name == equipmentSubCategory.Name).ToList();
             if (lstCategoryNames.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "name", Message = "Sub Category name already exist", MessageAr = "هذا الاسم مسجل سابقاً" });
             }
 
-            var lstCategoryNamesAr = _context.EquipmentSubCategories.Where(a => a.SubCategoryNameAr == equipmentSubCategory.SubCategoryNameAr ).ToList();
+            var lstCategoryNamesAr = _context.SubCategories.Where(a => a.NameAr == equipmentSubCategory.NameAr ).ToList();
             if (lstCategoryNamesAr.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "nameAr", Message = "Sub Category arabic name already exist", MessageAr = "هذا الاسم العربي مسجل سابقاً" });
@@ -135,7 +135,7 @@ namespace BiomedicalSystemAPI.Controllers
             {
                 try
                 {
-                    _context.EquipmentSubCategories.Add(equipmentSubCategory);
+                    _context.SubCategories.Add(equipmentSubCategory);
                     await _context.SaveChangesAsync();
                 }
                 catch (Exception ex)
@@ -150,15 +150,15 @@ namespace BiomedicalSystemAPI.Controllers
 
         // DELETE: api/EquipmentSubCategories/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<EquipmentSubCategory>> DeleteEquipmentSubCategory(int id)
+        public async Task<ActionResult<SubCategory>> DeleteEquipmentSubCategory(int id)
         {
-            var equipmentSubCategory = await _context.EquipmentSubCategories.FindAsync(id);
+            var equipmentSubCategory = await _context.SubCategories.FindAsync(id);
             if (equipmentSubCategory == null)
             {
                 return NotFound();
             }
 
-            _context.EquipmentSubCategories.Remove(equipmentSubCategory);
+            _context.SubCategories.Remove(equipmentSubCategory);
             await _context.SaveChangesAsync();
 
             return equipmentSubCategory;
@@ -166,7 +166,7 @@ namespace BiomedicalSystemAPI.Controllers
 
         private bool EquipmentSubCategoryExists(int id)
         {
-            return _context.EquipmentSubCategories.Any(e => e.Id == id);
+            return _context.SubCategories.Any(e => e.Id == id);
         }
     }
 

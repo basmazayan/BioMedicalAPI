@@ -13,7 +13,7 @@ namespace BiomedicalSystemAPI.DTO
         public string EquipmentName { get; set; }
         public string EquipmentNameAr { get; set; }
         public string EquipmentType { get; set; }
-        public DateTime InstallationDate { get; set; }
+        public DateTime? InstallationDate { get; set; }
         public string EquipmentDescription { get; set; }
         public string EquipmentDescriptionAr { get; set; }
         public string Remarks { get; set; }
@@ -22,14 +22,14 @@ namespace BiomedicalSystemAPI.DTO
         public string InternalCode { get; set; }
         public string Barcode { get; set; }
         public string UpaCode { get; set; }
-        public DateTime PurchaseDate { get; set; }
+        public DateTime? PurchaseDate { get; set; }
         public int SupplierId { get; set; }
         public string ModelNumber { get; set; }
         public string VersionNumber { get; set; }
         public string SupplierCode { get; set; }
         public string SupplierName { get; set; }
         public string SupplierNameAr { get; set; }
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
         public DateTime WarrantyExpires { get; set; }
         public int ExpectedLifeTime { get; set; }
         public float Length { get; set; }
@@ -40,8 +40,8 @@ namespace BiomedicalSystemAPI.DTO
         public int HealthCareUnitId { get; set; }
         public string HealthCareUnitName { get; set; }
         public string HealthCareUnitNameAr { get; set; }
-        public int Room { get; set; }
-        public int Floor { get; set; }
+        public int? Room { get; set; }
+        public int? Floor { get; set; }
         public int EquipmentStatuSId { get; set; }
         public string Status { get; set; }
         public string StatusName { get; set; }

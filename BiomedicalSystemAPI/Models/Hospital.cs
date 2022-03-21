@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace BiomedicalSystemAPI.Models
 {
-    public class HealthCareUnit
+    public class Hospital
     {
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        //[DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string HealthCareUnitCode { get; set; }
-        public string HealthCareUnitName { get; set; }
-        public string HealthCareUnitNameAr { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string NameAr { get; set; }
         public string Address { get; set; }
         public string Director { get; set; }
         public string Phone { get; set; }
@@ -20,13 +20,13 @@ namespace BiomedicalSystemAPI.Models
         public string Email { get; set; }
         public double ?Long { get; set; }
         public double ?Lat { get; set; }
-        public int HealthDistrictId { get; set; }
-        [ForeignKey("HealthDistrictId")]
-        public virtual HealthDistrict HealthDistricts { get; set; }
+        public int CityId { get; set; }
+        [ForeignKey("CityId")]
+        public virtual City City { get; set; }
 
-        public int HealthDirectoryId { get; set; }
-        [ForeignKey("HealthDirectoryId")]
-        public virtual HealthDirectory HealthDirectories { get; set; }
+        public int GovernorateId { get; set; }
+        [ForeignKey("GovernorateId")]
+        public virtual Governorate Governorate { get; set; }
         public int organizationId { get; set; }
         [ForeignKey("organizationId")]
         public virtual Organization organization { get; set; }

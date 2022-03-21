@@ -8,6 +8,7 @@ namespace BiomedicalSystemAPI.Repositories.InventoryRepository
 {
     public interface IInventoryRepository
     {
-        Inventory GetInventory(int id); 
+        Inventory GetInventory(int id);
+        List<Inventory> GetAll();
     }
 }

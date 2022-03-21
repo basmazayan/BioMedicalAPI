@@ -1,5 +1,6 @@
 ﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
+using BiomedicalSystemAPI.Models.AssetAppContext;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,9 +17,11 @@ namespace BiomedicalSystemAPI.Controllers
     public class EquipmentRecallController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public EquipmentRecallController(ApplicationDbContext context)
+        private readonly AssetDbContext _AssetContext;
+        public EquipmentRecallController(ApplicationDbContext context, AssetDbContext AssetContext)
         {
             _context = context;
+            _AssetContext = AssetContext;
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EquipmentRecall>>> GetEquipmentRecalls()
@@ -30,7 +33,7 @@ namespace BiomedicalSystemAPI.Controllers
         {
             EquipmentRecall eqRecall = new EquipmentRecall();
             eqRecall.Id = equipmentRecallObj.Id;
-            eqRecall.MasterEquipmentId = equipmentRecallObj.MasterEquipmentId;
+            eqRecall.MasterAssetId = equipmentRecallObj.MasterEquipmentId;
             eqRecall.Description = equipmentRecallObj.Description;
             eqRecall.RecallDate = equipmentRecallObj.RecallDate;
             eqRecall.ModelNumber = equipmentRecallObj.ModelNumber;
@@ -42,7 +45,7 @@ namespace BiomedicalSystemAPI.Controllers
             //equipmentRecallObj.Id = eqRecall.Id;
             foreach (var eq in equipmentRecallObj.equipmentsIDs)
             { 
-                var equipment = _context.Equipments.Where(e => e.Id == eq).FirstOrDefault();
+                var equipment = _context.Assets.Where(e => e.Id == eq).FirstOrDefault();
                 equipment.EquipmentRecallId = eqRecall.Id;
                 _context.Entry(equipment).State = EntityState.Modified;
                 _context.SaveChanges();

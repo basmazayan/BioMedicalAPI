@@ -21,12 +21,12 @@ namespace BiomedicalSystemAPI.Models
         //public virtual Language Language { get; set; }
         public int HealthCareUnitId { get; set; }
         [ForeignKey("HealthCareUnitId")]
-        public virtual HealthCareUnit HealthCareUnit { get; set; }
+        public virtual Hospital HealthCareUnit { get; set; }
         public int HealthDirectoryId { get; set; }
         [ForeignKey("HealthDirectoryId")]
-        public virtual HealthDirectory HealthDirectories { get; set; }
+        public virtual Governorate HealthDirectories { get; set; }
         public int HealthDistrictId { get; set; }
         [ForeignKey("HealthDistrictId")]
-        public virtual HealthDistrict HealthDistricts { get; set; }
+        public virtual City HealthDistricts { get; set; }
     }
 }

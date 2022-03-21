@@ -19,16 +19,16 @@ namespace BiomedicalSystemAPI.Controllers
         }
         // GET: api/HealthDirectories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HealthDirectory>>> GetHealthDirectories()
+        public async Task<ActionResult<IEnumerable<Governorate>>> GetHealthDirectories()
         {
-            return await _context.HealthDirectories.ToListAsync();
+            return await _context.Governorates.ToListAsync();
         }
 
         // GET: api/HealthDirectories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<HealthDirectory>> GetHealthDirectory(int id)
+        public async Task<ActionResult<Governorate>> GetHealthDirectory(int id)
         {
-            var HealthDirectory = await _context.HealthDirectories.FindAsync(id);
+            var HealthDirectory = await _context.Governorates.FindAsync(id);
 
             if (HealthDirectory == null)
             {
@@ -40,7 +40,7 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpGet("GetHealthDirectoryIdByName/{name}")]
         public async Task<ActionResult<int>> GetHealthDirectoryIdByName(string name)
         {
-            var HealthDirectory = await _context.HealthDirectories.FirstOrDefaultAsync(d=>d.HealthDirectoryName==name || d.HealthDirectoryNameAr==name);
+            var HealthDirectory = await _context.Governorates.FirstOrDefaultAsync(d=>d.Name==name || d.NameAr==name);
 
             if (HealthDirectory == null)
             {
@@ -52,7 +52,7 @@ namespace BiomedicalSystemAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHealthDirectory(int id, HealthDirectory healthDirectory)
+        public async Task<IActionResult> PutHealthDirectory(int id, Governorate healthDirectory)
         {
             if (id != healthDirectory.Id)
             {
@@ -96,9 +96,9 @@ namespace BiomedicalSystemAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<HealthDirectory>> PosthealthDirectory(HealthDirectory healthDirectory)
+        public async Task<ActionResult<Governorate>> PosthealthDirectory(Governorate healthDirectory)
         {
-            _context.HealthDirectories.Add(healthDirectory);
+            _context.Governorates.Add(healthDirectory);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetDepartment", new { id = healthDirectory.Id }, healthDirectory);
@@ -106,15 +106,15 @@ namespace BiomedicalSystemAPI.Controllers
 
         // DELETE: api/HealthDirectories/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<HealthDirectory>> DeletehealthDirectory(int id)
+        public async Task<ActionResult<Governorate>> DeletehealthDirectory(int id)
         {
-            var healthDirectory = await _context.HealthDirectories.FindAsync(id);
+            var healthDirectory = await _context.Governorates.FindAsync(id);
             if (healthDirectory == null)
             {
                 return NotFound();
             }
 
-            _context.HealthDirectories.Remove(healthDirectory);
+            _context.Governorates.Remove(healthDirectory);
             await _context.SaveChangesAsync();
 
             return healthDirectory;
@@ -122,7 +122,7 @@ namespace BiomedicalSystemAPI.Controllers
 
         private bool HealthDirectoryExists(int id)
         {
-            return _context.HealthDirectories.Any(e => e.Id == id);
+            return _context.Governorates.Any(e => e.Id == id);
         }
     }
 }

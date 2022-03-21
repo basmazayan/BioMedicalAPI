@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace BiomedicalSystemAPI.Models
 {
-    public class HealthDirectory
+    public class Governorate
     {
         public int Id { get; set; }
-		public string HealthDirectoryCode { get; set; }
-		public string HealthDirectoryName { get; set; }
-		public string HealthDirectoryNameAr { get; set; }
+		public string Code { get; set; }
+		public string Name { get; set; }
+		public string NameAr { get; set; }
   
 	}
 }
