@@ -6,7 +6,6 @@ using BiomedicalSystemAPI.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using BiomedicalSystemAPI.Repositories;
 using BiomedicalSystemAPI.Models;
-using BiomedicalSystemAPI.Models.AssetAppContext;
 
 namespace BiomedicalSystemAPI.Repositories.HealthRepository
 {
@@ -14,13 +13,12 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
     {
         private readonly BioMedEquipmentDBContext _context;
         private readonly ApplicationDbContext _BioContext;
-        private readonly AssetDbContext _AssetContext;
-        public GetHealthInfoRepository(BioMedEquipmentDBContext context, ApplicationDbContext BioContext,
-            AssetDbContext AssetContext)
+        //private readonly AssetDbContext _AssetContext;
+        public GetHealthInfoRepository(BioMedEquipmentDBContext context, ApplicationDbContext BioContext)
         {
             _context = context;
             _BioContext = BioContext;
-            _AssetContext = AssetContext;
+            //_AssetContext = AssetContext;
         }
 
         public IEnumerable<DepartmemtByHospitalCodeViewModels> GetDepartmant(int id)
@@ -177,9 +175,20 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
             return equipment;
         }
 
-        public IEnumerable<Models.HealthAppContext.HealthCareUnit> GetHospitalData(int id)
+        public IEnumerable<HealthCareUnit> GetHospitalData(int id)
         {
             return _context.HealthCareUnits.Where(x => x.Code == id.ToString()).ToList();
+        }
+        public IEnumerable<Hospital> GetHospitalInCity(string[] modelID)
+        {
+            var hospitalLst = new List<Hospital>();
+            foreach (var cityCode in modelID)
+            {
+                var city = _BioContext.Cities.Where(c => c.Code == cityCode).FirstOrDefault();
+                var hos = _BioContext.Hospitals.Where(h => h.CityId ==city.Id).ToList();
+                hospitalLst.AddRange(hos);
+            }
+            return hospitalLst;
         }
 
         public IEnumerable<OrganizationViewModel> GetOrganizationDetails(getMultiIDViewModel modelID)
@@ -202,12 +211,14 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
                                 OrginizationsAr = d.NameAr,
                                 Id = d.Id,
                                 HospitalId = item.Code
+                                
                             }).Select(x => new OrganizationViewModel()
                             {
                                 Name = x.OrginizationsEn,
                                 NameAr = x.OrginizationsAr,
                                 HospitalId = x.HospitalId,
                                 Id = x.Id,
+                                healthcareunits=_BioContext.Hospitals.Where(h=>h.organizationId==x.Id).ToList()
 
                             }).FirstOrDefault();
                         bool containsItem = organizations.Any(item => item.Id == organization.Id);

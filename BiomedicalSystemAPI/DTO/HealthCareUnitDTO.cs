@@ -8,18 +8,18 @@ namespace BiomedicalSystemAPI.DTO
     public class HealthCareUnitDTO
     {
         public int Id { get; set; }
-        public string HealthCareUnitCode { get; set; }
-        public string HealthCareUnitName { get; set; }
-        public string HealthCareUnitNameAr { get; set; }
-        public int HealthDistrictId { get; set; }
-        public string HealthDistrictName { get; set; }
-        public string HealthDistrictNameAr { get; set; }
-        public int HealthDirectoryId { get; set; }
-        public string HealthDirectoryName { get; set; }
-        public string HealthDirectoryNameAr { get; set; }
-        public int  organizationId { get; set; }
-        public string  organizationName { get; set; }
-        public string  organizationNameAr { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string NameAr { get; set; }
+        public int CityId { get; set; }
+        public string CityName { get; set; }
+        public string CityNameAr { get; set; }
+        public int GovernorateId { get; set; }
+        public string GovernorateName { get; set; }
+        public string GovernorateNameAr { get; set; }
+        public int  OrganizationId { get; set; }
+        public string  OrganizationName { get; set; }
+        public string  OrganizationNameAr { get; set; }
         public string Address { get; set; }
         public string Director { get; set; }
         public string Phone { get; set; }

@@ -1,6 +1,5 @@
 ﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
-using BiomedicalSystemAPI.Models.AssetAppContext;
 using BiomedicalSystemAPI.Repositories.PagingRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -24,19 +23,18 @@ namespace BiomedicalSystemAPI.Controllers
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _context;
         private readonly IPagingRepository _pagingRepository;
-        private readonly AssetDbContext _AssetContext;
+        //private readonly AssetDbContext _AssetContext;
 
         public UserController(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager, IConfiguration configuration
-            , ApplicationDbContext context, IPagingRepository pagingRepository,
-            AssetDbContext AssetContext)
+            , ApplicationDbContext context, IPagingRepository pagingRepository)
         {
             this.userManager = userManager;
             _roleManager = roleManager;
             _context = context;
             _configuration = configuration;
             _pagingRepository = pagingRepository;
-            _AssetContext = AssetContext;
+            //_AssetContext = AssetContext;
         }
         // GET: api/<UsersController>
         [HttpGet]
@@ -210,10 +208,10 @@ namespace BiomedicalSystemAPI.Controllers
         //}
         [HttpGet]
         [Route("GetEquipments")]
-        public IEnumerable<Models.AssetAppContext.AssetDetail> GetEquipmentsByuserId()
+        public IEnumerable<Assets> GetEquipmentsByuserId()
         {
             var users = userManager.Users.ToList();
-            var equipments = _AssetContext.AssetDetails.ToList();
+            var equipments = _context.Assets.ToList();
             foreach (var eq in equipments)
             {
                 foreach (var user in users)

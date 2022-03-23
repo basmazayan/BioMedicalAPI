@@ -1,10 +1,7 @@
 ﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
-using BiomedicalSystemAPI.Models.AssetAppContext;
 using BiomedicalSystemAPI.Repositories.ContractRequestRepositories;
-using BiomedicalSystemAPI.Repositories.ContractRequestRepository;
 using BiomedicalSystemAPI.Repositories.EmailConfirmation;
-using BiomedicalSystemAPI.Repositories.EquipmentReposatories;
 using BiomedicalSystemAPI.Repositories.PagingRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -267,7 +264,7 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("getcount")]
         public int count()
         {
-            return _pagingRepository.Count<Models.AssetAppContext.AssetDetail>();
+            return _pagingRepository.Count<Assets>();
         }
         [HttpGet("UpdateRequestStatus/{reqId}")]
         public ActionResult UpdateRequestStatus(int reqId)

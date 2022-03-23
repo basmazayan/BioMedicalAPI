@@ -89,9 +89,9 @@ namespace BiomedicalSystemAPI.Controllers
             else
             {
                 //var healthUnits = _context.HealthCareUnits.Where(e => e.Id != id).ToList();
-                var CheckCode = _context.Hospitals.Where(e => e.Code == healthCareUnit.HealthCareUnitCode && e.Id != id).ToList();
-                var checkName = _context.Hospitals.Where(e => e.Name == healthCareUnit.HealthCareUnitName && e.Id != id).ToList();
-                var checkNameAr = _context.Hospitals.Where(e => e.NameAr == healthCareUnit.HealthCareUnitNameAr && e.Id != id).ToList();
+                var CheckCode = _context.Hospitals.Where(e => e.Code == healthCareUnit.Code && e.Id != id).ToList();
+                var checkName = _context.Hospitals.Where(e => e.Name == healthCareUnit.Name && e.Id != id).ToList();
+                var checkNameAr = _context.Hospitals.Where(e => e.NameAr == healthCareUnit.NameAr && e.Id != id).ToList();
                 if (CheckCode.Count > 0)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Department code already exist", MessageAr = "هذا الكود مسجل سابقاً" });
@@ -144,10 +144,10 @@ namespace BiomedicalSystemAPI.Controllers
         [HttpPost]
         public ActionResult<Hospital> PostHealthCareUnit(HealthCareUnitDTO healthCareUnit)
         {
-            var CheckCode = _context.Hospitals.Where(e => e.Code == healthCareUnit.HealthCareUnitCode).ToList();
+            var CheckCode = _context.Hospitals.Where(e => e.Code == healthCareUnit.Code).ToList();
 
-            var healthCareUnits = _context.Hospitals.Where(e => e.Name == healthCareUnit.HealthCareUnitName).ToList();
-            var healthCareUnitsAr = _context.Hospitals.Where(e => e.NameAr == healthCareUnit.HealthCareUnitNameAr).ToList();
+            var healthCareUnits = _context.Hospitals.Where(e => e.Name == healthCareUnit.Name).ToList();
+            var healthCareUnitsAr = _context.Hospitals.Where(e => e.NameAr == healthCareUnit.NameAr).ToList();
             if (CheckCode.Count > 0)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "code", Message = "Health care unit code already exist", MessageAr = "هذا الكود مسجل سابقاً" });

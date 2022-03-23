@@ -8,6 +8,7 @@ using BiomedicalSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Wkhtmltopdf.NetCore;
+using BiomedicalSystemAPI.Models;
 
 namespace BiomedicalSystemAPI.Controllers
 {
@@ -131,6 +132,12 @@ namespace BiomedicalSystemAPI.Controllers
             _generatePdf.SetConvertOptions(options);
 
             return await _generatePdf.GetPdf("views/Reports/GetReportEng.cshtml", model);
+        }
+        [HttpPost]
+        [Route("GetHospitalsInCity")]
+        public IEnumerable<Hospital> GetHospitalsInCity(string[] cityCode)
+        {
+            return _dbAccessLayer.GetHospitalInCity(cityCode);
         }
     }
 }

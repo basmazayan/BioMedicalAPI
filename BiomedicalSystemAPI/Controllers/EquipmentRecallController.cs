@@ -1,7 +1,5 @@
 ﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
-using BiomedicalSystemAPI.Models.AssetAppContext;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,11 +15,11 @@ namespace BiomedicalSystemAPI.Controllers
     public class EquipmentRecallController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly AssetDbContext _AssetContext;
-        public EquipmentRecallController(ApplicationDbContext context, AssetDbContext AssetContext)
+        //private readonly AssetDbContext _AssetContext;
+        public EquipmentRecallController(ApplicationDbContext context)
         {
             _context = context;
-            _AssetContext = AssetContext;
+            //_AssetContext = AssetContext;
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EquipmentRecall>>> GetEquipmentRecalls()

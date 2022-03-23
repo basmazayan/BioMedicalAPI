@@ -16,18 +16,18 @@ namespace BiomedicalSystemAPI.DTO
         public string OriginCode { get; set; }
         public string CategoryCode { get; set; }
       
-        public int ManufacturerId { get; set; }
-        public string ManufacturerName { get; set; }
-        public string ManufacturerNameAr { get; set; }
+        public int BrandId { get; set; }
+        public string BrandName { get; set; }
+        public string BrandNameAr { get; set; }
         public int PriorityId { get; set; }
         public string SubCategoryCode { get; set; }
-        public string EquipmentDescriptionAr { get; set; }
+        public string DescriptionAr { get; set; }
         public string ModelNumber { get; set; }
         public string VersionNumber { get; set; }
         public int ExpectedLifeTime { get; set; }
         
-        public int EquipmentCategoryId { get; set; }
-        public int ?EquipmentSubCategoryId { get; set; }
+        public int CategoryId { get; set; }
+        public int ?SubCategoryId { get; set; }
         public List<int> AttachmentIDs { get; set; }
 
     }

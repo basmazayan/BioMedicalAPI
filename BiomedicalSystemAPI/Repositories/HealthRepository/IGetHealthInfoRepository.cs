@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BiomedicalSystemAPI.ViewModels;
 using BiomedicalSystemAPI.Models.HealthAppContext;
+using BiomedicalSystemAPI.Models;
 
 namespace BiomedicalSystemAPI.Repositories
 {
@@ -21,5 +22,6 @@ namespace BiomedicalSystemAPI.Repositories
         IEnumerable<InstallDateViewModel> GetInstallDateetails(int id);
         IEnumerable<PriceViewModel> GetPricetails(int id);
         IEnumerable<DepartmemtByHospitalCodeViewModels> GetDepartmants(getMultiIDViewModel model);
+        public IEnumerable<Hospital> GetHospitalInCity(string[] model);
     }
 }

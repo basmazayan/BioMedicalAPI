@@ -15,7 +15,6 @@ using Microsoft.Extensions.Configuration;
 using BiomedicalSystemAPI.Repositories.EmailConfirmation;
 using System.Text;
 using BiomedicalSystemAPI.Repositories.PagingRepository;
-using BiomedicalSystemAPI.Models.AssetAppContext;
 
 namespace BiomedicalSystemAPI.Controllers
 {
@@ -34,7 +33,7 @@ namespace BiomedicalSystemAPI.Controllers
         private readonly IConfiguration _configuration;
         private readonly IEmailRepository _emailRepository;
         private readonly IPagingRepository _pagingRepository;
-        private readonly AssetDbContext _AssetContext;
+        //private readonly AssetDbContext _AssetContext;
 
         // private IHealthCareUnitRepository _healthCareUnitRepository;
         public EquipmentsController(IEquipmentRepository equipmentRepository,
@@ -43,7 +42,7 @@ namespace BiomedicalSystemAPI.Controllers
             QRCoderController qRCoderController,
             UserManager<ApplicationUser> userManager,
              IConfiguration configuration,
-            IEmailRepository emailRepository, AssetDbContext AssetContext,
+            IEmailRepository emailRepository,
             RoleManager<IdentityRole> roleManager, IPagingRepository pagingRepository)
         {
             _equipmentRepository = equipmentRepository;
@@ -55,7 +54,7 @@ namespace BiomedicalSystemAPI.Controllers
             _configuration = configuration;
             _emailRepository = emailRepository;
             _pagingRepository = pagingRepository;
-            _AssetContext = AssetContext;
+            //_AssetContext = AssetContext;
         }
         // GET: api/Equipments
         [HttpGet]

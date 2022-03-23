@@ -1,15 +1,11 @@
 ﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
-using BiomedicalSystemAPI.Models.AssetAppContext;
 using BiomedicalSystemAPI.Repositories.ContractRequestRepositories;
-using BiomedicalSystemAPI.Repositories.EquipmentReposatories;
 using BiomedicalSystemAPI.Repositories.PagingRepository;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
 {
@@ -17,13 +13,12 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly IPagingRepository _pagingRepository;
-        private readonly AssetDbContext _AssetContext;
-        public ContractRequestRepository(ApplicationDbContext  context,IPagingRepository pagingRepository,
-            AssetDbContext AssetContext)
+        //private readonly AssetDbContext ;
+        public ContractRequestRepository(ApplicationDbContext  context,IPagingRepository pagingRepository)
         {
             _context = context;
             _pagingRepository = pagingRepository;
-            _AssetContext = AssetContext;
+            //_AssetContext = AssetContext;
         }
         public void Add(ContractRequestDTO contractRequest)
         {

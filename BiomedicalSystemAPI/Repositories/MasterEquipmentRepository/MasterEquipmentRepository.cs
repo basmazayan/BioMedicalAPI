@@ -44,18 +44,18 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                 meq.Name = masterEquipment.Name;
                 meq.NameAr = masterEquipment.NameAr;
                 meq.MasterCode = masterEquipment.MasterCode;
-                meq.DescriptionAr = masterEquipment.EquipmentDescriptionAr;
+                meq.DescriptionAr = masterEquipment.DescriptionAr;
                 meq.ModelNumber = masterEquipment.ModelNumber;
                 meq.VersionNumber = masterEquipment.VersionNumber;
                 meq.ExpectedLifeTime = masterEquipment.ExpectedLifeTime;
                 meq.PriorityId = masterEquipment.PriorityId;
-                meq.CategoryId = masterEquipment.EquipmentCategoryId;
-                meq.SubCategoryId = masterEquipment.EquipmentSubCategoryId;
-                if (masterEquipment.EquipmentSubCategoryId == 0)
+                meq.CategoryId = masterEquipment.CategoryId;
+                meq.SubCategoryId = masterEquipment.SubCategoryId;
+                if (masterEquipment.SubCategoryId == 0)
                 {
                     meq.SubCategoryId = null;
                 }
-                meq.BrandId = masterEquipment.ManufacturerId;
+                meq.BrandId = masterEquipment.BrandId;
                 meq.OriginId = masterEquipment.OriginId;
                 meq.UpaCode = masterEquipment.UpaCode;
                 _context.masterAssets.Add(meq);
@@ -110,16 +110,16 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                         Name = mE.Name,
                         NameAr = mE.NameAr,
                         MasterCode = mE.MasterCode,
-                        EquipmentDescriptionAr = mE.DescriptionAr,
+                        DescriptionAr = mE.DescriptionAr,
                         ModelNumber = mE.ModelNumber,
                         VersionNumber = mE.VersionNumber,
                         ExpectedLifeTime = mE.ExpectedLifeTime,
                         PriorityId = mE.PriorityId,
-                        EquipmentCategoryId = mE.CategoryId,
-                        EquipmentSubCategoryId = mE.SubCategoryId,
-                        ManufacturerId = mE.BrandId,
-                        ManufacturerName = mE.Brand.Name,
-                        ManufacturerNameAr = mE.Brand.NameAr,
+                        CategoryId = mE.CategoryId,
+                        SubCategoryId = mE.SubCategoryId,
+                        BrandId = mE.BrandId,
+                        BrandName = mE.Brand.Name,
+                        BrandNameAr = mE.Brand.NameAr,
                         OriginId = mE.OriginId,
                         OriginCode = mE.Origin.Code,
                         UpaCode = mE.UpaCode
@@ -149,16 +149,16 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                         Name = mE.Name,
                         NameAr = mE.NameAr,
                         MasterCode = mE.MasterCode,
-                        EquipmentDescriptionAr = mE.DescriptionAr,
+                        DescriptionAr = mE.DescriptionAr,
                         ModelNumber = mE.ModelNumber,
                         VersionNumber = mE.VersionNumber,
                         ExpectedLifeTime = mE.ExpectedLifeTime,
                         PriorityId = mE.PriorityId,
-                        EquipmentCategoryId = mE.CategoryId,
-                        EquipmentSubCategoryId = mE.SubCategoryId,
-                        ManufacturerId = mE.BrandId,
-                        ManufacturerName = mE.Brand.Name,
-                        ManufacturerNameAr = mE.Brand.NameAr,
+                        CategoryId = mE.CategoryId,
+                        SubCategoryId = mE.SubCategoryId,
+                        BrandId = mE.BrandId,
+                        BrandName = mE.Brand.Name,
+                        BrandNameAr = mE.Brand.NameAr,
                         OriginId = mE.OriginId,
                         OriginCode = mE.Origin.Code,
                         UpaCode = mE.UpaCode
@@ -194,18 +194,18 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
             mEquipment.Name = masterEquipment.Name;
             mEquipment.NameAr = masterEquipment.NameAr;
             mEquipment.MasterCode = masterEquipment.MasterCode;
-            mEquipment.DescriptionAr = masterEquipment.EquipmentDescriptionAr;
+            mEquipment.DescriptionAr = masterEquipment.DescriptionAr;
             mEquipment.ModelNumber = masterEquipment.ModelNumber;
             mEquipment.VersionNumber = masterEquipment.VersionNumber;
             mEquipment.ExpectedLifeTime = masterEquipment.ExpectedLifeTime;
             mEquipment.PriorityId = masterEquipment.PriorityId;
-            mEquipment.CategoryId = masterEquipment.EquipmentCategoryId;
-            mEquipment.SubCategoryId = masterEquipment.EquipmentSubCategoryId;
-            if (masterEquipment.EquipmentSubCategoryId == 0)
+            mEquipment.CategoryId = masterEquipment.CategoryId;
+            mEquipment.SubCategoryId = masterEquipment.SubCategoryId;
+            if (masterEquipment.SubCategoryId == 0)
             {
                 mEquipment.SubCategoryId = null;
             }
-            mEquipment.BrandId = masterEquipment.ManufacturerId;
+            mEquipment.BrandId = masterEquipment.BrandId;
             mEquipment.OriginId = masterEquipment.OriginId;
             mEquipment.UpaCode = masterEquipment.UpaCode;
             mEquipment.masterequipmentAttachments = new List<MasterEquipmentAttachment>();
@@ -248,16 +248,16 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                         Name = mE.Name,
                         NameAr = mE.NameAr,
                         MasterCode = mE.MasterCode,
-                        EquipmentDescriptionAr = mE.DescriptionAr,
+                        DescriptionAr = mE.DescriptionAr,
                         ModelNumber = mE.ModelNumber,
                         VersionNumber = mE.VersionNumber,
                         ExpectedLifeTime = mE.ExpectedLifeTime,
                         PriorityId = mE.PriorityId,
-                        EquipmentCategoryId = mE.CategoryId,
-                        EquipmentSubCategoryId = mE.SubCategoryId,
-                        ManufacturerId = mE.BrandId,
-                        ManufacturerName = mE.Brand.Name,
-                        ManufacturerNameAr = mE.Brand.NameAr,
+                        CategoryId = mE.CategoryId,
+                        SubCategoryId = mE.SubCategoryId,
+                        BrandId = mE.BrandId,
+                        BrandName = mE.Brand.Name,
+                        BrandNameAr = mE.Brand.NameAr,
                         OriginId = mE.OriginId,
                         OriginCode = mE.Origin.Code,
                         UpaCode = mE.UpaCode

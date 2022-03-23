@@ -1,24 +1,22 @@
 ﻿using BiomedicalSystemAPI.DTO;
 using BiomedicalSystemAPI.Models;
-using BiomedicalSystemAPI.Models.AssetAppContext;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BiomedicalSystemAPI.Repositories.ContractRepository
 {
     public class Contract_Repository : IContractRepository
     {
          private readonly ApplicationDbContext _context;
-         private readonly AssetDbContext _AssetContext;
+         //private readonly AssetDbContext _AssetContext;
 
 
-        public Contract_Repository(ApplicationDbContext context, AssetDbContext AssetContext)
+        public Contract_Repository(ApplicationDbContext context)
         {
             _context = context;
-            _AssetContext = AssetContext;
+          //  _AssetContext = AssetContext;
         }
         public void Add(ContractDTO contractdto)
         {

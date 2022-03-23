@@ -9,6 +9,6 @@ namespace BiomedicalSystemAPI.Models.HealthAppContext
         public string NameAr { get; set; }
         public string HospitalId { get; set; }
         public int Id { get; set; }
-        public List<HealthCareUnit> healthcareunits { get; set; }
+        public List<Hospital> healthcareunits { get; set; }
     }
 }

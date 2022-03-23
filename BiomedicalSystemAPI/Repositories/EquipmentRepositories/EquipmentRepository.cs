@@ -973,7 +973,8 @@ namespace BiomedicalSystemAPI.Repositories.EquipmentReposatories
         {
             var e = _context.Assets
                 .Include(e => e.Department)
-                .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
+                .Include(e => e.Hospital).ThenInclude(h=>h.City)
+                .Include(e=>e.Hospital).ThenInclude(d=>d.Governorate)
                 .Include(e => e.Status)
                 .Include(e => e.Supplier)
                 .Include(e => e.MasterAsset)
