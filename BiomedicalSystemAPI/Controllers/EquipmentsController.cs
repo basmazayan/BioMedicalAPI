@@ -293,9 +293,11 @@ namespace BiomedicalSystemAPI.Controllers
                .Include(e => e.Department)
                .Include(e => e.Status)
                .Include(e => e.Supplier)
-               .Include(e => e.MasterAsset)
+               .Include(e => e.MasterAsset).ThenInclude(m=>m.Brand)
                .Include(e => e.Contract)
-               .Include(e => e.Hospital).ThenInclude(h=>h.City).ThenInclude(d=>d.Governorate)
+               .Include(e => e.Hospital).ThenInclude(h=>h.City)
+               .Include(e => e.Hospital).ThenInclude(d=>d.Governorate)
+               .Include(e => e.Hospital).ThenInclude(h=>h.Suborganization)
                .Include(e => e.equipmentEmployees).Where(e => e.ContractId == contractId).ToList();
             if (equipment == null)
             {
@@ -316,10 +318,10 @@ namespace BiomedicalSystemAPI.Controllers
                     Barcode = e.Barcode,
                     PurchaseDate = e.PurchaseDate,
                     ManufacturerId = e.MasterAsset.BrandId,
-                    ManufacturerName = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().Name,
-                    ManufacturerNameAr = _context.Brands.Where(m => m.Id == e.MasterAsset.BrandId).FirstOrDefault().NameAr,
-                    OrganizationName = _context.Organizations.Where(o => o.Id == e.Hospital.organizationId).FirstOrDefault().Name,
-                    OrganizationNameAr = _context.Organizations.Where(o => o.Id == e.Hospital.organizationId).FirstOrDefault().NameAr,
+                    ManufacturerName = e.MasterAsset.Brand.Name,
+                    ManufacturerNameAr = e.MasterAsset.Brand.NameAr,
+                    SubOrganizationName = e.Hospital.Suborganization.Name,
+                    SubOrganizationNameAr = e.Hospital.Suborganization.NameAr,
                     HealthCareUnitName = e.Hospital.Name,
                     HealthCareUnitNameAr = e.Hospital.NameAr,
                     SupplierId = e.SupplierId,

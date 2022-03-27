@@ -27,8 +27,8 @@ namespace BiomedicalSystemAPI.Models
         public int GovernorateId { get; set; }
         [ForeignKey("GovernorateId")]
         public virtual Governorate Governorate { get; set; }
-        public int organizationId { get; set; }
-        [ForeignKey("organizationId")]
-        public virtual Organization organization { get; set; }
+        public int SuborganizationId { get; set; }
+        [ForeignKey("SuborganizationId")]
+        public virtual SubOrganization Suborganization { get; set; }
     }
 }

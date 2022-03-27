@@ -53,6 +53,7 @@ namespace BiomedicalSystemAPI.Controllers
                 }
                 _contractRequestRepository.Add(request);
                 var healthUnit = _context.Hospitals.Where(h => h.Id == request.HospitalId).FirstOrDefault();
+                var Suborg = _context.SubOrganizations.Where(s => s.Id == healthUnit.SuborganizationId).FirstOrDefault();
                 List<AssignedUserDTO> assignedUsers = new List<AssignedUserDTO>();
                 AssignedUserDTO assignedUsersDTO;
                 var users = _userManager.Users.ToList();
@@ -86,7 +87,7 @@ namespace BiomedicalSystemAPI.Controllers
                 }
                 foreach(var AssignedUser in assignedUsers)
                 {
-                    if (AssignedUser.OrganizationId == healthUnit.organizationId &&  AssignedUser.RoleName== "Organization")
+                    if (AssignedUser.OrganizationId == Suborg.organizationId &&  AssignedUser.RoleName== "Organization")
                     {
                        // string confirmationToken = _userManager.GenerateEmailConfirmationTokenAsync(user).Result;
                         string confirmationLink = Url.Action("ConfirmEmail", "ContractRequest", new { userId = AssignedUser.Id }, protocol: HttpContext.Request.Scheme);

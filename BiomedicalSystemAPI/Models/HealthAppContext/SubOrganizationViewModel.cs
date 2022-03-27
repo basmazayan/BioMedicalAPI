@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace BiomedicalSystemAPI.Models.HealthAppContext
 {
     public class SubOrganizationViewModel
@@ -5,7 +7,7 @@ namespace BiomedicalSystemAPI.Models.HealthAppContext
         public string Name { get; set; }
         public string NameAr { get; set; }
         public int OrganizationId { get; set; }
-        public string HospitaIds { get; set; }
+        public List<string> HospitaCodes { get; set; }
         public int Id { get; set; }
     }
 }

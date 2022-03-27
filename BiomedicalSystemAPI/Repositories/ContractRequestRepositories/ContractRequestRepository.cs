@@ -88,7 +88,8 @@ namespace BiomedicalSystemAPI.Repositories.ContractRequestRepository
         public List<ContractVM> getRequestForOrganizations(int OrgId)
         {
             List<ContractVM> contracts = new List<ContractVM>();
-            var hospitals = _context.Hospitals.Where(h => h.organizationId == OrgId).ToList().GroupBy(h => h.Id).ToList();           
+            var subOrg = _context.SubOrganizations.Where(s => s.organizationId == OrgId).FirstOrDefault();
+            var hospitals = _context.Hospitals.Where(h => h.SuborganizationId == subOrg.organizationId).ToList().GroupBy(h => h.Id).ToList();           
             if (hospitals.Count > 0)
             {
                 foreach (var hos in hospitals)

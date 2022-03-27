@@ -304,8 +304,8 @@ namespace BiomedicalSystemAPI.Repositories.MasterEquipmentRepository
                             HealthCareUnitNameAr = equip.HealthCareUnitNameAr,
                             SupplierName = equip.SupplierName,
                             SupplierNameAr = equip.SupplierNameAr,
-                            OrganizationName = equip.OrganizationName,//_context.organizations.Where(h => h.Id == equip.HealthCareUnit.organizationId).FirstOrDefault().Name,
-                            OrganizationNameAr = equip.OrganizationNameAr,//_context.organizations.Where(h => h.Id == equip.HealthCareUnit.organizationId).FirstOrDefault().NameAr,
+                            SubOrganizationName = equip.SubOrganizationName,//_context.organizations.Where(h => h.Id == equip.HealthCareUnit.organizationId).FirstOrDefault().Name,
+                            SubOrganizationNameAr = equip.SubOrganizationNameAr,//_context.organizations.Where(h => h.Id == equip.HealthCareUnit.organizationId).FirstOrDefault().NameAr,
                             PurchaseDate = equip.PurchaseDate,
                             ManufacturerId = equip.ManufacturerId
                         }).ToList();

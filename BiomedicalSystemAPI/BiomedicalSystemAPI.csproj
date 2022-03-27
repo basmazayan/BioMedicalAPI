@@ -52,7 +52,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="Models\HealthAppContext\" />
     <Folder Include="Repositories\HealthRepository\" />
     <Folder Include="Resources\Images\" />

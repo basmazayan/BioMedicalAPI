@@ -25,7 +25,7 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
             healthCareUnit.Code = healthUnit.Code;
             healthCareUnit.GovernorateId = healthUnit.GovernorateId;
             healthCareUnit.CityId = healthUnit.CityId;
-            healthCareUnit.organizationId = healthUnit.OrganizationId;
+            healthCareUnit.SuborganizationId = healthUnit.SubOrganizationId;
             healthCareUnit.Address = healthUnit.Address;
             healthCareUnit.Phone = healthUnit.Phone;
             healthCareUnit.Director = healthUnit.Director;
@@ -53,7 +53,7 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
             var units = _context.Hospitals
                 .Include(e => e.Governorate)
                 .Include(e => e.City)
-                .Include(e => e.organization)
+                .Include(e => e.Suborganization)
                 .Select(e => new HealthCareUnitDTO
                 {
                     Id = e.Id,
@@ -66,9 +66,9 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
                     GovernorateId = e.GovernorateId,
                     GovernorateName = e.Governorate.Name,
                     GovernorateNameAr = e.Governorate.NameAr,
-                    OrganizationId = e.organizationId,
-                    OrganizationName = e.organization.Name,
-                    OrganizationNameAr = e.organization.NameAr,
+                    SubOrganizationId = e.SuborganizationId,
+                    SubOrganizationName = e.Suborganization.Name,
+                    SubOrganizationNameAr = e.Suborganization.NameAr,
                     Address = e.Address,
                     Director = e.Director,
                     Mobile = e.Mobile,
@@ -85,7 +85,7 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
             var e = _context.Hospitals
                 .Include(e => e.Governorate)
                 .Include(e => e.City)
-                .Include(e => e.organization).FirstOrDefault(e => e.Id == id);
+                .Include(e => e.Suborganization).FirstOrDefault(e => e.Id == id);
 
             var unit = new HealthCareUnitDTO
             {
@@ -98,9 +98,9 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
                 GovernorateId = e.GovernorateId,
                 GovernorateName = e.Governorate.Name,
                 GovernorateNameAr = e.Governorate.NameAr,
-                OrganizationId = e.organizationId,
-                OrganizationName = e.organization.Name,
-                OrganizationNameAr = e.organization.NameAr,
+                SubOrganizationId = e.SuborganizationId,
+                SubOrganizationName = e.Suborganization.Name,
+                SubOrganizationNameAr = e.Suborganization.NameAr,
                 Address = e.Address,
                 Director = e.Director,
                 Mobile = e.Mobile,
@@ -136,7 +136,7 @@ namespace BiomedicalSystemAPI.Repositories.HealthCareUnitRepositories
             healthCareUnit.Code = healthUnit.Code;
             healthCareUnit.GovernorateId = healthUnit.GovernorateId;
             healthCareUnit.CityId = healthUnit.CityId;
-            healthCareUnit.organizationId = healthUnit.OrganizationId;
+            healthCareUnit.SuborganizationId = healthUnit.SubOrganizationId;
             healthCareUnit.Address = healthUnit.Address;
             healthCareUnit.Phone = healthUnit.Phone;
             healthCareUnit.Director = healthUnit.Director;

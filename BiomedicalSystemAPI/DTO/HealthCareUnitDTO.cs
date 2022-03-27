@@ -17,9 +17,9 @@ namespace BiomedicalSystemAPI.DTO
         public int GovernorateId { get; set; }
         public string GovernorateName { get; set; }
         public string GovernorateNameAr { get; set; }
-        public int  OrganizationId { get; set; }
-        public string  OrganizationName { get; set; }
-        public string  OrganizationNameAr { get; set; }
+        public int  SubOrganizationId { get; set; }
+        public string SubOrganizationName { get; set; }
+        public string SubOrganizationNameAr { get; set; }
         public string Address { get; set; }
         public string Director { get; set; }
         public string Phone { get; set; }

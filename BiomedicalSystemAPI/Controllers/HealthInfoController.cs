@@ -41,9 +41,9 @@ namespace BiomedicalSystemAPI.Controllers
         
         [HttpPost]
         [Route("GetDepartmantsData")]
-        public IEnumerable<DepartmemtByHospitalCodeViewModels> GetDepartmantsData(getMultiIDViewModel model)
+        public IEnumerable<DepartmemtByHospitalCodeViewModels> GetDepartmantsData(int[] orgIds)
         {
-            return _dbAccessLayer.GetDepartmants(model);
+            return _dbAccessLayer.GetDepartmants(orgIds);
         }
 
 
@@ -67,9 +67,9 @@ namespace BiomedicalSystemAPI.Controllers
         }
         
         [HttpPost("GetSubOrginisations")]
-        public IEnumerable<SubOrganizationViewModel>GetSubOrginisations(getMultiIDViewModel model)
+        public IEnumerable<SubOrganizationViewModel>GetSubOrginisations(int[] orgId)
         {
-            return _dbAccessLayer.GetSubOrganizationDetails(model);
+            return _dbAccessLayer.GetSubOrganizationDetails(orgId);
         }
         
         [HttpPost("GetBrands")]
@@ -138,6 +138,12 @@ namespace BiomedicalSystemAPI.Controllers
         public IEnumerable<Hospital> GetHospitalsInCity(string[] cityCode)
         {
             return _dbAccessLayer.GetHospitalInCity(cityCode);
+        }
+        [HttpPost]
+        [Route("GetHospitalsInOrganization")]
+        public IEnumerable<Hospital> GetHospitalsInOrganization(int[] OrgIds)
+        {
+            return _dbAccessLayer.GetHospitalsInOrganization(OrgIds);
         }
     }
 }

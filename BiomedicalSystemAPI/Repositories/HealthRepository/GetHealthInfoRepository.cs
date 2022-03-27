@@ -6,6 +6,7 @@ using BiomedicalSystemAPI.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using BiomedicalSystemAPI.Repositories;
 using BiomedicalSystemAPI.Models;
+using BiomedicalSystemAPI.Interface;
 
 namespace BiomedicalSystemAPI.Repositories.HealthRepository
 {
@@ -190,141 +191,73 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
             }
             return hospitalLst;
         }
-
+        public IEnumerable<Hospital> GetHospitalsInOrganization(int[] orgIds)
+        {
+            var hospitalLst = new List<Hospital>();
+            foreach (var orgid in orgIds)
+            {
+               // var hos = _BioContext.Hospitals.Where(h => h.organizationId == orgid).ToList();
+               // hospitalLst.AddRange(hos);
+            }
+            return hospitalLst;
+        }
         public IEnumerable<OrganizationViewModel> GetOrganizationDetails(getMultiIDViewModel modelID)
         {
-            var organizations = new List<OrganizationViewModel>();
-            var m = new List<Hospital>();
-            if(modelID.Id!=null)
-            {
-               foreach (var id in modelID.Id)
-               {
-                    var city = _BioContext.Cities.Where(hd => hd.Code == id).FirstOrDefault();
-                    if(city!=null)
-                    {
-                        var hospitals = _BioContext.Hospitals.Where(h => h.CityId == city.Id).ToList();
-                        foreach (var item in hospitals)
+            var orgComparer = new Interface.Comparer<OrganizationViewModel>("Id");
+            var query = (from a in _BioContext.Hospitals
+                         join b in _BioContext.SubOrganizations
+                         on a.SuborganizationId equals b.Id
+                         join c in _BioContext.Organizations
+                         on b.organizationId equals c.Id
+                         where modelID.Id.Contains(a.City.Code)                         
+                         select new
+                         {
+                             Id = c.Id,
+                             orgName = c.Name,
+                             orgNameAr = c.NameAr,
+                             HospitalCode = a.Code,
+                             subOrgId=b.Id
+                         }).AsEnumerable().Select(x => new OrganizationViewModel()
                         {
-                            var organization = _BioContext.Organizations.Where(o => o.Id == item.organizationId).Select(d => new
-                        {
-                                OrginizationsEn = d.Name,
-                                OrginizationsAr = d.NameAr,
-                                Id = d.Id,
-                                HospitalId = item.Code
-                                
-                            }).Select(x => new OrganizationViewModel()
-                            {
-                                Name = x.OrginizationsEn,
-                                NameAr = x.OrginizationsAr,
-                                HospitalId = x.HospitalId,
-                                Id = x.Id,
-                                healthcareunits=_BioContext.Hospitals.Where(h=>h.organizationId==x.Id).ToList()
 
-                            }).FirstOrDefault();
-                        bool containsItem = organizations.Any(item => item.Id == organization.Id);
-                        if(!containsItem)
-                        {
-                             organizations.Add(organization);
-                        }
-                    }
-                }
-            }
-            }
-            //var model = (
-            //    from a in _context.HealthCareUnits
-            //    join b in _context.SubOrganizations
-            //        on a.SubOrganizationId equals b.Id
-            //    join c in _context.Organizations
-            //        on b.OrganizationId equals c.Id
-            //    // where a.HealthDistrictId == id
-            //    where modelID.Id.Contains(a.HealthDistrict.Code)
-
-            //    select new
-            //    {
-            //        OrginizationsEn = c.Name,
-            //        OrginizationsAr = c.NameAr,
-            //        Id = c.Id,
-            //        HospitalId = a.Code,
-            //        HealthDistrict=
-                    
-            //    }).AsEnumerable().Select(x => new OrganizationViewModel()
-            //    {
-
-            //        Name = x.OrginizationsEn,
-            //        NameAr = x.OrginizationsAr,
-            //        HospitalId = x.HospitalId,
-            //        Id = x.Id
-            //    });
-            //return model.ToList();
-            return organizations;
+                            Id = x.Id,
+                            Name = x.orgName,
+                            NameAr = x.orgNameAr,
+                            HospitalCode = x.HospitalCode,
+                            subOrganizationId= x.subOrgId
+                         });
+            return query.Distinct(orgComparer).ToList();
         }
 
-        public IEnumerable<SubOrganizationViewModel> GetSubOrganizationDetails(getMultiIDViewModel modelID)
+        public IEnumerable<SubOrganizationViewModel> GetSubOrganizationDetails(int[] orgId)
         {
             var suborgs = new List<SubOrganizationViewModel>();
-            if(modelID.Id!=null)
+            if (orgId != null)
             {
-                 foreach (var code in modelID.Id)
-                 {
-                        if(code!=null)
-                        {
-                            var hospital = _BioContext.Hospitals.Where(h => h.Code == code).FirstOrDefault();
-                            var organization = _BioContext.Organizations.Where(o => o.Id == hospital.organizationId).FirstOrDefault();
-                            var subOrganization=_BioContext.SubOrganizations.Where(s=>s.organizationId==organization.Id).Select(sub=> new
+                var query = (from a in _BioContext.Organizations
+                            join b in _BioContext.SubOrganizations
+                            on a.Id equals b.organizationId
+                            where orgId.Contains(b.Id)
+                            select new
                             {
-                                OrginizationsEn = sub.Name,
-                                OrginizationsAr = sub.NameAr,
-                                organizationId = sub.organizationId,
-                                HospitaIds = hospital.Code,
-                                Id = sub.Id
+                                subOrgName = b.Name,
+                                subOrgNameAr = b.NameAr,
+                                orgId=a.Id,
+                                Id=b.Id,
                             }).AsEnumerable().Select(x => new SubOrganizationViewModel()
                             {
-                                Name = x.OrginizationsEn,
-                                NameAr = x.OrginizationsAr,
-                                OrganizationId = x.organizationId,
-                                HospitaIds = x.HospitaIds,
-                                Id = x.Id
-                            }).FirstOrDefault();
-                            if(subOrganization!=null)
-                            {
-                                bool containsItem = suborgs.Any(item => item.Id == subOrganization.Id);
-                                if (!containsItem)
-                                {
-                                    suborgs.Add(subOrganization);
-                                }
-                            }
-
-                        }
-                 }
+                                Name = x.subOrgName,
+                                NameAr = x.subOrgNameAr,
+                                OrganizationId = x.orgId,
+                                Id = x.Id,
+                            });
+   
+                return query.ToList();
             }
-            //var model = (
-            //    from a in _context.Organizations
-            //    join b in _context.SubOrganizations
-            //        on a.Id equals b.OrganizationId
-                    
-            //    join bH in _context.HealthCareUnits
-            //        on b.Id equals bH.SubOrganizationId
-                    
-            //    //where modelID.Id.Contains(a.Id) 
-            //    select new
-            //    {
-            //        OrginizationsEn = b.Name,
-            //        OrginizationsAr = b.NameAr,
-            //        organizationId = b.OrganizationId,
-            //        HospitaIds = bH.Code,
-            //        Id=b.Id
-            //    }).AsEnumerable().Select(x => new SubOrganizationViewModel()
-            //{
-            //    Name = x.OrginizationsEn,
-            //    NameAr = x.OrginizationsAr,
-            //    OrganizationId = x.organizationId,
-            //  HospitaIds = x.HospitaIds,
-            //  Id = x.Id
-            //});
-            return suborgs;
+            return null;
         }
 
-        public IEnumerable<Models.HealthAppContext.HealthCareUnit> GetHospitalsBySubOrginizationsDetails(getMultiIDViewModel modelID)
+        public IEnumerable<HealthCareUnit> GetHospitalsBySubOrginizationsDetails(getMultiIDViewModel modelID)
         {
             // return _context.HealthCareUnits.Where(modelID.Id.Contains(x => x.SubOrganizationId));
             // var model = from a in _context.HealthCareUnits
@@ -518,47 +451,67 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
 
         }
 
-        public IEnumerable<DepartmemtByHospitalCodeViewModels> GetDepartmants(getMultiIDViewModel models)
+        public IEnumerable<DepartmemtByHospitalCodeViewModels> GetDepartmants(int[] orgIds)
         {
-            var departmentList = new List<DepartmemtByHospitalCodeViewModels>();
-            if(models.Id!=null)
+            var DeptComparer = new Interface.Comparer<DepartmemtByHospitalCodeViewModels>("DepartmentID");
+            if(orgIds != null)
             {
-                foreach (var code in models.Id)
-            {
-                var hospital = _BioContext.Hospitals.Where(h => h.Code == code).FirstOrDefault();
-                var eqiupment = _BioContext.Assets.Where(e => e.HospitalId == hospital.Id).ToList();
-                foreach (var eq in eqiupment)
-                {
-                    var department = _BioContext.Departments.Where(d => d.Id == eq.DepartmentId).Select(dept => new
-                    {
-                        HospitalArName = eq.Hospital.NameAr,
-                        HospitalEngName = eq.Hospital.Name,
-                        HospitalCode = eq.Hospital.Code,
-                        HospitalID= eq.Hospital.Id,
-                        DepartmentArName = dept.NameAr,
-                        DepartmentEngName = dept.Name,
-                        DepartmentID = dept.Id,
-                    }).AsEnumerable().Select(x => new DepartmemtByHospitalCodeViewModels()
-                    {
-                        HospitalArName = x.HospitalArName,
-                        HospitalEngName = x.HospitalEngName,
-                        DepartmentArName = x.DepartmentArName,
-                        DepartmentEngName = x.DepartmentEngName,
-                        HospitalCode = x.HospitalCode,
-                        HospitalID=x.HospitalID,
-                        DepartmentID = x.DepartmentID
-                    }).FirstOrDefault();
-                    if (department != null)
-                    {
-                        bool containsItem = departmentList.Any(item => item.DepartmentID == department.DepartmentID);
-                        if (!containsItem)
-                        {
-                            departmentList.Add(department);
-                        }
-                    };
+                var query = (from a in _BioContext.Assets
+                             join h in _BioContext.Hospitals
+                             on a.HospitalId equals h.Id
+                             join d in _BioContext.Departments
+                             on a.DepartmentId equals d.Id
+                             join s in _BioContext.SubOrganizations
+                             on h.SuborganizationId equals s.Id
+                             where orgIds.Contains(s.Id)
+                             select new
+                             {
+                                 DeptId = d.Id,
+                                 DeptName = d.Name,
+                                 DeptNameAr = d.NameAr
+                             }).AsEnumerable().Select(x => new DepartmemtByHospitalCodeViewModels
+                             {
+                                 DepartmentID = x.DeptId,
+                                 DepartmentArName = x.DeptNameAr,
+                                 DepartmentEngName = x.DeptName
+                             }).ToList();
+                return query.Distinct(DeptComparer);
+            //    foreach (var orgid in orgIds)
+            //{
+            //var hospital = _BioContext.Hospitals.Where(h => h.organizationId == orgid).FirstOrDefault();
+            //var eqiupment = _BioContext.Assets.Where(e => e.HospitalId == hospital.Id).ToList();
+            //foreach (var eq in eqiupment)
+            //{
+            //    var department = _BioContext.Departments.Where(d => d.Id == eq.DepartmentId).Select(dept => new
+            //    {
+            //        HospitalArName = eq.Hospital.NameAr,
+            //        HospitalEngName = eq.Hospital.Name,
+            //        HospitalCode = eq.Hospital.Code,
+            //        HospitalID= eq.Hospital.Id,
+            //        DepartmentArName = dept.NameAr,
+            //        DepartmentEngName = dept.Name,
+            //        DepartmentID = dept.Id,
+            //    }).AsEnumerable().Select(x => new DepartmemtByHospitalCodeViewModels()
+            //    {
+            //        HospitalArName = x.HospitalArName,
+            //        HospitalEngName = x.HospitalEngName,
+            //        DepartmentArName = x.DepartmentArName,
+            //        DepartmentEngName = x.DepartmentEngName,
+            //        HospitalCode = x.HospitalCode,
+            //        HospitalID=x.HospitalID,
+            //        DepartmentID = x.DepartmentID
+            //    }).FirstOrDefault();
+            //    if (department != null)
+            //    {
+            //        bool containsItem = departmentList.Any(item => item.DepartmentID == department.DepartmentID);
+            //        if (!containsItem)
+            //        {
+            //            departmentList.Add(department);
+            //        }
+            //    };
 
-                }
-            }
+                //}
+                // }
             }
             //var model = (
             //    from a in _context.HealthCareUnitEquipments
@@ -588,7 +541,7 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
             //});
 
             //var uniq = model.GroupBy(x => x.DepartmentArName).Select(y => y.First()).Distinct();
-            return departmentList;
+            return null;
         }
     }
 }

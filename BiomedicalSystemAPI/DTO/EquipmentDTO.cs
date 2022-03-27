@@ -61,9 +61,9 @@ namespace BiomedicalSystemAPI.DTO
         public int MasterEquipmentId { get; set; }
         public string ManufacturerName { get; set; }
         public string ManufacturerNameAr { get; set; }
-        public int OrganizationId { get; set; }
-        public string OrganizationName { get; set; }
-        public string OrganizationNameAr { get; set; }
+        public int SubOrganizationId { get; set; }
+        public string SubOrganizationName { get; set; }
+        public string SubOrganizationNameAr { get; set; }
         public List<string> EmployeeIDs { get; set; }
       //  public List<int> AttachmentIDs { get; set; }
         public string QrImgPath { get; set; }
@@ -101,8 +101,8 @@ namespace BiomedicalSystemAPI.DTO
         public string HospitalNameAr { get; set; }
         public string SupplierName { get; set; }
         public string SupplierNameAr { get; set; }
-        public string OrganizationName { get; set; }
-        public string OrganizationNameAr { get; set; }
+        public string SubOrganizationName { get; set; }
+        public string SubOrganizationNameAr { get; set; }
         public int HealthCareUnitId { get; set; }
         public DateTime PurchaseDate { get; set; }
 
