@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Wkhtmltopdf.NetCore;
 using BiomedicalSystemAPI.Models;
+using BiomedicalSystemAPI.DTO;
 
 namespace BiomedicalSystemAPI.Controllers
 {
@@ -91,9 +92,9 @@ namespace BiomedicalSystemAPI.Controllers
         // }
         
         [HttpPost("GetSuppliers")]
-        public IEnumerable<SupplierViewModel> GetSuppliers(getMultiIDViewModel model)
+        public IEnumerable<SupplierViewModel> GetSuppliers(string[] hosCodesInBrand)
         {
-            return _dbAccessLayer.GetSuppliersDetails(model);
+            return _dbAccessLayer.GetSuppliersDetails(hosCodesInBrand);
         }
         
         [HttpGet("GetInstallDate")]
@@ -139,11 +140,41 @@ namespace BiomedicalSystemAPI.Controllers
         {
             return _dbAccessLayer.GetHospitalInCity(cityCode);
         }
+        //[HttpPost]
+        //[Route("GetHospitalsInOrganization")]
+        //public IEnumerable<Hospital> GetHospitalsInOrganization(int[] OrgIds)
+        //{
+        //    return _dbAccessLayer.GetHospitalsInOrganization(OrgIds);
+        //}
         [HttpPost]
-        [Route("GetHospitalsInOrganization")]
-        public IEnumerable<Hospital> GetHospitalsInOrganization(int[] OrgIds)
+        [Route("GetHospitalsInSubOrganization")]
+        public IEnumerable<Hospital> GetHospitalsInSubOrganization(int[] subOrgIds)
         {
-            return _dbAccessLayer.GetHospitalsInOrganization(OrgIds);
+            return _dbAccessLayer.GetHospitalInSubOrganization(subOrgIds);
+        }
+        [HttpPost]
+        [Route("GetHospitalsInDepartment")]
+        public IEnumerable<Hospital> GetHospitalsInDepartment(int[] DeptIds)
+        {
+            return _dbAccessLayer.GetHospitalInDepartment(DeptIds);
+        }
+        [HttpPost]
+        [Route("GetHospitalsBySupplier")]
+        public IEnumerable<Hospital> GetHospitalsBySupplier(int[] supplierIds)
+        {
+            return _dbAccessLayer.GetHospitalsBySupplier(supplierIds);
+        }
+        [HttpGet]
+        [Route("GetPriceRange")]
+        public IEnumerable<Hospital> GetPriceRange(decimal FPrice, decimal ToPrice)
+        {
+            return _dbAccessLayer.GetPriceRange(FPrice, ToPrice);
+        }
+        [HttpPost]
+        [Route("GetDateRange")]
+        public IEnumerable<Hospital> GetDateRange(dateVM dates)
+        {
+            return _dbAccessLayer.GetDateRange(dates);
         }
     }
 }
