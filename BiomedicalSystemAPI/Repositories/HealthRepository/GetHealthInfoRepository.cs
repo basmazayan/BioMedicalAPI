@@ -231,7 +231,8 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
                              orgName = c.Name,
                              orgNameAr = c.NameAr,
                              HospitalCode = a.Code,
-                             subOrgId=b.Id
+                             subOrgId=b.Id,
+                             code=a.City.Code
                          }).AsEnumerable().Select(x => new OrganizationViewModel()
                         {
 
@@ -239,7 +240,8 @@ namespace BiomedicalSystemAPI.Repositories.HealthRepository
                             Name = x.orgName,
                             NameAr = x.orgNameAr,
                             HospitalCode = x.HospitalCode,
-                            subOrganizationId= x.subOrgId
+                            subOrganizationId= x.subOrgId,
+                            code=x.code
                          });
             return query.Distinct(orgComparer).ToList();
         }
