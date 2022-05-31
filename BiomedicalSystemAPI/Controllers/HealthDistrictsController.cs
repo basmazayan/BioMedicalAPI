@@ -61,7 +61,7 @@ namespace BiomedicalSystemAPI.Controllers
         {
             if (DirectoryId != 0)
             {
-                return await _context.Cities.Where(d => d.Id == DirectoryId).ToListAsync();
+                return await _context.Cities.Where(d => d.GovernorateId == DirectoryId).ToListAsync();
             }
             return BadRequest();
         }

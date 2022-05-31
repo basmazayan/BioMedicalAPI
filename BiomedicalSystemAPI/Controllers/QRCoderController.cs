@@ -69,7 +69,7 @@ namespace BiomedicalSystemAPI.Controllers
         [Route("Index/{eqId}")]
         public IActionResult Index(int eqId)
         {
-            int equipmentId = eqId=1879;
+            int equipmentId = eqId;//=1879;
             //int qrText = invent.EquipmentId;
             //string UserId = invent.UserId;
             string url2 = "http://biomedicalupd-001-site1.itempurl.com/#/home/EquipmentDetails/"+ equipmentId;

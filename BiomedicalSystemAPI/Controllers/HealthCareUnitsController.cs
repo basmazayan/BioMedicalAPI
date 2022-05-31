@@ -52,7 +52,7 @@ namespace BiomedicalSystemAPI.Controllers
         public async Task<ActionResult<IEnumerable<Hospital>>> GetHealthCareUnitsByDistrictId(int districtId)
         {
 
-            var HealthDistricts = await _context.Hospitals.Where(e => e.Id == districtId)
+            var HealthDistricts = await _context.Hospitals.Where(e => e.CityId == districtId)
                 .Include(e => e.City)
                 .Select(e => new Hospital
                 {
